@@ -68,3 +68,7 @@ class ConfigFile(metaclass=SingletonType):
             self._artifactory_url = data['artifactory_url']
             self._default_arch = data['default_arch']
             self._current_arch = data['default_arch']
+        
+        if not self.api_key:
+            click.echo(click.style(f'Voyager config file has an empty api_key {self._config_file}', fg='red'))
+            exit(1)
