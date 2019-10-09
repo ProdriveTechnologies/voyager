@@ -52,19 +52,27 @@ class VisualStudioGenerator(Generator):
 
     def _format_items(self):
         sections = []
-        for name, dep in self.dependencies.dependencies:
+        for name, dep in self.build_info.packages:
             fields = {
                 'root_dir': dep.rootpath,
-                'name': name
+                'name': dep.safe_name
             }
             section = self.item_template.format(**fields)
             sections.append(section)
         return "".join(sections)
 
-    def _format_properties(self, build_info, condition):
+    def _format_properties(self):
         fields = {
-            'condition': condition,
-            'bin_dirs': "TODO"
+            'condition': '',
+            'bin_dirs': "".join("%s;" % p for p in self.build_info.bin_paths),
+            'res_dirs': "",
+            'include_dirs': "".join("%s;" % p for p in self.build_info.include_paths),
+            'lib_dirs': "".join("%s;" % p for p in self.build_info.lib_paths),
+            'libs': "".join('%s;' % lib for lib in self.build_info.libs),
+            'definitions': "",
+            'compiler_flags': "",
+            'linker_flags': "",
+            'exe_flags': ""
         }
         formatted_template = self.properties_template.format(**fields)
         return formatted_template
@@ -72,4 +80,11 @@ class VisualStudioGenerator(Generator):
     @property
     def content(self):
         per_item_props = self._format_items()
-        pass
+        properties = [self._format_properties()]
+
+        fields = {
+            'item_properties': per_item_props,
+            'properties': '\n'.join(properties)
+        }
+        formatted_template = self.template.format(**fields)
+        return formatted_template
