@@ -3,6 +3,11 @@
   "libraries": [
     {
       "repo": "siatd-generic-local",
+      "library": "Interfaces/Standard",
+      "version": "1.0.0"
+    },
+    {
+      "repo": "siatd-generic-local",
       "library": "API/PA.VirtualMachine",
       "version": "2.0.0",
       "options": {
