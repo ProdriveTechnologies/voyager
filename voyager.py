@@ -8,7 +8,7 @@ VERSION = "0.0.0"
 
 from voyagerfile import VoyagerFile
 from generators.visualstudio import VisualStudioGenerator
-from dependencies import Dependency, Dependencies
+from buildinfo import BuildInfo
 from configfile import ConfigFile
 from artifactdownloader import ArtifactDownloader
 
@@ -43,7 +43,12 @@ def install():
     file.parse()
     # file.print()
     down = ArtifactDownloader(file.libraries)
-    down.download()
+    build_info = down.download()
+    gen = VisualStudioGenerator(build_info)
+    c = gen.content
+    # print(c)
+    with open('voyager.props', 'w') as f:
+        f.write(c)
 
 @cli.command()
 def config():
