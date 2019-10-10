@@ -57,15 +57,10 @@ def config():
     print("URL: ", conf.artifactory_url)
     print("ARCH:", conf.default_arch)
 
+@cli.command()
+def init():
+    VoyagerFile.generate_empty_file()
+
 if __name__ == "__main__":
     print(f"Voyager version {VERSION}")
     cli()
-
-    items = range(100)
-    with click.progressbar(items, label='Processing accounts',
-                           fill_char=click.style(u'█', fg='green')) as bar:
-        for item in bar:
-            time.sleep(0.002 * random.random())
-
-    click.echo(click.style(u'All Done! 👍', fg='green'))
-    click.echo(click.style(u'Something went wrong ❌', fg='red'))

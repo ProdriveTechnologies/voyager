@@ -1,4 +1,6 @@
 import json
+import os
+import click
 
 from Singleton import SingletonType
 
@@ -15,3 +17,21 @@ class VoyagerFile(metaclass=SingletonType):
     
     def print(self):
         print(self.data)
+
+    @staticmethod
+    def generate_empty_file():
+        data = {}
+        data['version'] = 1
+        data['libraries'] = [{
+            "repo": "",
+            "library": "",
+            "version": ""
+        }]
+
+        if not os.path.isfile('voyager.json'):
+            click.echo("Generating empty config file")
+            with open('voyager.json', 'w') as outfile:
+                json.dump(data, outfile, indent=2)
+        else:
+            click.echo(click.style(u'File already exists', fg='red'))
+            exit(1)
