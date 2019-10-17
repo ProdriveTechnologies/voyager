@@ -1,4 +1,5 @@
 from tqdm import tqdm
+from sys import exit # For generated executables
 from artifactory import ArtifactoryPath
 import click
 import time
@@ -18,15 +19,13 @@ def cli():
     pass
 
 @cli.command()
-@click.argument('repo')
 @click.argument('query')
-def search(repo, query):
+def search(query):
     conf = ConfigFile()
-    art_url = f"{conf.artifactory_url}/{repo}/"
+    art_url = f"{conf.artifactory_url}/siatd-generic-local/"
     path = ArtifactoryPath(art_url, apikey=conf.api_key)
     for p in path.glob(query):
         print(p)
-        print(type(p))
 
 
 @cli.command()
