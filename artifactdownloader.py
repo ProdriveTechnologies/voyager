@@ -38,7 +38,7 @@ class ArtifactDownloader:
                 url = f"{self.config.artifactory_url}/{lib['repo']}/{lib['library']}/{lib['version']}/SRC/voyager_package.tgz"
                 path = ArtifactoryPath(url, apikey=self.config.api_key)
                 if not path.exists():
-                    click.echo(click.style(u'❌  package not found', fg='red'))
+                    click.echo(click.style(u'ERROR: package not found', fg='red'))
                     exit(1)
 
             s = str(path)
@@ -52,6 +52,6 @@ class ArtifactDownloader:
             
             pack = Package(lib['library'], s)
             build.add_package(pack)
-            click.echo(click.style(u'✔️', fg='green'))
+            click.echo(click.style(u'OK', fg='green'))
         
         return build
