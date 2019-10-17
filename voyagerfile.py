@@ -1,6 +1,7 @@
 import json
 import os
 import click
+from sys import exit # For generated executables
 
 from Singleton import SingletonType
 
@@ -23,9 +24,9 @@ class VoyagerFile(metaclass=SingletonType):
         data = {}
         data['version'] = 1
         data['libraries'] = [{
-            "repo": "",
-            "library": "",
-            "version": ""
+            "repo": "siatd-generic-local",
+            "library": "Interfaces/Standard",
+            "version": "1.0.0"
         }]
 
         if not os.path.isfile('voyager.json'):
