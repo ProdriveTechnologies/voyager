@@ -27,15 +27,6 @@ def search(query):
     for p in path.glob(query):
         print(p)
 
-
-@cli.command()
-def upload():
-    conf = ConfigFile()
-    art_url = f"{conf.artifactory_url}/siatd-generic-local/API/PA.VirtualMachine/2.0.0/{conf.default_arch}/"
-    path = ArtifactoryPath(art_url, apikey=conf.api_key)
-    path.mkdir(exist_ok=True)
-    path.deploy_file("voyager_package.tgz")
-
 @cli.command()
 def install():
     file = VoyagerFile("voyager.json")
