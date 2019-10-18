@@ -16,7 +16,18 @@ from artifactdownloader import ArtifactDownloader
 
 @click.group()
 def cli():
-    pass
+    """This function is always called before any other command function"""
+    conf = ConfigFile()
+    if not conf.exists():
+        click.echo(click.style(f'It appears that there is no config file in {conf.file_path}', fg='yellow'))
+        click.echo("Generating a default one")
+        conf.create_default()
+        click.echo(click.style(u'Default one generated, please fill in you Artifactory API key', fg='red'))
+        exit(1)
+    
+    if not conf.parse():
+        click.echo(click.style(f'Problem with parsing the config file {self.file_path}', fg='red'))
+        exit(1)
 
 @cli.command()
 @click.argument('query')

@@ -1,5 +1,4 @@
 import json, os
-import click
 
 from jsonschema import validate
 
@@ -24,10 +23,31 @@ class ConfigFile(metaclass=SingletonType):
         self._default_arch = ""
         self._current_arch = ""
 
-        if not os.path.isfile(self._config_file):
-            self._create_default()
+    def exists(self) -> bool:
+        return os.path.isfile(self._config_file)
+
+    def parse(self) -> bool:
+        with open(self._config_file) as json_file:
+            data = json.load(json_file)
+            validate(data, self.schema)
+            self._api_key = data['api_key']
+            self._artifactory_url = data['artifactory_url']
+            self._default_arch = data['default_arch']
+            self._current_arch = data['default_arch']
         
-        self._parse()
+        if not self.api_key:
+            return False
+        
+        return True
+
+    def create_default(self):
+        os.makedirs(self._config_dir, exist_ok=True)
+        data = {}
+        data['api_key'] = ""
+        data['artifactory_url'] = "https://artifactory.prodrive.nl/artifactory"
+        data['default_arch'] = "MSVC.140.DBG.32"
+        with open(self._config_file, 'w') as outfile:
+            json.dump(data, outfile, indent=2)
 
     @property
     def api_key(self):
@@ -45,29 +65,6 @@ class ConfigFile(metaclass=SingletonType):
     def current_arch(self):
         return self._current_arch
 
-    def _create_default(self):
-        click.echo(click.style(f'It appears that there is no config file in {self.config_file}', fg='yellow'))
-        click.echo("Generating a default one")
-        os.makedirs(self._config_dir, exist_ok=True)
-        data = {}
-        data['api_key'] = ""
-        data['artifactory_url'] = "https://artifactory.prodrive.nl/artifactory"
-        data['default_arch'] = "MSVC.140.DBG.32"
-        with open(self._config_file, 'w') as outfile:
-            json.dump(data, outfile, indent=2)
-        
-        click.echo(click.style(u'Default one generated, please fill in you Artifactory API key', fg='red'))
-        exit(1)
-
-    def _parse(self):
-        with open(self._config_file) as json_file:
-            data = json.load(json_file)
-            validate(data, self.schema)
-            self._api_key = data['api_key']
-            self._artifactory_url = data['artifactory_url']
-            self._default_arch = data['default_arch']
-            self._current_arch = data['default_arch']
-        
-        if not self.api_key:
-            click.echo(click.style(f'Voyager config file has an empty api_key {self._config_file}', fg='red'))
-            exit(1)
+    @property
+    def file_path(self):
+        return self._config_file
