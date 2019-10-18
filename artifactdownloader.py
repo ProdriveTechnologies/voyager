@@ -8,19 +8,19 @@ from buildinfo import Package, BuildInfo
 from configfile import ConfigFile
 
 class ArtifactDownloader:
-    __download_dir = 'libs'
+    _download_dir = 'libs'
     def __init__(self, libraries):
         self.libraries = libraries
         self.config = ConfigFile()
     
     def clear_directory(self):
         try:
-            shutil.rmtree(self.__download_dir)
+            shutil.rmtree(self._download_dir)
         except OSError as e:
-            print(f'Error: {self.__download_dir} : {e.strerror}')
+            print(f'Error: {self._download_dir} : {e.strerror}')
 
     def make_directory(self):
-        p = Path(self.__download_dir)
+        p = Path(self._download_dir)
         p.mkdir()
 
     def download(self):
@@ -31,26 +31,26 @@ class ArtifactDownloader:
 
         for lib in self.libraries:
             click.echo(f"Downloading {lib['library']} @ {lib['version']} ... ", nl=False)
-            url = f"{self.config.artifactory_url}/{lib['repo']}/{lib['library']}/{lib['version']}/{self.config.current_arch}/voyager_package.tgz"
+            
+            package_dir = f"{lib['repo']}/{lib['library']}/{lib['version']}/{self.config.current_arch}"
+            url = f"{self.config.artifactory_url}/{package_dir}/voyager_package.tgz"
             path = ArtifactoryPath(url, apikey=self.config.api_key)
 
             if not path.exists():
-                url = f"{self.config.artifactory_url}/{lib['repo']}/{lib['library']}/{lib['version']}/SRC/voyager_package.tgz"
+                package_dir = f"{lib['repo']}/{lib['library']}/{lib['version']}/SRC"
+                url = f"{self.config.artifactory_url}/{package_dir}/voyager_package.tgz"
                 path = ArtifactoryPath(url, apikey=self.config.api_key)
                 if not path.exists():
                     click.echo(click.style(u'ERROR: package not found', fg='red'))
                     exit(1)
 
-            s = str(path)
-            s = s.replace(self.config.artifactory_url, "")
-            s = s.replace('voyager_package.tgz', "")
-            s = self.__download_dir + s
+            extract_dir = f"{self._download_dir}/{package_dir}/"
             
             with path.open() as fd:
                 tar = tarfile.open(fileobj=fd)
-                tar.extractall(s)
+                tar.extractall(extract_dir)
             
-            pack = Package(lib['library'], s)
+            pack = Package(lib['library'], extract_dir)
             build.add_package(pack)
             click.echo(click.style(u'OK', fg='green'))
         
