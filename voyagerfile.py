@@ -24,9 +24,9 @@ class VoyagerFile(metaclass=SingletonType):
         data = {}
         data['version'] = 1
         data['libraries'] = [{
-            "repo": "siatd-generic-local",
-            "library": "Interfaces/Standard",
-            "version": "1.0.0"
+            "repo": "",
+            "library": "",
+            "version": ""
         }]
 
         if not os.path.isfile('voyager.json'):
