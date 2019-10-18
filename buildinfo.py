@@ -70,10 +70,10 @@ class BuildInfo:
         self.libs = []
 
     def add_package(self, package:Package):
-        self.include_dirs = self._merge_lists(self.include_dirs, package.include_paths)
-        self.lib_dirs = self._merge_lists(self.lib_dirs, package.lib_paths)
-        self.bin_dirs = self._merge_lists(self.bin_dirs, package.bin_paths)
-        self.libs = self._merge_lists(self.libs, package.lib_files)
+        self.include_dirs = self._merge_lists_without_duplicates(self.include_dirs, package.include_paths)
+        self.lib_dirs = self._merge_lists_without_duplicates(self.lib_dirs, package.lib_paths)
+        self.bin_dirs = self._merge_lists_without_duplicates(self.bin_dirs, package.bin_paths)
+        self.libs = self._merge_lists_without_duplicates(self.libs, package.lib_files)
         self._packages[package.name] = package
 
     @property
@@ -100,5 +100,5 @@ class BuildInfo:
     def lib_files(self):
         return self.libs
 
-    def _merge_lists(self, seq1, seq2):
+    def _merge_lists_without_duplicates(self, seq1, seq2):
         return [s for s in seq1 if s not in seq2] + seq2
