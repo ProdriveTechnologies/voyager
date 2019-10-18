@@ -46,7 +46,6 @@ class ConfigFile(metaclass=SingletonType):
         return self._current_arch
 
     def _create_default(self):
-        print()
         click.echo(click.style(f'It appears that there is no config file in {self.config_file}', fg='yellow'))
         click.echo("Generating a default one")
         os.makedirs(self._config_dir, exist_ok=True)
