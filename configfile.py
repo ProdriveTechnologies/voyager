@@ -1,8 +1,9 @@
-import json, os
+import json, os, shutil
 
 from jsonschema import validate
 
 from Singleton import SingletonType
+from utilities import resource_path
 
 class ConfigFile(metaclass=SingletonType):
     schema = {
@@ -42,12 +43,8 @@ class ConfigFile(metaclass=SingletonType):
 
     def create_default(self):
         os.makedirs(self._config_dir, exist_ok=True)
-        data = {}
-        data['api_key'] = ""
-        data['artifactory_url'] = "https://artifactory.prodrive.nl/artifactory"
-        data['default_arch'] = "MSVC.140.DBG.32"
-        with open(self._config_file, 'w') as outfile:
-            json.dump(data, outfile, indent=2)
+        location = resource_path('static/config_template.json')
+        shutil.copy(location, self._config_file)
 
     @property
     def api_key(self):

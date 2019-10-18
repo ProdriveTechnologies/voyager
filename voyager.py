@@ -26,7 +26,7 @@ def cli():
         exit(1)
     
     if not conf.parse():
-        click.echo(click.style(f'Problem with parsing the config file {self.file_path}', fg='red'))
+        click.echo(click.style(f'Problem with parsing the config file {conf.file_path}', fg='red'))
         exit(1)
 
 @cli.command()
