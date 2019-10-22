@@ -1,4 +1,3 @@
-from tqdm import tqdm
 from sys import exit # For generated executables
 from artifactory import ArtifactoryPath
 import click
