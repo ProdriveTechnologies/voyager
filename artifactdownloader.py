@@ -42,7 +42,7 @@ class ArtifactDownloader:
                 path = ArtifactoryPath(url, apikey=self.config.api_key)
                 if not path.exists():
                     click.echo(click.style(u'ERROR: package not found', fg='red'))
-                    exit(1)
+                    raise ValueError(f"Package {lib['library']} @ {lib['version']} not found")
 
             extract_dir = f"{self._download_dir}/{package_dir}/"
             
