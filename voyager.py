@@ -4,7 +4,7 @@ import click
 import time
 import random
 
-VERSION = "0.0.0"
+VERSION = "1.0.0"
 
 from voyagerfile import VoyagerFile
 from generators.visualstudio import VisualStudioGenerator
