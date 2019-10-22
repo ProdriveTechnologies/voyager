@@ -15,6 +15,12 @@ class VoyagerFile(metaclass=SingletonType):
 
         self.version = self.data['version']
         self.libraries = self.data['libraries']
+
+        if self.version != 1:
+            raise ValueError('The version of the voyager JSON file must be 1')
+
+        if self.libraries == None:
+            raise ValueError('The libraries object is missing in the voyager JSON file')
     
     def print(self):
         print(self.data)
