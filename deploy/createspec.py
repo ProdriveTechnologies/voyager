@@ -1,4 +1,3 @@
-# -*- coding: future_fstrings -*-
 import os
 import sys
 import argparse
@@ -24,7 +23,7 @@ if __name__ == "__main__":
 
     custom_build = os.environ.get('bamboo_customRevision')
     if custom_build != None:
-        print(f"Releasing {args.file} @ {custom_build}")
+        print("Releasing {} @ {}".format(args.file, custom_build))
         spec['files'][0]['pattern'] = args.file
         spec['files'][0]['target'] = args.location.replace('<tag_version>', custom_build)
     else:
