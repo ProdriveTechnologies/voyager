@@ -23,18 +23,28 @@ class ConfigFile(metaclass=SingletonType):
         self._artifactory_url = ""
         self._default_arch = ""
         self._current_arch = ""
+        self._use_environ = os.environ.get('voyager_CI')
 
     def exists(self) -> bool:
-        return os.path.isfile(self._config_file)
+        if self._use_environ:
+            return True
+        else:
+            return os.path.isfile(self._config_file)
 
     def parse(self) -> bool:
-        with open(self._config_file) as json_file:
-            data = json.load(json_file)
-            validate(data, self.schema)
-            self._api_key = data['api_key']
-            self._artifactory_url = data['artifactory_url']
-            self._default_arch = data['default_arch']
-            self._current_arch = data['default_arch']
+        if self._use_environ:
+                self._api_key = os.environ.get('voyager_CI_API_KEY').replace("\"", "")
+                self._artifactory_url = os.environ.get('voyager_CI_URL').replace("\"", "")
+                self._default_arch = os.environ.get('voyager_CI_ARCH').replace("\"", "")
+                self._current_arch = self._default_arch
+        else:
+            with open(self._config_file) as json_file:
+                data = json.load(json_file)
+                validate(data, self.schema)
+                self._api_key = data['api_key']
+                self._artifactory_url = data['artifactory_url']
+                self._default_arch = data['default_arch']
+                self._current_arch = data['default_arch']
         
         if not self.api_key:
             return False
