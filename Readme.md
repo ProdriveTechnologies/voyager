@@ -3,7 +3,7 @@ title: "Voyager"
 ---
 
 ## Introduction
-Voyager is the package manager for SIATD and possible Test Development
+Voyager is the package manager for SIATD and possibly Test Development
 
 ## Documentation
 |Type|Link|
@@ -21,10 +21,12 @@ If you have any feedback or request on this item, you can contact one of the fol
 |Owner   |Maarten Tamboer|
 |Last Modified |<tag_last_commit_by>|
 
+## Deploy folder
+The deploy folder contains scripts to deploy voyager to the different platforms
+
 ## Release notes
 
-### Rxx
-* In development
+### [Unreleased]
 
-## deploy folder
-The deploy folder contains scripts to deploy voyager to the different platforms
+### [1.0.0]
+- First release of concept
