@@ -1,5 +1,6 @@
 import shutil
 import tarfile
+import os
 import click
 from pathlib import Path
 from artifactory import ArtifactoryPath
@@ -24,9 +25,6 @@ class ArtifactDownloader:
         p.mkdir()
 
     def download(self):
-        self.clear_directory()
-        self.make_directory()
-        # deps = Dependencies()
         build = BuildInfo()
 
         for lib in self.libraries:
@@ -50,7 +48,8 @@ class ArtifactDownloader:
                 tar = tarfile.open(fileobj=fd)
                 tar.extractall(extract_dir)
             
-            pack = Package(lib['library'], extract_dir)
+            # Pass along absolute path for the package so there are no problems with subdirectory projects
+            pack = Package(lib['library'], os.path.abspath(extract_dir))
             build.add_package(pack)
             click.echo(click.style(u'OK', fg='green'))
         

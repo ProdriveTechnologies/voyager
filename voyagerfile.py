@@ -5,7 +5,7 @@ from sys import exit # For generated executables
 
 from Singleton import SingletonType
 
-class VoyagerFile(metaclass=SingletonType):
+class VoyagerFile():
     def __init__(self, fileName):
         self.fileName = fileName
 
@@ -15,12 +15,23 @@ class VoyagerFile(metaclass=SingletonType):
 
         self.version = self.data['version']
         self.libraries = self.data['libraries']
+        self.type = self.data['type']
+        self.solution = True
+        self.projects = []
 
         if self.version != 1:
             raise ValueError('The version of the voyager JSON file must be 1')
 
         if self.libraries == None:
             raise ValueError('The libraries object is missing in the voyager JSON file')
+
+        if self.type == 'solution':
+            self.solution = True
+            self.projects = self.data['projects']
+        elif self.type == 'project':
+            self.solution = False
+        else:
+            raise ValueError('Incorrect value of the type field in voyager JSON file. Supported: solution, project')
     
     def print(self):
         print(self.data)

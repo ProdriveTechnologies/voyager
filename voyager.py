@@ -39,16 +39,32 @@ def search(query):
 
 @cli.command()
 def install():
+    # First download the global dependencies
     file = VoyagerFile("voyager.json")
     file.parse()
-    # file.print()
     down = ArtifactDownloader(file.libraries)
-    build_info = down.download()
-    gen = VisualStudioGenerator(build_info)
-    c = gen.content
-    # print(c)
-    with open('voyager.props', 'w') as f:
-        f.write(c)
+    down.clear_directory()
+    down.make_directory()
+
+    click.echo(click.style('Top level:', fg='cyan'))
+    build_info_global = down.download()
+
+    for subdir in file.projects:
+        click.echo(click.style(f'{subdir}:', fg='cyan'))
+        subdir_file = VoyagerFile(f"{subdir}/voyager.json")
+        subdir_file.parse()
+        down = ArtifactDownloader(subdir_file.libraries)
+        build_info_subdir = down.download()
+        build_info_subdir.add_build_info(build_info_global)
+        gen = VisualStudioGenerator(build_info_subdir)
+        c = gen.content
+        with open(f"{subdir}/voyager.props", 'w') as f:
+            f.write(c)
+
+    # c = gen.content
+    # # print(c)
+    # with open('voyager.props', 'w') as f:
+    #     f.write(c)
 
 @cli.command()
 def config():

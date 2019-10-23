@@ -76,6 +76,14 @@ class BuildInfo:
         self.libs = self._merge_lists_without_duplicates(self.libs, package.lib_files)
         self._packages[package.name] = package
 
+    def add_build_info(self, bi):
+        self.include_dirs = self._merge_lists_without_duplicates(self.include_dirs, bi.include_dirs)
+        self.lib_dirs = self._merge_lists_without_duplicates(self.lib_dirs, bi.lib_dirs)
+        self.bin_dirs = self._merge_lists_without_duplicates(self.bin_dirs, bi.bin_dirs)
+        self.libs = self._merge_lists_without_duplicates(self.libs, bi.libs)
+        for key, val in bi.packages:
+            self._packages[key] = val
+
     @property
     def packages(self):
         return self._packages.items()
