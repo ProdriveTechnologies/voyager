@@ -25,3 +25,6 @@ If you have any feedback or request on this item, you can contact one of the fol
 
 ### Rxx
 * In development
+
+## deploy folder
+The deploy folder contains scripts to deploy voyager to the different platforms
