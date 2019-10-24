@@ -30,17 +30,25 @@ class ArtifactDownloader:
         for lib in self.libraries:
             click.echo(f"Downloading {lib['library']} @ {lib['version']} ... ", nl=False)
             
-            package_dir = f"{lib['repo']}/{lib['library']}/{lib['version']}/{self.config.current_arch}"
-            url = f"{self.config.artifactory_url}/{package_dir}/voyager_package.tgz"
-            path = ArtifactoryPath(url, apikey=self.config.api_key)
+            archs = self.config.current_archs
+            archs.append("Header")
 
-            if not path.exists():
-                package_dir = f"{lib['repo']}/{lib['library']}/{lib['version']}/SRC"
+            found = False
+            path = None
+            package_dir = ""
+            for arch in archs:
+                package_dir = f"{lib['repo']}/{lib['library']}/{lib['version']}/{arch}"
                 url = f"{self.config.artifactory_url}/{package_dir}/voyager_package.tgz"
                 path = ArtifactoryPath(url, apikey=self.config.api_key)
-                if not path.exists():
-                    click.echo(click.style(u'ERROR: package not found', fg='red'))
-                    raise ValueError(f"Package {lib['library']} @ {lib['version']} not found")
+
+                if path.exists():
+                    click.echo(click.style(f'{arch} ', fg='bright_blue'), nl=False)
+                    found = True
+                    break
+
+            if not found:
+                click.echo(click.style(u'ERROR: package not found', fg='red'))
+                raise ValueError(f"Package {lib['library']} @ {lib['version']} not found")
 
             extract_dir = f"{self._download_dir}/{package_dir}/"
             

@@ -11,7 +11,7 @@ class ConfigFile(metaclass=SingletonType):
         "properties": {
             "api_key": {"type" : "string"},
             "artifactory_url": {"type" : "string"},
-            "default_arch": {"type" : "string"}
+            "default_arch": {"type" : "array", "items": {"type": "string"}}
         }
     }
 
@@ -21,8 +21,8 @@ class ConfigFile(metaclass=SingletonType):
         self._config_file = self._config_dir + 'config.json'
         self._api_key = ""
         self._artifactory_url = ""
-        self._default_arch = ""
-        self._current_arch = ""
+        self._default_arch = []
+        self._current_arch = []
         self._use_environ = os.environ.get('voyager_CI')
 
     def exists(self) -> bool:
@@ -35,7 +35,8 @@ class ConfigFile(metaclass=SingletonType):
         if self._use_environ:
                 self._api_key = os.environ.get('voyager_CI_API_KEY').replace("\"", "")
                 self._artifactory_url = os.environ.get('voyager_CI_URL').replace("\"", "")
-                self._default_arch = os.environ.get('voyager_CI_ARCH').replace("\"", "")
+                archs = os.environ.get('voyager_CI_ARCH').replace("\"", "")
+                self._default_arch = archs.split(";")
                 self._current_arch = self._default_arch
         else:
             with open(self._config_file) as json_file:
@@ -65,11 +66,11 @@ class ConfigFile(metaclass=SingletonType):
         return self._artifactory_url
 
     @property
-    def default_arch(self):
+    def default_archs(self):
         return self._default_arch
 
     @property
-    def current_arch(self):
+    def current_archs(self):
         return self._current_arch
 
     @property
