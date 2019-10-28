@@ -57,7 +57,7 @@ class ArtifactDownloader:
                 tar.extractall(extract_dir)
             
             # Pass along absolute path for the package so there are no problems with subdirectory projects
-            pack = Package(lib['library'], os.path.abspath(extract_dir))
+            pack = Package(lib['library'], os.path.abspath(extract_dir) + "/")
             build.add_package(pack)
             click.echo(click.style(u'OK', fg='green'))
         

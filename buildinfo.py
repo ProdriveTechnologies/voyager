@@ -2,9 +2,9 @@ import os
 from collections import OrderedDict
 from pathlib import Path
 
-DEFAULT_INCLUDE = "include"
-DEFAULT_LIB = "lib"
-DEFAULT_BIN = "bin"
+DEFAULT_INCLUDE = "Include"
+DEFAULT_LIB = "Lib"
+DEFAULT_BIN = "Bin"
 
 class Package:
     """Represents a single voyager package"""
