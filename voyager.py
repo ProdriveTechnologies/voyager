@@ -60,6 +60,13 @@ def install():
         c = gen.content
         with open(f"{subdir}/voyager.props", 'w') as f:
             f.write(c)
+    
+    # When working on a single project file
+    if file.type == "project":
+        gen = VisualStudioGenerator(build_info_global)
+        c = gen.content
+        with open(f"voyager.props", 'w') as f:
+            f.write(c)
 
     # c = gen.content
     # # print(c)
