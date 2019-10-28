@@ -126,3 +126,4 @@ dmypy.json
 .vscode/
 libs/
 voyager.props
+artifactory_spec.json
