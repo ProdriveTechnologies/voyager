@@ -4,6 +4,7 @@ import os
 import click
 from pathlib import Path
 from artifactory import ArtifactoryPath
+from semver import SemVer, max_satisfying
 
 from buildinfo import Package, BuildInfo
 from configfile import ConfigFile
@@ -34,15 +35,29 @@ class ArtifactDownloader:
         for lib in libs:
             click.echo(f"{level_str} Downloading {lib['library']} @ {lib['version']} ... ", nl=False)
 
+            version_to_download = lib['version']
+
+            # The version can either be semver or something like feature/xyz when referencing an Rxx version
+            # When version is semver, parse and check which versions comply
+            # otherwise use the feature/xyz name to download
+            if self._check_if_valid_semver(lib['version']):
+                versions = self._find_versions_for_package(lib['repo'], lib['library'])
+                version_to_download = max_satisfying(versions, lib['version'], True)
+                if not version_to_download:
+                    click.echo(click.style(f"ERROR: version {lib['version']} not found.", fg='red'))
+                    click.echo(click.style(f"Available: {versions}", fg='red'))
+                    raise ValueError("Version not found")
+
+            # Handle version conflicts
             if lib['library'] in self.build_info.package_names:
                 pack = self.build_info.get_package(lib['library'])
-                if pack.version != lib['version']:
-                    raise ValueError(f"Version conflict for {lib['library']}: {pack.version} vs {lib['version']}")
+                if pack.version != version_to_download:
+                    raise ValueError(f"Version conflict for {lib['library']}: {pack.version} vs {version_to_download}")
                 click.echo(click.style(u'SKIP', fg='green'))
                 continue
 
-            extract_dir = self._find_download_extract_package(lib['repo'], lib['library'], lib['version'])
-            
+            extract_dir = self._find_download_extract_package(lib['repo'], lib['library'], version_to_download)
+
             options = []
             if 'options' in lib:
                 options = lib['options']
@@ -52,7 +67,30 @@ class ArtifactDownloader:
             self.build_info.add_package(pack)
             click.echo(click.style(u'OK', fg='green'))
 
+            # This is a recursive function that download dependencies
+            # Each recursion the level is incremented for indentation printing
             self._download(pack.compile_dependencies, level+1)
+
+    def _check_if_valid_semver(self, version):
+        try:
+            SemVer(version)
+        except ValueError:
+            return False
+        return True
+
+    def _find_versions_for_package(self, repo, library):
+        archs = self.config.current_archs
+        archs.append("Header")
+        versions = []
+
+        package_dir = f"{repo}/{library}/"
+        url = f"{self.config.artifactory_url}/{package_dir}"
+        path = ArtifactoryPath(url, apikey=self.config.api_key)
+        for p in path.glob(f"*/*"):
+            if p.parts[4] in archs:
+                versions.append(p.parts[3])
+
+        return versions
 
     def _find_download_extract_package(self, repo, library, version):
         archs = self.config.current_archs
@@ -66,7 +104,7 @@ class ArtifactDownloader:
             path = ArtifactoryPath(url, apikey=self.config.api_key)
 
             if path.exists():
-                click.echo(click.style(f'{arch} ', fg='bright_blue'), nl=False)
+                click.echo(click.style(f'{arch} @ {version} ', fg='bright_blue'), nl=False)
                 found = True
                 break
 
