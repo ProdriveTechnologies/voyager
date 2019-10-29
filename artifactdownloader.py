@@ -4,7 +4,7 @@ import os
 import click
 from pathlib import Path
 from artifactory import ArtifactoryPath
-from semver import SemVer, max_satisfying
+from semver import valid_range, max_satisfying
 
 from buildinfo import Package, BuildInfo
 from configfile import ConfigFile
@@ -72,13 +72,19 @@ class ArtifactDownloader:
             self._download(pack.compile_dependencies, level+1)
 
     def _check_if_valid_semver(self, version):
-        try:
-            SemVer(version)
-        except ValueError:
-            return False
-        return True
+        """ Check if a string is parseable by the semver library """
+        r = valid_range(version, True)
+        if r:
+            return True
+        return False
 
     def _find_versions_for_package(self, repo, library):
+        """
+        Find the versions for a specific package
+        :param repo: The repository, for example siatd-generic-local
+        :param library: The name of the library, for example PA.JtagProgrammer
+        :returns: A list of strings with versions: ['17.0.0', '18.0.0']
+        """
         archs = self.config.current_archs
         archs.append("Header")
         versions = []
@@ -93,6 +99,14 @@ class ArtifactDownloader:
         return versions
 
     def _find_download_extract_package(self, repo, library, version):
+        """
+        Find, download and extract a package
+        :param repo: The repository, for example siatd-generic-local
+        :param library: The name of the library, for example PA.JtagProgrammer
+        :param version: The version of the library, for example 17.0.0
+        :returns: Relative directory to where the package is extracted
+        :raises ValueError: When the package could not be found
+        """
         archs = self.config.current_archs
         archs.append("Header")
         found = False
@@ -121,6 +135,7 @@ class ArtifactDownloader:
         return extract_dir
 
     def _format_level(self, level):
+        """ Return characters based on the level for tree view """
         s = "├"
         if level > 0:
             s = "|"
