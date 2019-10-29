@@ -136,15 +136,15 @@ class ArtifactDownloader:
 
     def _format_level(self, level):
         """ Return characters based on the level for tree view """
-        s = "├"
+        s = "+"
         if level > 0:
             s = "|"
         for x in range(level):
             s  += "   "
         if level > 0:
-            s += "└─"
+            s += "+-"
         else:
-            s += "──"
+            s += "--"
         return s
 
 
