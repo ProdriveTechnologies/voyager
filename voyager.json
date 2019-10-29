@@ -5,7 +5,18 @@
     {
       "repo": "siatd-generic-local",
       "library": "Interfaces/Standard",
-      "version": "1.0.0"
+      "version": "*"
+    },
+    {
+      "repo": "siatd-generic-local",
+      "library": "test/MyCoolLib",
+      "version": "1.0",
+      "options": ["Opt1"]
+    },
+    {
+      "repo": "siatd-generic-local",
+      "library": "External/fmt",
+      "version": "6.*"
     }
   ],
   "projects": ["Implementation", "Qualification"]
