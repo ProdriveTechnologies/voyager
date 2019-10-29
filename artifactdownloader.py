@@ -63,7 +63,7 @@ class ArtifactDownloader:
                 options = lib['options']
 
             # Pass along absolute path for the package so there are no problems with subdirectory projects
-            pack = Package(lib['library'], lib['version'], os.path.abspath(extract_dir) + "/", options)
+            pack = Package(lib['library'], version_to_download, os.path.abspath(extract_dir) + "/", options)
             self.build_info.add_package(pack)
             click.echo(click.style(u'OK', fg='green'))
 
