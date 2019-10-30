@@ -80,7 +80,7 @@ class Package:
     def _parse_package_file(self):
         with open(self.rootpath + "voyager_package.json") as json_file:
             j = json.load(json_file)
-            if j['version'] == 2:
+            if j['version'] >= 2:
                 self._set_members_from_json(j)
 
                 # the options override certain dirs
