@@ -50,11 +50,11 @@ class Package:
 
     @property
     def compile_dependencies(self):
-        deps = []
+        compile_deps = []
         for dep in self.deps:
             if dep['type'] == "compile":
-                deps.append(dep)
-        return deps
+                compile_deps.append(dep)
+        return compile_deps
 
     def _filter_paths(self, paths):
         """This functions converts the internal package paths into full paths from the rootpath"""
