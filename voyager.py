@@ -86,4 +86,9 @@ def init():
 
 if __name__ == "__main__":
     print(f"Voyager version {VERSION}")
-    cli()
+    try:
+        cli()
+    except ValueError as v:
+        click.echo(f"Error during execution of voyager: {v}", err=True)
+        exit(1)
+    
