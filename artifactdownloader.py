@@ -8,6 +8,7 @@ from semver import valid_range, max_satisfying
 
 from buildinfo import Package, BuildInfo
 from configfile import ConfigFile
+from lockfile import LockFileWriter
 
 class ArtifactDownloader:
     _download_dir = 'libs'
@@ -65,6 +66,12 @@ class ArtifactDownloader:
             # Pass along absolute path for the package so there are no problems with subdirectory projects
             pack = Package(lib['library'], version_to_download, os.path.abspath(extract_dir) + "/", options)
             self.build_info.add_package(pack)
+
+            if level == 0:
+                lib['version'] = version_to_download
+                l = LockFileWriter()
+                l.add_dependency(lib)
+
             click.echo(click.style(u'OK', fg='green'))
 
             # This is a recursive function that download dependencies
