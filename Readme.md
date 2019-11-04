@@ -18,6 +18,9 @@ The deploy folder contains scripts to deploy voyager to the different platforms
 
 ## Release notes
 
+### [1.2.0]
+- Add `voyager package` command
+
 ### [1.1.0]
 - Add support for environment variables to override config file
 - Multiple projects with a top level solution can be made
