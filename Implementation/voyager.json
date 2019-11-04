@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "type": "project",
+  "libraries": [
+    {
+      "repo": "siatd-generic-local",
+      "library": "API/PA.VirtualMachine",
+      "version": "2.0.0"
+    }
+  ]
+}

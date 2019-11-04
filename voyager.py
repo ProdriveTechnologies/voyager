@@ -4,7 +4,7 @@ import click
 import time
 import random
 
-VERSION = "1.0.0"
+VERSION = "1.1.0"
 
 from voyagerfile import VoyagerFile
 from generators.visualstudio import VisualStudioGenerator
@@ -39,23 +39,46 @@ def search(query):
 
 @cli.command()
 def install():
+    # First download the global dependencies
     file = VoyagerFile("voyager.json")
     file.parse()
-    # file.print()
     down = ArtifactDownloader(file.libraries)
-    build_info = down.download()
-    gen = VisualStudioGenerator(build_info)
-    c = gen.content
-    # print(c)
-    with open('voyager.props', 'w') as f:
-        f.write(c)
+    down.clear_directory()
+    down.make_directory()
+
+    click.echo(click.style('Top level:', fg='cyan'))
+    build_info_global = down.download()
+
+    for subdir in file.projects:
+        click.echo(click.style(f'{subdir}:', fg='cyan'))
+        subdir_file = VoyagerFile(f"{subdir}/voyager.json")
+        subdir_file.parse()
+        down = ArtifactDownloader(subdir_file.libraries)
+        build_info_subdir = down.download()
+        build_info_subdir.add_build_info(build_info_global)
+        gen = VisualStudioGenerator(build_info_subdir)
+        c = gen.content
+        with open(f"{subdir}/voyager.props", 'w') as f:
+            f.write(c)
+    
+    # When working on a single project file
+    if file.type == "project":
+        gen = VisualStudioGenerator(build_info_global)
+        c = gen.content
+        with open(f"voyager.props", 'w') as f:
+            f.write(c)
+
+    # c = gen.content
+    # # print(c)
+    # with open('voyager.props', 'w') as f:
+    #     f.write(c)
 
 @cli.command()
 def config():
     conf = ConfigFile()
     print("Key: ", conf.api_key)
     print("URL: ", conf.artifactory_url)
-    print("ARCH:", conf.default_arch)
+    print("ARCH:", conf.default_archs)
 
 @cli.command()
 def init():
@@ -63,4 +86,12 @@ def init():
 
 if __name__ == "__main__":
     print(f"Voyager version {VERSION}")
-    cli()
+    try:
+        cli()
+    except ValueError as v:
+        click.echo(f"Error during execution of voyager: {v}", err=True)
+        exit(1)
+    except Exception as e:
+        click.echo(f"Unexpected Error during execution of voyager: {e}", err=True)
+        exit(2)
+    
