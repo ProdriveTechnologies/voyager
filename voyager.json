@@ -5,13 +5,15 @@
     {
       "repo": "siatd-generic-local",
       "library": "Interfaces/Standard",
-      "version": "*"
+      "version": "*",
+      "dependency_type": "compile"
     },
     {
       "repo": "siatd-generic-local",
       "library": "test/MyCoolLib",
       "version": "1.0",
-      "options": ["Opt1"]
+      "options": ["Opt1"],
+      "dependency_type": "runtime"
     },
     {
       "repo": "siatd-generic-local",

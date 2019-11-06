@@ -3,15 +3,17 @@ from artifactory import ArtifactoryPath
 import click
 import time
 import random
+import json
 
-VERSION = "1.1.0"
+VERSION = "1.2.0"
 
 from voyagerfile import VoyagerFile
 from generators.visualstudio import VisualStudioGenerator
 from buildinfo import BuildInfo
 from configfile import ConfigFile
 from artifactdownloader import ArtifactDownloader
-
+from lockfile import LockFileWriter, LockFileReader
+from voyagerpackagefile import VoyagerPackageFile
 
 @click.group()
 def cli():
@@ -68,10 +70,22 @@ def install():
         with open(f"voyager.props", 'w') as f:
             f.write(c)
 
-    # c = gen.content
-    # # print(c)
-    # with open('voyager.props', 'w') as f:
-    #     f.write(c)
+    l = LockFileWriter()
+    l.save()
+
+@cli.command()
+def package():
+    l = LockFileReader()
+    l.parse()
+    l.print()
+    
+    p = VoyagerPackageFile()
+    p.parse_template()
+    p.add_dependencies(l.compile_dependencies)
+    p.add_dependencies(l.runtime_dependencies)
+
+    p.save()
+
 
 @cli.command()
 def config():

@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "bin": [],
+  "include": ["Include"],
+  "lib": ["Lib"],
+  "link": ["MyCoolLib.lib"],
+  "definitions": [],
+  "options": [
+    {
+      "key": "Opt1",
+      "include": ["Include", "Include2"]
+    }
+  ],
+  "dependencies": [
+  ]
+}
