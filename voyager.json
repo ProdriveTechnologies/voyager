@@ -6,14 +6,14 @@
       "repo": "siatd-generic-local",
       "library": "Interfaces/Standard",
       "version": "*",
-      "dependency": "compile"
+      "dependency_type": "compile"
     },
     {
       "repo": "siatd-generic-local",
       "library": "test/MyCoolLib",
       "version": "1.0",
       "options": ["Opt1"],
-      "dependency": "runtime"
+      "dependency_type": "runtime"
     },
     {
       "repo": "siatd-generic-local",

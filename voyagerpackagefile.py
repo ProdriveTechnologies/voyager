@@ -16,10 +16,13 @@ class VoyagerPackageFile():
         for d in deps:
             v = semver.valid(d['version'], False)
             if v:
+                # Pin to the major and minor version
                 d['version'] = f"{v.major}.{v.minor}"
             else:
                 raise ValueError(f"The dependency {d['library']} has a non valid version {d['version']} for release")
-            versionarr = d['version']
+            # Rename dependency_type to type for package file
+            d['type'] = d['dependency_type']
+            del d['dependency_type']
             self._dependencies.append(d)
 
     def save(self):

@@ -38,8 +38,8 @@ class LockFileReader():
     def compile_dependencies(self):
         deps = []
         for dep in self.data:
-            if 'dependency' in dep:
-                if dep['dependency'] == 'compile':
+            if 'dependency_type' in dep:
+                if dep['dependency_type'] == 'compile':
                     deps.append(dep)
         return deps
 
@@ -47,7 +47,7 @@ class LockFileReader():
     def runtime_dependencies(self):
         deps = []
         for dep in self.data:
-            if 'dependency' in dep:
-                if dep['dependency'] == 'runtime':
+            if 'dependency_type' in dep:
+                if dep['dependency_type'] == 'runtime':
                     deps.append(dep)
         return deps
