@@ -20,6 +20,7 @@ class Package:
         self.libs = []
         self.filter_empty = True
         self.deps = []
+        self._defines = []
 
         if not self._parse_package_file():
             self._find_link_file()
@@ -47,6 +48,10 @@ class Package:
     @property
     def lib_files(self):
         return self.libs
+
+    @property
+    def defines(self):
+        return self._defines
 
     @property
     def compile_dependencies(self):
@@ -108,7 +113,8 @@ class Package:
             self.libs = j['link']
         if 'dependencies' in j:
             self.deps = j['dependencies']
-        # TODO: Preprocessor definitions
+        if 'definitions' in j:
+            self._defines = j['definitions']
                 
 
 class BuildInfo:
@@ -119,12 +125,15 @@ class BuildInfo:
         self.lib_dirs = []
         self.bin_dirs = []
         self.libs = []
+        self._defines = []
 
     def add_package(self, package:Package):
         self.include_dirs = self._merge_lists_without_duplicates(self.include_dirs, package.include_paths)
         self.lib_dirs = self._merge_lists_without_duplicates(self.lib_dirs, package.lib_paths)
         self.bin_dirs = self._merge_lists_without_duplicates(self.bin_dirs, package.bin_paths)
         self.libs = self._merge_lists_without_duplicates(self.libs, package.lib_files)
+        # Note that this merge is in reverse order, This is the same in Conan
+        self._defines = self._merge_lists_without_duplicates(package.defines, self.defines)
         self._packages[package.name] = package
 
     def add_build_info(self, bi):
@@ -132,6 +141,8 @@ class BuildInfo:
         self.lib_dirs = self._merge_lists_without_duplicates(self.lib_dirs, bi.lib_dirs)
         self.bin_dirs = self._merge_lists_without_duplicates(self.bin_dirs, bi.bin_dirs)
         self.libs = self._merge_lists_without_duplicates(self.libs, bi.libs)
+        # Note that this merge is in reverse order, This is the same in Conan
+        self._defines = self._merge_lists_without_duplicates(bi.defines, self.defines)
         for key, val in bi.packages:
             self._packages[key] = val
 
@@ -162,6 +173,10 @@ class BuildInfo:
     @property
     def lib_files(self):
         return self.libs
+
+    @property
+    def defines(self):
+        return self._defines
 
     def _merge_lists_without_duplicates(self, seq1, seq2):
         return [s for s in seq1 if s not in seq2] + seq2

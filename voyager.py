@@ -5,7 +5,7 @@ import time
 import random
 import json
 
-VERSION = "1.2.0"
+VERSION = "1.3.0"
 
 from voyagerfile import VoyagerFile
 from generators.visualstudio import VisualStudioGenerator
@@ -90,6 +90,7 @@ def package():
 @cli.command()
 def config():
     conf = ConfigFile()
+    print("Location: ", conf.file_path)
     print("Key: ", conf.api_key)
     print("URL: ", conf.artifactory_url)
     print("ARCH:", conf.default_archs)
