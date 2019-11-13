@@ -75,4 +75,7 @@ class ConfigFile(metaclass=SingletonType):
 
     @property
     def file_path(self):
-        return self._config_file
+        if self._use_environ:
+            return "Overridden by environment variables"
+        else:
+            return self._config_file

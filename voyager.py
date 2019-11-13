@@ -90,6 +90,7 @@ def package():
 @cli.command()
 def config():
     conf = ConfigFile()
+    print("Location: ", conf.file_path)
     print("Key: ", conf.api_key)
     print("URL: ", conf.artifactory_url)
     print("ARCH:", conf.default_archs)
