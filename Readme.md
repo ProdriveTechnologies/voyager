@@ -45,6 +45,9 @@ The deploy folder contains scripts to deploy voyager to the different platforms
 
 ## Release notes
 
+### [1.4.0]
+- `voyager package` now expects an input file path and writes the output file in the same folder as the input file
+
 ### [1.3.0]
 - Change environment variable names to the ones provided by the bamboo variables
 - `voyager config` now prints the location of the config file
