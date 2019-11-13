@@ -5,7 +5,7 @@ import time
 import random
 import json
 
-VERSION = "1.2.0"
+VERSION = "1.3.0"
 
 from voyagerfile import VoyagerFile
 from generators.visualstudio import VisualStudioGenerator
