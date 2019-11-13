@@ -23,7 +23,7 @@ class ConfigFile(metaclass=SingletonType):
         self._artifactory_url = ""
         self._default_arch = []
         self._current_arch = []
-        self._use_environ = os.environ.get('voyager_CI')
+        self._use_environ = os.environ.get('bamboo_voyager_CI')
 
     def exists(self) -> bool:
         if self._use_environ:
@@ -33,9 +33,9 @@ class ConfigFile(metaclass=SingletonType):
 
     def parse(self) -> bool:
         if self._use_environ:
-                self._api_key = os.environ.get('voyager_CI_API_KEY').replace("\"", "")
-                self._artifactory_url = os.environ.get('voyager_CI_URL').replace("\"", "")
-                archs = os.environ.get('voyager_CI_ARCH').replace("\"", "")
+                self._api_key = os.environ.get('bamboo_voyager_CI_API_KEY').replace("\"", "")
+                self._artifactory_url = os.environ.get('bamboo_voyager_CI_URL').replace("\"", "")
+                archs = os.environ.get('bamboo_voyager_CI_ARCH').replace("\"", "")
                 self._default_arch = archs.split(";")
                 self._current_arch = self._default_arch
         else:
