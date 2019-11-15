@@ -74,12 +74,13 @@ def install():
     l.save()
 
 @cli.command()
-def package():
+@click.argument('template_filename')
+def package(template_filename):
     l = LockFileReader()
     l.parse()
     l.print()
     
-    p = VoyagerPackageFile()
+    p = VoyagerPackageFile(template_filename)
     p.parse_template()
     p.add_dependencies(l.compile_dependencies)
     p.add_dependencies(l.runtime_dependencies)

@@ -1,15 +1,17 @@
 import json
+from pathlib import Path
 
 import semver
 
 class VoyagerPackageFile():
-    def __init__(self, *args, **kwargs):
+    def __init__(self, template_filename, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self._template_filename = template_filename
         self._dependencies = []
         self._template_contents = None
 
     def parse_template(self):
-        with open('voyager_package.json.template') as json_file:
+        with open(self._template_filename) as json_file:
             self._template_contents = json.load(json_file)
 
     def add_dependencies(self, deps):
@@ -31,6 +33,8 @@ class VoyagerPackageFile():
 
         self._template_contents['dependencies'] += self._dependencies
 
-        with open('voyager_package.json', 'w') as outfile:
+        p = Path(self._template_filename)
+        f = p.parent / 'voyager_package.json'
+        with open(f, 'w') as outfile:
             json.dump(self._template_contents, outfile, indent=2)
     
