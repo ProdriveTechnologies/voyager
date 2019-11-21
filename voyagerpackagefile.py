@@ -16,7 +16,6 @@ class VoyagerPackageFile():
 
     def add_dependencies(self, deps):
         for d in deps:
-            print(d['version'])
             v = semver.clean(d['version'], False)
             if v:
                 # Pin to the major and minor version
