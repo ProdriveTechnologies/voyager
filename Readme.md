@@ -45,6 +45,9 @@ The deploy folder contains scripts to deploy voyager to the different platforms
 
 ## Release notes
 
+### [1.4.1]
+- `voyager package` now accepts non-semver versions as dependencies (with a warning)
+
 ### [1.4.0]
 - `voyager package` now expects an input file path and writes the output file in the same folder as the input file
 
