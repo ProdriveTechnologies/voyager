@@ -4,6 +4,7 @@ import click
 import time
 import random
 import json
+from pathlib import Path
 
 VERSION = "1.4.1"
 
@@ -72,6 +73,10 @@ def install():
 
     l = LockFileWriter()
     l.save()
+
+    # Find solution file and touch it to force reload in Visual Studio
+    for p in Path.cwd().glob('*.sln'):
+        p.touch()
 
 @cli.command()
 @click.argument('template_filename')
