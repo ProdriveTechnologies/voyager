@@ -63,6 +63,9 @@ def install():
         c = gen.content
         with open(f"{subdir}/voyager.props", 'w') as f:
             f.write(c)
+        # Find project file and touch it to force reload in Visual Studio
+        for p in (Path.cwd() / subdir).glob('*.vcxproj'):
+            p.touch()
     
     # When working on a single project file
     if file.type == "project":
@@ -70,13 +73,12 @@ def install():
         c = gen.content
         with open(f"voyager.props", 'w') as f:
             f.write(c)
+        # Find project file and touch it to force reload in Visual Studio
+        for p in (Path.cwd() / subdir).glob('*.vcxproj'):
+            p.touch()
 
     l = LockFileWriter()
     l.save()
-
-    # Find solution file and touch it to force reload in Visual Studio
-    for p in Path.cwd().glob('*.sln'):
-        p.touch()
 
 @cli.command()
 @click.argument('template_filename')
