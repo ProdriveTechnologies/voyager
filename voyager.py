@@ -74,7 +74,7 @@ def install():
         with open(f"voyager.props", 'w') as f:
             f.write(c)
         # Find project file and touch it to force reload in Visual Studio
-        for p in (Path.cwd() / subdir).glob('*.vcxproj'):
+        for p in Path.cwd().glob('*.vcxproj'):
             p.touch()
 
     l = LockFileWriter()
