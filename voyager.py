@@ -4,8 +4,9 @@ import click
 import time
 import random
 import json
+from pathlib import Path
 
-VERSION = "1.4.1"
+VERSION = "1.4.2"
 
 from voyagerfile import VoyagerFile
 from generators.visualstudio import VisualStudioGenerator
@@ -62,6 +63,9 @@ def install():
         c = gen.content
         with open(f"{subdir}/voyager.props", 'w') as f:
             f.write(c)
+        # Find project file and touch it to force reload in Visual Studio
+        for p in (Path.cwd() / subdir).glob('*.vcxproj'):
+            p.touch()
     
     # When working on a single project file
     if file.type == "project":
@@ -69,6 +73,9 @@ def install():
         c = gen.content
         with open(f"voyager.props", 'w') as f:
             f.write(c)
+        # Find project file and touch it to force reload in Visual Studio
+        for p in Path.cwd().glob('*.vcxproj'):
+            p.touch()
 
     l = LockFileWriter()
     l.save()

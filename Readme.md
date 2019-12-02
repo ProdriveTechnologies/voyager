@@ -45,6 +45,9 @@ The deploy folder contains scripts to deploy voyager to the different platforms
 
 ## Release notes
 
+### [1.4.2]
+- `voyager install` now touches the project files to force a Visual Studio reload
+
 ### [1.4.1]
 - `voyager package` now accepts non-semver versions as dependencies (with a warning)
 
