@@ -1,5 +1,6 @@
 ---
 title: "Voyager"
+bookCollapseSection: true
 ---
 
 ## Introduction
