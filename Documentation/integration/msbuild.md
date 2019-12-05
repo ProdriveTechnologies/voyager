@@ -1,6 +1,6 @@
 ---
 title: "MSBuild (Visual Studio)"
-weight: 11
+weight: 10
 ---
 
 # MSBuild

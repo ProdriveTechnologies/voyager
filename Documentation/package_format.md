@@ -1,6 +1,6 @@
 ---
 title: "Package format"
-weight: 3
+weight: 40
 ---
 # Package format
 This chapter explains the package format of a voyager package

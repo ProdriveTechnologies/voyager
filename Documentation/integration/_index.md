@@ -1,6 +1,6 @@
 ---
 title: "Integration"
-weight: 10
+weight: 60
 bookCollapseSection: true
 ---
 

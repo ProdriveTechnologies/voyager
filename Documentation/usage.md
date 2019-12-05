@@ -1,6 +1,6 @@
 ---
 title: "Usage"
-weight: 2
+weight: 20
 ---
 # Usage
 This chapter explains how to use voyager for the installation of packages

@@ -1,6 +1,6 @@
 ---
 title: "CMake"
-weight: 12
+weight: 1
 ---
 
 # CMake
