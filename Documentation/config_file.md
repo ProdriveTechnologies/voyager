@@ -9,10 +9,11 @@ This is done through a config file. To find the file location and contents run `
 
 ## Location
 The config file is located in the home folder
-{{< tabs "uniqueid" >}}
-{{< tab "Windows" >}}`%home%\.voyager\config.json`{{< /tab >}}
-{{< tab "Linux" >}}`$HOME/.voyager/config.json`{{< /tab >}}
-{{< /tabs >}}
+
+|Platform|Location|
+|--------|--------|
+|Windows |`%home%\.voyager\config.json`|
+|Linux   |`$HOME/.voyager/config.json`|
 
 ## Format
 ```json
