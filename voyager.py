@@ -10,6 +10,7 @@ VERSION = "1.4.2"
 
 from voyagerfile import VoyagerFile
 from generators.visualstudio import VisualStudioGenerator
+from generators.cmake import CMakeGenerator, CMakeProjectGenerator
 from buildinfo import BuildInfo
 from configfile import ConfigFile
 from artifactdownloader import ArtifactDownloader
@@ -53,6 +54,9 @@ def install():
     click.echo(click.style('Top level:', fg='cyan'))
     build_info_global = down.download()
 
+    build_info_combined = BuildInfo()
+    build_info_combined.add_build_info(build_info_global)
+
     for _, package in build_info_global.packages:
         CMakePackageFile(package).save()
 
@@ -62,6 +66,7 @@ def install():
         subdir_file.parse()
         down = ArtifactDownloader(subdir_file.libraries)
         build_info_subdir = down.download()
+        build_info_combined.add_build_info(build_info_subdir)
         for _, package in build_info_subdir.packages:
             CMakePackageFile(package).save()
         build_info_subdir.add_build_info(build_info_global)
@@ -69,6 +74,9 @@ def install():
         c = gen.content
         with open(f"{subdir}/voyager.props", 'w') as f:
             f.write(c)
+        gen_cmake = CMakeProjectGenerator(build_info_subdir)
+        with open(f"{subdir}/voyager.cmake", 'w') as f:
+            f.write(gen_cmake.content)
         # Find project file and touch it to force reload in Visual Studio
         for p in (Path.cwd() / subdir).glob('*.vcxproj'):
             p.touch()
@@ -79,9 +87,16 @@ def install():
         c = gen.content
         with open(f"voyager.props", 'w') as f:
             f.write(c)
+        gen_cmake = CMakeProjectGenerator(build_info_subdir)
+        with open(f"{subdir}/voyager.cmake", 'w') as f:
+            f.write(gen_cmake.content)
         # Find project file and touch it to force reload in Visual Studio
         for p in Path.cwd().glob('*.vcxproj'):
             p.touch()
+
+    gen_cmake_solution = CMakeGenerator(build_info_combined)
+    with open('voyager.cmake', 'w') as f:
+        f.write(gen_cmake_solution.content)
 
     l = LockFileWriter()
     l.save()

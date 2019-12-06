@@ -128,3 +128,4 @@ libs/
 voyager.props
 artifactory_spec.json
 voyager_package.json
+voyager.cmake
