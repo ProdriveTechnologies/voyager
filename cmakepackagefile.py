@@ -16,6 +16,10 @@ target_include_directories({package_name} INTERFACE
 target_link_libraries({package_name} INTERFACE
   {libs}
 )
+
+list(APPEND CMAKE_PROGRAM_PATH
+  {bins}
+)
 '''
 
         package_name = '{}-{}'.format(self.package.safe_name, self.package.version)
@@ -25,11 +29,15 @@ target_link_libraries({package_name} INTERFACE
         libs = '\n  '.join(
             ['"${{CMAKE_CURRENT_SOURCE_DIR}}/{}"'.format(lib) for lib in self.package.libs]
         )
+        bins = '\n  '.join(
+            ['"${{CMAKE_CURRENT_SOURCE_DIR}}/{}"'.format(dir) for dir in self.package.bin_dirs]
+        )
 
         text = template.format(
             package_name=package_name,
             include_dirs=include_dirs,
-            libs=libs
+            libs=libs,
+            bins=bins
         )
 
         with open(self.path, 'w') as cmake:
