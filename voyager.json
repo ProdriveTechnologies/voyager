@@ -17,7 +17,7 @@
     },
     {
       "repo": "siatd-generic-local",
-      "library": "External/fmt",
+      "library": "ThirdParty/fmt",
       "version": "6.*"
     }
   ],
