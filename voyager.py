@@ -15,6 +15,7 @@ from configfile import ConfigFile
 from artifactdownloader import ArtifactDownloader
 from lockfile import LockFileWriter, LockFileReader
 from voyagerpackagefile import VoyagerPackageFile
+from cmakepackagefile import CMakePackageFile
 
 @click.group()
 def cli():
@@ -52,12 +53,17 @@ def install():
     click.echo(click.style('Top level:', fg='cyan'))
     build_info_global = down.download()
 
+    for _, package in build_info_global.packages:
+        CMakePackageFile(package).save()
+
     for subdir in file.projects:
         click.echo(click.style(f'{subdir}:', fg='cyan'))
         subdir_file = VoyagerFile(f"{subdir}/voyager.json")
         subdir_file.parse()
         down = ArtifactDownloader(subdir_file.libraries)
         build_info_subdir = down.download()
+        for _, package in build_info_subdir.packages:
+            CMakePackageFile(package).save()
         build_info_subdir.add_build_info(build_info_global)
         gen = VisualStudioGenerator(build_info_subdir)
         c = gen.content
