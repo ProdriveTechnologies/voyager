@@ -42,6 +42,18 @@ def search(query):
     for p in path.glob(query):
         print(p)
 
+def generate_project(subdir: str, build_info: BuildInfo):
+    """Generate dependency files for each project"""
+    gen = VisualStudioGenerator(build_info)
+    with open(f"./{subdir}/voyager.props", 'w') as f:
+        f.write(gen.content)
+    gen = CMakeProjectGenerator(build_info)
+    with open(f"./{subdir}/voyager.cmake", 'w') as f:
+        f.write(gen.content)
+    # Find project file and touch it to force reload in Visual Studio
+    for p in Path.cwd().glob('*.vcxproj'):
+        p.touch()
+
 @cli.command()
 def install():
     # First download the global dependencies
@@ -70,29 +82,11 @@ def install():
         for _, package in build_info_subdir.packages:
             CMakePackageFile(package).save()
         build_info_subdir.add_build_info(build_info_global)
-        gen = VisualStudioGenerator(build_info_subdir)
-        c = gen.content
-        with open(f"{subdir}/voyager.props", 'w') as f:
-            f.write(c)
-        gen_cmake = CMakeProjectGenerator(build_info_subdir)
-        with open(f"{subdir}/voyager.cmake", 'w') as f:
-            f.write(gen_cmake.content)
-        # Find project file and touch it to force reload in Visual Studio
-        for p in (Path.cwd() / subdir).glob('*.vcxproj'):
-            p.touch()
+        generate_project(subdir, build_info_subdir)
     
     # When working on a single project file
     if file.type == "project":
-        gen = VisualStudioGenerator(build_info_global)
-        c = gen.content
-        with open(f"voyager.props", 'w') as f:
-            f.write(c)
-        gen_cmake = CMakeProjectGenerator(build_info_subdir)
-        with open(f"{subdir}/voyager.cmake", 'w') as f:
-            f.write(gen_cmake.content)
-        # Find project file and touch it to force reload in Visual Studio
-        for p in Path.cwd().glob('*.vcxproj'):
-            p.touch()
+        generate_project("", build_info_subdir)
 
     gen_cmake_solution = CMakeGenerator(build_info_combined)
     with open('voyager.cmake', 'w') as f:
