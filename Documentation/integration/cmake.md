@@ -12,7 +12,7 @@ load voyager dependencies. The generator requires CMake 3.13 or higher.
 `CMakeLists.txt`:
 ```cmake
 project(PA.BdmProgrammer)
-include(voyager.cmake)
+include(voyager_solution.cmake)
 ```
 
 `Qualification/CMakeLists.txt`:
@@ -35,14 +35,14 @@ version, for example `ThirdParty-fmt-6.0.0`.
 
 ### Solution file
 In the top-level of your project (the "solution" level, in Visual Studio terms)
-a single file `voyager.cmake` is generated. This file adds all voyager packages
-as CMake subdirectories, allowing other projects to refer to the targets
-defined for each package. In your top-level `CMakeLists.txt`, add
+a single file `voyager_solution.cmake` is generated. This file adds all voyager
+packages as CMake subdirectories, allowing other projects to refer to the
+targets defined for each package. In your top-level `CMakeLists.txt`, add
 `include(voyager.cmake)` before any other `add_subdirectory` commands to make
 them available to your subprojects.
 
 ### Project dependency files
-In each of your sub-projects, another file `voyager.cmake` is generated. This
-module defines a function `target_add_voyager(<target>)`, which adds all
-dependencies for that subproject to the specified target. Include
-`voyager.cmake` and call that function on your target, and you're good to go.
+In each of your sub-projects, a file `voyager.cmake` is generated. This module
+defines a function `target_add_voyager(<target>)`, which adds all dependencies
+for that subproject to the specified target. Include `voyager.cmake` and call
+that function on your target, and you're good to go.

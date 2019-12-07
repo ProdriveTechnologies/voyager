@@ -99,7 +99,7 @@ def install():
             cmake_package_file.save()
 
         gen_cmake_solution = CMakeGenerator(build_info_combined)
-        with open('voyager.cmake', 'w') as f:
+        with open('voyager_solution.cmake', 'w') as f:
             f.write(gen_cmake_solution.content)
 
     l = LockFileWriter()
