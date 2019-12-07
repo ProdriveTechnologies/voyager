@@ -5,6 +5,9 @@ weight: 1
 
 # CMake
 
+The CMake generator creates files to include in your own `CMakeLists.txt` to
+load voyager dependencies. The generator requires CMake 3.13 or higher.
+
 ## Usage
 `CMakeLists.txt`:
 ```cmake
