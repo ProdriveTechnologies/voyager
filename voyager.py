@@ -42,13 +42,16 @@ def search(query):
     for p in path.glob(query):
         print(p)
 
-def generate_project(subdir: str, build_info: BuildInfo):
+def generate_project(generators: list, subdir: str, build_info: BuildInfo):
     """Generate dependency files for each project"""
-    generators = [
-        ("voyager.props", VisualStudioGenerator),
-        ("voyager.cmake", CMakeProjectGenerator)
+    supported_generators = [
+        ('msbuild', 'voyager.props', VisualStudioGenerator),
+        ('cmake', 'voyager.cmake', CMakeProjectGenerator)
     ]
-    for filename, generator in generators:
+    for name, filename, generator in supported_generators:
+        name = name.lower()
+        if name not in generators:
+            continue
         gen = generator(build_info)
         with open(f"./{subdir}/{filename}", 'w') as f:
             f.write(gen.content)
@@ -79,11 +82,11 @@ def install():
         build_info_subdir = down.download()
         build_info_combined.add_build_info(build_info_subdir)
         build_info_subdir.add_build_info(build_info_global)
-        generate_project(subdir, build_info_subdir)
+        generate_project(file.generators, subdir, build_info_subdir)
     
     # When working on a single project file
     if file.type == "project":
-        generate_project("", build_info_global)
+        generate_project(file.generators, "", build_info_global)
 
     for _, package in build_info_combined.packages:
         cmake_package_file = CMakePackageFile(package)
