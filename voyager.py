@@ -44,17 +44,22 @@ def search(query):
 
 def generate_project(generators: list, subdir: str, build_info: BuildInfo):
     """Generate dependency files for each project"""
-    supported_generators = [
-        ('msbuild', 'voyager.props', VisualStudioGenerator),
-        ('cmake', 'voyager.cmake', CMakeProjectGenerator)
-    ]
-    for name, filename, generator in supported_generators:
-        name = name.lower()
-        if name not in generators:
-            continue
+
+    supported_generators = {
+        'msbuild': ('voyager.props', VisualStudioGenerator),
+        'cmake': ('voyager.cmake', CMakeProjectGenerator)
+    }
+
+    for name in generators:
+        if not name in supported_generators:
+            raise ValueError(
+                'Unsupported generator "{}". Supported generators are: {}.'.format(
+                name, ", ".join(supported_generators.keys())))
+        filename, generator = supported_generators[name]
         gen = generator(build_info)
         with open(f"./{subdir}/{filename}", 'w') as f:
             f.write(gen.content)
+
     # Find project file and touch it to force reload in Visual Studio
     for p in Path.cwd().glob('*.vcxproj'):
         p.touch()
