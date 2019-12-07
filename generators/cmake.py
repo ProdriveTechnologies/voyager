@@ -1,12 +1,13 @@
 
 from generators.generator import Generator
+from pathlib import Path
 
 class CMakeGenerator(Generator):
-    subdir_template = 'add_subdirectory({rootpath})'
+    subdir_template = 'add_subdirectory("{rootpath}")'
 
     def _format_subdirs(self):
-        paths = [package.rootpath for _, package in self.build_info.packages]
-        lines = [self.subdir_template.format(rootpath=path) for path in paths]
+        paths = [Path(package.rootpath) for _, package in self.build_info.packages]
+        lines = [self.subdir_template.format(rootpath=path.as_posix()) for path in paths]
         return "\n".join(lines)
 
     @property
