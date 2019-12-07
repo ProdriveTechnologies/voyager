@@ -15,8 +15,7 @@ class CMakeGenerator(Generator):
 
 class CMakeProjectGenerator(Generator):
     template = \
-'''
-function(target_add_voyager target)
+'''function(target_add_voyager target)
   {link_libraries}
 endfunction()
 '''

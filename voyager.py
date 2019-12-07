@@ -44,12 +44,14 @@ def search(query):
 
 def generate_project(subdir: str, build_info: BuildInfo):
     """Generate dependency files for each project"""
-    gen = VisualStudioGenerator(build_info)
-    with open(f"./{subdir}/voyager.props", 'w') as f:
-        f.write(gen.content)
-    gen = CMakeProjectGenerator(build_info)
-    with open(f"./{subdir}/voyager.cmake", 'w') as f:
-        f.write(gen.content)
+    generators = [
+        ("voyager.props", VisualStudioGenerator),
+        ("voyager.cmake", CMakeProjectGenerator)
+    ]
+    for filename, generator in generators:
+        gen = generator(build_info)
+        with open(f"./{subdir}/{filename}", 'w') as f:
+            f.write(gen.content)
     # Find project file and touch it to force reload in Visual Studio
     for p in Path.cwd().glob('*.vcxproj'):
         p.touch()
@@ -86,7 +88,7 @@ def install():
     
     # When working on a single project file
     if file.type == "project":
-        generate_project("", build_info_subdir)
+        generate_project("", build_info_global)
 
     gen_cmake_solution = CMakeGenerator(build_info_combined)
     with open('voyager.cmake', 'w') as f:
