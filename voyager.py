@@ -71,9 +71,6 @@ def install():
     build_info_combined = BuildInfo()
     build_info_combined.add_build_info(build_info_global)
 
-    for _, package in build_info_global.packages:
-        CMakePackageFile(package).save()
-
     for subdir in file.projects:
         click.echo(click.style(f'{subdir}:', fg='cyan'))
         subdir_file = VoyagerFile(f"{subdir}/voyager.json")
@@ -81,14 +78,16 @@ def install():
         down = ArtifactDownloader(subdir_file.libraries)
         build_info_subdir = down.download()
         build_info_combined.add_build_info(build_info_subdir)
-        for _, package in build_info_subdir.packages:
-            CMakePackageFile(package).save()
         build_info_subdir.add_build_info(build_info_global)
         generate_project(subdir, build_info_subdir)
     
     # When working on a single project file
     if file.type == "project":
         generate_project("", build_info_global)
+
+    for _, package in build_info_combined.packages:
+        cmake_package_file = CMakePackageFile(package)
+        cmake_package_file.save()
 
     gen_cmake_solution = CMakeGenerator(build_info_combined)
     with open('voyager.cmake', 'w') as f:
