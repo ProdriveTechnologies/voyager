@@ -93,13 +93,14 @@ def install():
     if file.type == "project":
         generate_project(file.generators, "", build_info_global)
 
-    for _, package in build_info_combined.packages:
-        cmake_package_file = CMakePackageFile(package)
-        cmake_package_file.save()
+    if 'cmake' in file.generators:
+        for _, package in build_info_combined.packages:
+            cmake_package_file = CMakePackageFile(package)
+            cmake_package_file.save()
 
-    gen_cmake_solution = CMakeGenerator(build_info_combined)
-    with open('voyager.cmake', 'w') as f:
-        f.write(gen_cmake_solution.content)
+        gen_cmake_solution = CMakeGenerator(build_info_combined)
+        with open('voyager.cmake', 'w') as f:
+            f.write(gen_cmake_solution.content)
 
     l = LockFileWriter()
     l.save()
