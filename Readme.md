@@ -46,6 +46,11 @@ The deploy folder contains scripts to deploy voyager to the different platforms
 
 ## Release notes
 
+### [1.5.0]
+- Add support for CMake to the `voyager install` command.
+- Add a configuration option `generators` to the solution-level voyager file,
+  to choose the desired project file generators.
+
 ### [1.4.2]
 - `voyager install` now touches the project files to force a Visual Studio reload
 
