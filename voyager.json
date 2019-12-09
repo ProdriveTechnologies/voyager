@@ -21,5 +21,6 @@
       "version": "6.*"
     }
   ],
-  "projects": ["Implementation", "Qualification"]
+  "projects": ["Implementation", "Qualification"],
+  "generators": ["msbuild", "cmake"]
 }

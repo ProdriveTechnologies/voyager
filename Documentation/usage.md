@@ -25,16 +25,18 @@ The voyager.json is the file that is placed in the solution and projects folder 
       "dependency_type": "runtime"
     }
   ],
-  "projects": ["Implementation", "Qualification"]
+  "projects": ["Implementation", "Qualification"],
+  "generators": ["msbuild", "cmake"]
 }
 ```
 #### Root elements
-|Element  |Required|Description|
-|---------|--------|-----------|
-|version  |True   |The file format version, currently always 1|
-|type     |True   |The type of the file: `solution` or `project`|
-|libraries|True   |List of packages to install, can be empty array `[]` for no packages|
-|projects |When `type:solution`|List of the subdirectories with voyager.json files where the type is `project`|
+|Element   |Required|Description|
+|----------|--------|-----------|
+|version   |True    |The file format version, currently always 1|
+|type      |True    |The type of the file: `solution` or `project`|
+|libraries |True    |List of packages to install, can be empty array `[]` for no packages|
+|projects  |When `type:solution`|List of the subdirectories with voyager.json files where the type is `project`|
+|generators|False   |At solution level: Which build systems to generate files for. Defaults to `["msbuild"]`.|
 
 #### Libraries elements
 |Element         |Required|Description|
