@@ -22,5 +22,5 @@
     }
   ],
   "projects": ["Implementation", "Qualification"],
-  "generators": ["msbuild", "cmake"]
+  "generators": ["msbuild", "cmake", "headercheck"]
 }
