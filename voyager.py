@@ -6,11 +6,12 @@ import random
 import json
 from pathlib import Path
 
-VERSION = "1.5.0"
+VERSION = "1.6.0"
 
 from voyagerfile import VoyagerFile
 from generators.visualstudio import VisualStudioGenerator
 from generators.cmake import CMakeGenerator, CMakeProjectGenerator
+from generators.headercheck import HeaderCheckGenerator
 from buildinfo import BuildInfo
 from configfile import ConfigFile
 from artifactdownloader import ArtifactDownloader
@@ -47,7 +48,8 @@ def generate_project(generators: list, subdir: str, build_info: BuildInfo):
 
     supported_generators = {
         'msbuild': ('voyager.props', VisualStudioGenerator),
-        'cmake': ('voyager.cmake', CMakeProjectGenerator)
+        'cmake': ('voyager.cmake', CMakeProjectGenerator),
+        'headercheck': ('voyager.includes', HeaderCheckGenerator)
     }
 
     for name in generators:
