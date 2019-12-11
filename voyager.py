@@ -69,13 +69,13 @@ def generate_project(generators: list, subdir: str, build_info: BuildInfo):
 @cli.command()
 def install():
     # First download the global dependencies
+    click.echo(click.style('Top level:', fg='cyan'))
     file = VoyagerFile("voyager.json")
     file.parse()
     down = ArtifactDownloader(file.libraries)
     down.clear_directory()
     down.make_directory()
 
-    click.echo(click.style('Top level:', fg='cyan'))
     build_info_global = down.download()
 
     build_info_combined = BuildInfo()
