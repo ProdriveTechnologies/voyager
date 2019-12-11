@@ -127,7 +127,6 @@ dmypy.json
 libs/
 voyager.props
 artifactory_spec.json
-voyager_package.json
 voyager.cmake
 voyager_solution.cmake
 voyager.includes
