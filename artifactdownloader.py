@@ -135,6 +135,10 @@ class ArtifactDownloader:
 
         extract_dir = f"{self._download_dir}/{package_dir}/"
         
+        if 'deprecated' in path.properties:
+            message = path.properties['deprecated']
+            click.echo(click.style(f'DEPRECATED: {message} ', fg='yellow'), nl=False)
+
         with path.open() as fd:
             tar = tarfile.open(fileobj=fd)
             tar.extractall(extract_dir)
