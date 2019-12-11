@@ -29,7 +29,7 @@ target_compile_definitions({package_name} INTERFACE
 list(APPEND CMAKE_PROGRAM_PATH
   {bins}
 )
-set(CMAKE_PROGRAM_PATH ${CMAKE_PROGRAM_PATH} PARENT_SCOPE)
+set(CMAKE_PROGRAM_PATH ${{CMAKE_PROGRAM_PATH}} PARENT_SCOPE)
 '''
 
         package_name = '{}-{}'.format(self.package.safe_name, self.package.version)
