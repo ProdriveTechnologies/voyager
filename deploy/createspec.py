@@ -16,7 +16,8 @@ if __name__ == "__main__":
         "files": [
             {
                 "pattern": "nop.txt",
-                "target": args.location
+                "target": args.location,
+                "props": "installer.enable;"
             }
         ]
     }
