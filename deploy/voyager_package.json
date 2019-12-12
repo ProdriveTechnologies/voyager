@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "bin": ["Bin"],
+  "include": [],
+  "lib": [],
+  "link": [],
+  "definitions": [],
+  "options": [],
+  "dependencies": []
+}
