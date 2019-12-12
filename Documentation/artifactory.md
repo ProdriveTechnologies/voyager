@@ -32,3 +32,11 @@ The following architectures are known
 |**Linux**||
 |ARM.GCC.481|Arm GCC 4.8.1 for Ets-Prg (Config 0)|
 |go.linux.amd64|Golang 64 bit|
+
+## Properties
+It is possible to add properties to an Artifact, these can be used to change the behavior of Voyager.
+The following properties are supported:
+
+|Name      |Description                                               |Value                                |
+|----------|----------------------------------------------------------|-------------------------------------|
+|deprecated|Indicate that the package is no longer recommended for use|Warning message to display in Voyager|
