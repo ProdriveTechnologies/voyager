@@ -50,6 +50,9 @@ The deploy folder contains scripts to deploy voyager to the different platforms
 - Add support for CMake to the `voyager install` command.
 - Add a configuration option `generators` to the solution-level voyager file,
   to choose the desired project file generators.
+- Add generator for -I parameters for header checks
+- Add deprecation warnings through Artifactory properties
+- Fix the exception when a branch name was available in Artifactory but the user used a semver
 
 ### [1.4.2]
 - `voyager install` now touches the project files to force a Visual Studio reload
