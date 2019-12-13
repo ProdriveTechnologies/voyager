@@ -46,6 +46,10 @@ The deploy folder contains scripts to deploy voyager to the different platforms
 
 ## Release notes
 
+### [1.6.0]
+- Add support for linker_flags
+- Fix bug for package names without a folder 
+
 ### [1.5.0]
 - Add support for CMake to the `voyager install` command.
 - Add a configuration option `generators` to the solution-level voyager file,
