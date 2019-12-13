@@ -49,6 +49,7 @@ The deploy folder contains scripts to deploy voyager to the different platforms
 ### [1.6.0]
 - Add support for linker_flags
 - Fix bug for package names without a folder 
+- Change the download folder from `libs` to `.voyager`
 
 ### [1.5.0]
 - Add support for CMake to the `voyager install` command.
