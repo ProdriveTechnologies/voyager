@@ -49,7 +49,8 @@ Packages are compressed using tar/gz, the extension is .tgz. To compress a packa
         "options": [],
         "type": "compile"
       }
-    ]
+    ],
+    "linker_flags": ["/DEF:${package_abs_path}Lib\\PtfClient.def"]
 }
 ```
 #### Root elements
@@ -64,6 +65,7 @@ Packages are compressed using tar/gz, the extension is .tgz. To compress a packa
 |definitions |True*   |Preprocessor definitions to set|
 |options     |True*   |List of options that override other elements|
 |dependencies|True*   |List of dependencies|
+|linker_flags|False   |Additional linker flags, has support for template substitution|
 \* Element is required but can be an empty array `[]` when not needed
 {{< /expand >}}
 
@@ -96,3 +98,11 @@ Example use cases for options include:
 
 * Adding an extra include path for a 'secret' header (PA.Pig.Extended.h)
 * Modifying the link element to link to a static version of the library
+
+### Template substitutions
+Some fields have support for template substitutions, these can be used if an absolute path is needed in a specific command.
+Available substitutions:
+
+|Key                  |Substitution|
+|---------------------|------------|
+|`${package_abs_path}`|The full absolute path of the package folder ending with a /|
