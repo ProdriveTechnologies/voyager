@@ -1,7 +1,7 @@
 import json
 from Singleton import SingletonType
 
-LOCK_FILE_PATH = "libs/voyager.lock"
+LOCK_FILE_PATH = ".voyager/voyager.lock"
 
 class LockFileWriter(metaclass=SingletonType):
     def __init__(self, *args, **kwargs):

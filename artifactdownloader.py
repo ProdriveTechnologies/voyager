@@ -11,7 +11,7 @@ from configfile import ConfigFile
 from lockfile import LockFileWriter
 
 class ArtifactDownloader:
-    _download_dir = 'libs'
+    _download_dir = '.voyager'
     def __init__(self, libraries):
         self.libraries = libraries
         self.config = ConfigFile()
