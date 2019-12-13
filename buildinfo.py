@@ -1,5 +1,6 @@
 import os
 import json
+import string
 from collections import OrderedDict
 from pathlib import Path
 
@@ -21,6 +22,7 @@ class Package:
         self.filter_empty = True
         self.deps = []
         self._defines = []
+        self._linker_flags = []
 
         if not self._parse_package_file():
             self._find_link_file()
@@ -52,6 +54,10 @@ class Package:
     @property
     def defines(self):
         return self._defines
+
+    @property
+    def linker_flags(self):
+        return self._linker_flags
 
     @property
     def compile_dependencies(self):
@@ -115,7 +121,17 @@ class Package:
             self.deps = j['dependencies']
         if 'definitions' in j:
             self._defines = j['definitions']
-                
+        if 'linker_flags' in j:
+            self._linker_flags = self._template_substitution(j['linker_flags'])
+
+    def _template_substitution(self, template: list):
+        flags = []
+        for i in template:
+            s = string.Template(i).safe_substitute(
+                package_abs_path = self.rootpath
+            )
+            flags.append(s)
+        return flags
 
 class BuildInfo:
     """Represents the build info. Contains multiple Packages"""
@@ -126,12 +142,14 @@ class BuildInfo:
         self.bin_dirs = []
         self.libs = []
         self._defines = []
+        self._linker_flags = []
 
     def add_package(self, package:Package):
         self.include_dirs = self._merge_lists_without_duplicates(self.include_dirs, package.include_paths)
         self.lib_dirs = self._merge_lists_without_duplicates(self.lib_dirs, package.lib_paths)
         self.bin_dirs = self._merge_lists_without_duplicates(self.bin_dirs, package.bin_paths)
         self.libs = self._merge_lists_without_duplicates(self.libs, package.lib_files)
+        self._linker_flags = self._merge_lists_without_duplicates(self.linker_flags, package.linker_flags)
         # Note that this merge is in reverse order, This is the same in Conan
         self._defines = self._merge_lists_without_duplicates(package.defines, self.defines)
         self._packages[package.name] = package
@@ -141,6 +159,7 @@ class BuildInfo:
         self.lib_dirs = self._merge_lists_without_duplicates(self.lib_dirs, bi.lib_dirs)
         self.bin_dirs = self._merge_lists_without_duplicates(self.bin_dirs, bi.bin_dirs)
         self.libs = self._merge_lists_without_duplicates(self.libs, bi.libs)
+        self._linker_flags = self._merge_lists_without_duplicates(self.linker_flags, bi.linker_flags)
         # Note that this merge is in reverse order, This is the same in Conan
         self._defines = self._merge_lists_without_duplicates(bi.defines, self.defines)
         for key, val in bi.packages:
@@ -177,6 +196,10 @@ class BuildInfo:
     @property
     def defines(self):
         return self._defines
+    
+    @property
+    def linker_flags(self):
+        return self._linker_flags
 
     def _merge_lists_without_duplicates(self, seq1, seq2):
         return [s for s in seq1 if s not in seq2] + seq2

@@ -71,7 +71,7 @@ class VisualStudioGenerator(Generator):
             'libs': "".join('%s;' % lib for lib in self.build_info.libs),
             'definitions': "".join("%s;" % d for d in self.build_info.defines),
             'compiler_flags': "",
-            'linker_flags': "",
+            'linker_flags': " ".join(self.build_info.linker_flags),
             'exe_flags': ""
         }
         formatted_template = self.properties_template.format(**fields)

@@ -100,9 +100,9 @@ class ArtifactDownloader:
         url = f"{self.config.artifactory_url}/{package_dir}"
         path = ArtifactoryPath(url, apikey=self.config.api_key)
         for p in path.glob(f"*/*"):
-            if p.parts[4] in archs:
-                if self._check_if_valid_semver(p.parts[3]):
-                    versions.append(p.parts[3])
+            if p.parts[-1] in archs:
+                if self._check_if_valid_semver(p.parts[-2]):
+                    versions.append(p.parts[-2])
 
         return versions
 
