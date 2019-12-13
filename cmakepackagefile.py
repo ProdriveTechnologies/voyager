@@ -26,6 +26,10 @@ target_compile_definitions({package_name} INTERFACE
   {defines}
 )
 
+target_link_options({package_name} INTERFACE
+  {linker_flags}
+)
+
 list(APPEND CMAKE_PROGRAM_PATH
   {bins}
 )
@@ -46,6 +50,9 @@ set(CMAKE_PROGRAM_PATH ${{CMAKE_PROGRAM_PATH}} PARENT_SCOPE)
         bins = '\n  '.join(
             ['"${{CMAKE_CURRENT_SOURCE_DIR}}/{}"'.format(dir) for dir in self.package.bin_dirs]
         )
+        linker_flags = '\n  '.join(
+            ['{}'.format(flag) for flag in self.package.linker_flags]
+        )
 
         text = template.format(
             package_name=package_name,
@@ -53,7 +60,8 @@ set(CMAKE_PROGRAM_PATH ${{CMAKE_PROGRAM_PATH}} PARENT_SCOPE)
             lib_dirs=lib_dirs,
             libs=libs,
             defines=defines,
-            bins=bins
+            bins=bins,
+            linker_flags=linker_flags
         )
 
         with open(self.path, 'w') as cmake:
