@@ -51,7 +51,7 @@ set(CMAKE_PROGRAM_PATH ${{CMAKE_PROGRAM_PATH}} PARENT_SCOPE)
             ['"${{CMAKE_CURRENT_SOURCE_DIR}}/{}"'.format(dir) for dir in self.package.bin_dirs]
         )
         linker_flags = '\n  '.join(
-            ['{}'.format(flag) for flag in self.package.linker_flags]
+            ['[=[{}]=]'.format(flag) for flag in self.package.linker_flags]
         )
 
         text = template.format(
