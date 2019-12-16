@@ -9,6 +9,15 @@ An installer should be made to make this process easier
 {{< /hint >}}
 
 ## Windows
+
+### Installer
+
+1. Download the latest version of the installer from [artifactory](https://artifactory.prodrive.nl/artifactory/siatd-generic-local/Tools/Installer).
+2. Run the installer and select Voyager in the GUI.
+3. Log off and on again to process changes in the Windows registry.
+
+### Manual installation
+
 1. Download the latest version from [Artifactory](https://artifactory.prodrive.nl/artifactory/webapp/#/artifacts/browse/tree/General/siatd-generic-local/Tools/voyager)
     1. Please note that the onefile versions are meant for CI (They start slower)
 2. Extract the zip file and place contents in `C:\voyager`
