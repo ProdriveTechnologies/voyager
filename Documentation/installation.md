@@ -3,10 +3,6 @@ title: "Installation"
 weight: 10
 ---
 # Installation
-{{< hint info>}}
-**TODO**  
-An installer should be made to make this process easier
-{{< /hint >}}
 
 ## Windows
 
