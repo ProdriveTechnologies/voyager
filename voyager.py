@@ -6,7 +6,7 @@ import random
 import json
 from pathlib import Path
 
-VERSION = "1.6.0"
+VERSION = "1.6.1"
 
 from voyagerfile import VoyagerFile
 from generators.visualstudio import VisualStudioGenerator
@@ -63,7 +63,8 @@ def generate_project(generators: list, subdir: str, build_info: BuildInfo):
             f.write(gen.content)
 
     # Find project file and touch it to force reload in Visual Studio
-    for p in Path.cwd().glob('*.vcxproj'):
+    subdir_path = Path.cwd() / subdir
+    for p in subdir_path.glob(f"*.vcxproj"):
         p.touch()
 
 @cli.command()

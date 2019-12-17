@@ -24,6 +24,9 @@ The deploy folder contains scripts to deploy voyager to the different platforms
 
 ## Release notes
 
+### [1.6.1]
+- Fix bug where project files were not getting touched
+
 ### [1.6.0]
 - Add support for linker_flags
 - Fix bug for package names without a folder 
