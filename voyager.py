@@ -64,7 +64,7 @@ def generate_project(generators: list, subdir: str, build_info: BuildInfo):
 
     # Find project file and touch it to force reload in Visual Studio
     subdir_path = Path.cwd() / subdir
-    for p in subdir_path.glob(f"*.vcxproj"):
+    for p in subdir_path.glob('*.vcxproj'):
         p.touch()
 
 @cli.command()
