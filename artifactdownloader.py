@@ -16,7 +16,7 @@ class ArtifactDownloader:
         self.libraries = libraries
         self.config = ConfigFile()
         self.build_info = BuildInfo()
-        self.build_tools = build_tools
+        self.build_tools = are_build_tools
     
     def clear_directory(self):
         try:
