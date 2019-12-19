@@ -10,11 +10,12 @@ DEFAULT_BIN = "Bin"
 
 class Package:
     """Represents a single voyager package"""
-    def __init__(self, name, version, root_folder, options):
+    def __init__(self, name, version, root_folder, options, build_tool):
         self.name = name
         self._version = version
         self.rootpath = root_folder
         self.options = options
+        self.build_tool = build_tool
         self.include_dirs = [DEFAULT_INCLUDE]
         self.lib_dirs = [DEFAULT_LIB]
         self.bin_dirs = [DEFAULT_BIN]
@@ -109,12 +110,15 @@ class Package:
         return True
 
     def _set_members_from_json(self, j):
+        if 'bin' in j:
+            self.bin_dirs = j['bin']
+        # When package is a build tool don't add any other things then the bin path
+        if self.build_tool:
+            return
         if 'include' in j:
             self.include_dirs = j['include']
         if 'lib' in j:
             self.lib_dirs = j['lib']
-        if 'bin' in j:
-            self.bin_dirs = j['bin']
         if 'link' in j:
             self.libs = j['link']
         if 'dependencies' in j:
