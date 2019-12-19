@@ -12,10 +12,11 @@ from lockfile import LockFileWriter
 
 class ArtifactDownloader:
     _download_dir = '.voyager'
-    def __init__(self, libraries):
+    def __init__(self, libraries: list, are_build_tools: bool):
         self.libraries = libraries
         self.config = ConfigFile()
         self.build_info = BuildInfo()
+        self.build_tools = build_tools
     
     def clear_directory(self):
         try:
@@ -64,7 +65,7 @@ class ArtifactDownloader:
                 options = lib['options']
 
             # Pass along absolute path for the package so there are no problems with subdirectory projects
-            pack = Package(lib['library'], version_to_download, os.path.abspath(extract_dir) + "/", options)
+            pack = Package(lib['library'], version_to_download, os.path.abspath(extract_dir) + "/", options, self.build_tools)
             self.build_info.add_package(pack)
 
             if level == 0:
@@ -92,7 +93,11 @@ class ArtifactDownloader:
         :param library: The name of the library, for example PA.JtagProgrammer
         :returns: A list of strings with versions: ['17.0.0', '18.0.0']
         """
-        archs = self.config.current_archs
+        archs = []
+        if self.build_tools:
+            archs = self.config.build_platform
+        else:
+            archs = self.config.host_platform
         archs.append("Header")
         versions = []
 
@@ -115,7 +120,11 @@ class ArtifactDownloader:
         :returns: Relative directory to where the package is extracted
         :raises ValueError: When the package could not be found
         """
-        archs = self.config.current_archs
+        archs = []
+        if self.build_tools:
+            archs = self.config.build_platform
+        else:
+            archs = self.config.host_platform
         archs.append("Header")
         found = False
         path = None

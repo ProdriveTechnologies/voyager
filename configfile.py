@@ -37,7 +37,7 @@ class ConfigFile(metaclass=SingletonType):
                 self._artifactory_url = os.environ.get('bamboo_voyager_CI_URL').replace("\"", "")
                 archs = os.environ.get('bamboo_voyager_CI_ARCH').replace("\"", "")
                 self._default_arch = archs.split(";")
-                self._current_arch = self._default_arch
+                self._host_platform = self._default_arch
         else:
             with open(self._config_file) as json_file:
                 data = json.load(json_file)
@@ -45,7 +45,7 @@ class ConfigFile(metaclass=SingletonType):
                 self._api_key = data['api_key']
                 self._artifactory_url = data['artifactory_url']
                 self._default_arch = data['default_arch']
-                self._current_arch = data['default_arch']
+                self._host_platform = data['default_arch']
         
         if not self.api_key:
             return False
@@ -66,12 +66,12 @@ class ConfigFile(metaclass=SingletonType):
         return self._artifactory_url
 
     @property
-    def default_archs(self):
+    def build_platform(self):
         return self._default_arch
 
     @property
-    def current_archs(self):
-        return self._current_arch
+    def host_platform(self):
+        return self._host_platform
 
     @property
     def file_path(self):
@@ -79,3 +79,11 @@ class ConfigFile(metaclass=SingletonType):
             return "Overridden by environment variables"
         else:
             return self._config_file
+    
+    def set_host_platform(self, value):
+        self._host_platform = [value]
+
+    def set_host_platform_file(self, file_path):
+        with open(file_path) as json_file:
+            data = json.load(json_file)
+            self._host_platform = data['host']

@@ -6,7 +6,7 @@ import random
 import json
 from pathlib import Path
 
-VERSION = "1.6.1"
+VERSION = "1.7.0"
 
 from voyagerfile import VoyagerFile
 from generators.visualstudio import VisualStudioGenerator
@@ -68,16 +68,33 @@ def generate_project(generators: list, subdir: str, build_info: BuildInfo):
         p.touch()
 
 @cli.command()
-def install():
+@click.option('--host', default=None, help='Host platform for cross compilation')
+@click.option('--host-file', default=None, help='File with host platforms for cross compilation')
+def install(host, host_file):
+    conf = ConfigFile()
+    if host:
+        conf.set_host_platform(host)
+    if host_file:
+        conf.set_host_platform_file(host_file)
+    
+    if host or host_file:
+        print(f"Setting host platform to: {conf.host_platform}")
+
     # First download the global dependencies
     click.echo(click.style('Top level:', fg='cyan'))
     file = VoyagerFile("voyager.json")
     file.parse()
-    down = ArtifactDownloader(file.libraries)
+    down = ArtifactDownloader(file.libraries, False)
     down.clear_directory()
     down.make_directory()
 
     build_info_global = down.download()
+
+    if file.has_build_tools():
+        click.echo(click.style('Top level (build_tools):', fg='cyan'))
+        down = ArtifactDownloader(file.build_tools, True)
+        build_info_tools = down.download()
+        build_info_global.add_build_info(build_info_tools)
 
     build_info_combined = BuildInfo()
     build_info_combined.add_build_info(build_info_global)
@@ -86,8 +103,15 @@ def install():
         click.echo(click.style(f'{subdir}:', fg='cyan'))
         subdir_file = VoyagerFile(f"{subdir}/voyager.json")
         subdir_file.parse()
-        down = ArtifactDownloader(subdir_file.libraries)
+        down = ArtifactDownloader(subdir_file.libraries, False)
         build_info_subdir = down.download()
+
+        if file.has_build_tools():
+            click.echo(click.style(f'{subdir} (build_tools):', fg='cyan'))
+            down = ArtifactDownloader(subdir_file.build_tools, True)
+            build_info_tools = down.download()
+            build_info_subdir.add_build_info(build_info_tools)
+
         build_info_combined.add_build_info(build_info_subdir)
         build_info_subdir.add_build_info(build_info_global)
         generate_project(file.generators, subdir, build_info_subdir)
@@ -129,7 +153,7 @@ def config():
     print("Location: ", conf.file_path)
     print("Key: ", conf.api_key)
     print("URL: ", conf.artifactory_url)
-    print("ARCH:", conf.default_archs)
+    print("ARCH:", conf.build_platform)
 
 @cli.command()
 def init():
