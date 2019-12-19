@@ -90,7 +90,7 @@ def install(host, host_file):
 
     build_info_global = down.download()
 
-    if len(file.build_tools) > 0:
+    if file.has_build_tools():
         click.echo(click.style('Top level (build_tools):', fg='cyan'))
         down = ArtifactDownloader(file.build_tools, True)
         build_info_tools = down.download()
@@ -106,7 +106,7 @@ def install(host, host_file):
         down = ArtifactDownloader(subdir_file.libraries, False)
         build_info_subdir = down.download()
 
-        if len(subdir_file.build_tools) > 0:
+        if file.has_build_tools():
             click.echo(click.style(f'{subdir} (build_tools):', fg='cyan'))
             down = ArtifactDownloader(subdir_file.build_tools, True)
             build_info_tools = down.download()

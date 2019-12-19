@@ -38,6 +38,9 @@ class VoyagerFile():
     def print(self):
         print(self.data)
 
+    def has_build_tools(self):
+        return len(self.build_tools) > 0
+
     @staticmethod
     def generate_empty_file():
         data = {}
