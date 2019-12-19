@@ -16,6 +16,13 @@ The voyager.json is the file that is placed in the solution and projects folder 
 {
   "version": 1,
   "type": "solution",
+  "build_tools": [
+    {
+      "repo": "siatd-generic-local",
+      "library": "Tools/FillTemplate",
+      "version": "3.*"
+    }
+  ],
   "libraries": [
     {
       "repo": "siatd-generic-local",
@@ -30,15 +37,16 @@ The voyager.json is the file that is placed in the solution and projects folder 
 }
 ```
 #### Root elements
-|Element   |Required|Description|
-|----------|--------|-----------|
-|version   |True    |The file format version, currently always 1|
-|type      |True    |The type of the file: `solution` or `project`|
-|libraries |True    |List of packages to install, can be empty array `[]` for no packages|
-|projects  |When `type:solution`|List of the subdirectories with voyager.json files where the type is `project`|
-|generators|False   |At solution level: Which build systems to generate files for. Defaults to `["msbuild"]`.|
+|Element    |Required|Description|
+|-----------|--------|-----------|
+|version    |True    |The file format version, currently always 1|
+|type       |True    |The type of the file: `solution` or `project`|
+|build_tools|False   |List of packages to install that provide build tools.|
+|libraries  |True    |List of packages to install that provide libraries, can be empty array `[]` for no packages|
+|projects   |When `type:solution`|List of the subdirectories with voyager.json files where the type is `project`|
+|generators |False   |At solution level: Which build systems to generate files for. Defaults to `["msbuild"]`.|
 
-#### Libraries elements
+#### Libraries & build tools elements
 |Element         |Required|Description|
 |----------------|--------|-----------|
 |repo            |True    |The Artifactory repository in which the package is located|
@@ -64,4 +72,35 @@ MyProject
    |->Qualification.vcxproj
    |->voyager.json (project)
    |->voyager.props (generated)
+```
+
+## Build and host architectures
+To support cross-compilation, voyager distinguishes between the build
+architecture and host architecture. The build architecture is that of the
+system voyager and the compiler run on. The host architecture is that of the
+system your build products will run on. This distinction is important when
+fetching build tools such as FillTemplate from voyager - they should always be
+packages for the build system.
+
+For the configuration file, this means that the `build_tools`
+dependencies are downloaded for the build architecture, while `libraries`
+dependencies are downloaded for the host architecture.
+
+The build architecture is defined by the `default_arch` field in the
+[configuration file]({{< ref "config_file.md" >}}) or the environment variables
+defined in that section. When not explicitly defined, the host architecture
+defaults to the build architecture. The host architecture can be defined while
+running `voyager install`:
+
+```
+$ voyager install --host ARM.GCC.481
+$ voyager install --host-file Platforms/Windows-Platform.json
+```
+
+Windows-Platform.json:
+```json
+{
+  "version": "1",
+  "host": ["MSVC.142.DBG.32", "MSVC.141.DBG.32", "MSVC.140.DBG.32", "go.windows.amd64", "windows"]
+}
 ```
