@@ -24,6 +24,9 @@ The deploy folder contains scripts to deploy voyager to the different platforms
 
 ## Release notes
 
+### [1.7.1]
+- Fixed bug `NameError: name 'build_tools' is not defined`
+
 ### [1.7.0]
 - Add support for cross compilation through build_tools and selectable host_platform
 - `voyager install` has now two optional commands: `--host` and `--host-file`
