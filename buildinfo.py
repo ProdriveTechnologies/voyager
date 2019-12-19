@@ -10,7 +10,7 @@ DEFAULT_BIN = "Bin"
 
 class Package:
     """Represents a single voyager package"""
-    def __init__(self, name, version, root_folder, options, build_tool):
+    def __init__(self, name, version, root_folder, options, is_build_tool):
         self.name = name
         self._version = version
         self.rootpath = root_folder
