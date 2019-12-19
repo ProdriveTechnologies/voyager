@@ -100,6 +100,7 @@ $ voyager install --host-file Platforms/Windows-Platform.json
 Windows-Platform.json:
 ```json
 {
-  "host_platform": ["MSVC.142.DBG.32", "MSVC.141.DBG.32", "MSVC.140.DBG.32", "go.windows.amd64", "windows"]
+  "version": "1",
+  "host": ["MSVC.142.DBG.32", "MSVC.141.DBG.32", "MSVC.140.DBG.32", "go.windows.amd64", "windows"]
 }
 ```
