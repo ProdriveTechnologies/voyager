@@ -153,7 +153,7 @@ def config():
     print("Location: ", conf.file_path)
     print("Key: ", conf.api_key)
     print("URL: ", conf.artifactory_url)
-    print("ARCH:", conf.default_archs)
+    print("ARCH:", conf.build_platform)
 
 @cli.command()
 def init():
