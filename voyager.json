@@ -1,6 +1,13 @@
 {
   "version": 1,
   "type": "solution",
+  "build_tools": [
+    {
+      "repo": "siatd-generic-local",
+      "library": "Tools/FillTemplate",
+      "version": "3.*"
+    }
+  ],
   "libraries": [
     {
       "repo": "siatd-generic-local",
