@@ -86,4 +86,4 @@ class ConfigFile(metaclass=SingletonType):
     def set_host_platform_file(self, file_path):
         with open(file_path) as json_file:
             data = json.load(json_file)
-            self._host_platform = data['host_platform']
+            self._host_platform = data['host']
