@@ -19,6 +19,7 @@ class VoyagerFile():
         self.solution = True
         self.projects = []
         self.generators = self.data.get('generators', ['msbuild'])
+        self.build_tools = self.data.get('build_tools', [])
 
         if self.version != 1:
             raise ValueError('The version of the voyager JSON file must be 1')
