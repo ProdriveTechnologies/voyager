@@ -12,7 +12,7 @@ from lockfile import LockFileWriter
 
 class ArtifactDownloader:
     _download_dir = '.voyager'
-    def __init__(self, libraries, build_tools):
+    def __init__(self, libraries: list, are_build_tools: bool):
         self.libraries = libraries
         self.config = ConfigFile()
         self.build_info = BuildInfo()
