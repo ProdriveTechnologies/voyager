@@ -24,6 +24,11 @@ The deploy folder contains scripts to deploy voyager to the different platforms
 
 ## Release notes
 
+### [1.7.0]
+- Add support for cross compilation through build_tools and selectable host_platform
+- `voyager install` has now two optional commands: `--host` and `--host-file`
+- Add support for `build_tools` element in voyager.json
+
 ### [1.6.1]
 - Fix bug where project files were not getting touched
 
