@@ -15,7 +15,7 @@ class Package:
         self._version = version
         self.rootpath = root_folder
         self.options = options
-        self.build_tool = build_tool
+        self.build_tool = is_build_tool
         self.include_dirs = [DEFAULT_INCLUDE]
         self.lib_dirs = [DEFAULT_LIB]
         self.bin_dirs = [DEFAULT_BIN]
