@@ -1,4 +1,5 @@
 import unittest
+import warnings
 
 import voyager
 from click.testing import CliRunner
@@ -17,8 +18,12 @@ class TestIntegration(unittest.TestCase):
         """
         Test that voyager install finishes with the last to download library
         """
+        # Disable annoying warnings that screw up the test output
+        warnings.filterwarnings(action="ignore", message="unclosed", 
+                         category=ResourceWarning)
         runner = CliRunner()
         result = runner.invoke(voyager.cli, ['install'])
+        print(result.output)
         assert 'Downloading API/PA.JtagProgrammer @ >=17.0 ... MSVC.140.DBG.32 @ 18.0.0 OK' in result.output
 
 if __name__ == '__main__':
