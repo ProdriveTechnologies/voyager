@@ -30,7 +30,8 @@ The following architectures are known
 |go.windows.amd64|Golang 64 bit|
 |windows|Generic Windows|
 |**Linux**||
-|ARM.GCC.481|Arm GCC 4.8.1 for Ets-Prg (Config 0)|
+|arm-xilinx-eabi-gcc-4.8.1|Arm GCC 4.8.1 for Ets-Prg (Config 0)|
+|x86_64-linux-gnu-gcc-6|GCC 6 for lnxdev|
 |go.linux.amd64|Golang 64 bit|
 
 ## Properties

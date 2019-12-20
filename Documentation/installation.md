@@ -23,6 +23,18 @@ weight: 10
     3. Add a `New` entry with the contents `C:\voyager`
     4. Click `Ok` and again `Ok` to save
 
+## Linux
+For installation in Linux run the following commands in the shell
+
+1. `mkdir -p ~/voyager`
+1. `cd ~/voyager`
+1. ``wget --user=`whoami` --ask-password https://artifactory.prodrive.nl/artifactory/siatd-generic-local/Tools/voyager/1.7.1/linux-onefile/voyager``
+   1. Don't forget to change the 1.7.1 to the latest version number
+1. `chmod +x ./voyager`
+1. `echo "export PATH=\$PATH:$(pwd)" >> ~/.profile`
+1. Follow the steps in the First time configuration chapter
+1. Update the config file with the correct `default_arch` items for Linux
+
 ## First time configuration
 1. Open a command prompt and run `voyager config` to generate the default config file
 2. The output of `voyager config` should indicate where to find the config file
