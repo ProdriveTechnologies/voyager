@@ -1,5 +1,6 @@
 import unittest
 import warnings
+import os
 
 import voyager
 from click.testing import CliRunner
@@ -25,6 +26,7 @@ class TestIntegration(unittest.TestCase):
         result = runner.invoke(voyager.cli, ['install'])
         print(result.output)
         assert 'Downloading API/PA.JtagProgrammer @ >=17.0 ... MSVC.140.DBG.32 @ 18.0.0 OK' in result.output
+        assert os.path.isfile('.voyager/voyager.lock')
 
 if __name__ == '__main__':
     unittest.main()
