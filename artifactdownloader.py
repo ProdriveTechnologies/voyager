@@ -38,6 +38,7 @@ class ArtifactDownloader:
             click.echo(f"{level_str} Downloading {lib['library']} @ {lib['version']} ... ", nl=False)
 
             version_to_download = lib['version']
+            optional = lib.get('optional', False)
 
             # The version can either be semver or something like feature/xyz when referencing an Rxx version
             # When version is semver, parse and check which versions comply
@@ -46,9 +47,13 @@ class ArtifactDownloader:
                 versions = self._find_versions_for_package(lib['repo'], lib['library'])
                 version_to_download = max_satisfying(versions, lib['version'], True)
                 if not version_to_download:
-                    click.echo(click.style(f"ERROR: version {lib['version']} not found.", fg='red'))
-                    click.echo(click.style(f"Available: {versions}", fg='red'))
-                    raise ValueError("Version not found")
+                    if optional:
+                        click.echo(click.style(u'SKIP: Optional', fg='yellow'))
+                        continue
+                    else:
+                        click.echo(click.style(f"ERROR: version {lib['version']} not found.", fg='red'))
+                        click.echo(click.style(f"Available: {versions}", fg='red'))
+                        raise ValueError("Version not found")
 
             # Handle version conflicts
             if lib['library'] in self.build_info.package_names:

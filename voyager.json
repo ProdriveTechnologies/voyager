@@ -31,6 +31,12 @@
       "repo": "ptf-generic-local",
       "library": "ClientLibrary",
       "version": "*"
+    },
+    {
+      "repo": "siatd-generic-local",
+      "library": "Test/nonExistingPackage",
+      "version": "*",
+      "optional": true
     }
   ],
   "projects": ["Implementation", "Qualification"],
