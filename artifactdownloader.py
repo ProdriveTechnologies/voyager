@@ -38,11 +38,11 @@ class ArtifactDownloader:
             click.echo(f"{level_str} Downloading {lib['library']} @ {lib['version']} ... ", nl=False)
 
             version_to_download = lib['version']
-            only_on_architectures = lib.get('only_on_architectures', None)
+            for_archs = lib.get('for_archs', None)
 
             active_archs = self._get_active_archs()
-            if only_on_architectures:
-                if any(a in active_archs for a in only_on_architectures):
+            if for_archs:
+                if any(a in active_archs for a in for_archs):
                     pass
                 else:
                     click.echo(click.style(u'SKIP: arch not active', fg='yellow'))
