@@ -173,4 +173,14 @@ class ArtifactDownloader:
             s += "--"
         return s
 
+    def _get_active_archs(self):
+        archs = []
+        if self.build_tools:
+            archs = self.config.build_platform
+        else:
+            archs = self.config.host_platform
+        archs.append("Header")
+
+        return archs
+
 
