@@ -29,7 +29,8 @@ The voyager.json is the file that is placed in the solution and projects folder 
       "library": "API/PA.Pig",
       "version": "6.0",
       "options": ["extended-header"],
-      "dependency_type": "runtime"
+      "dependency_type": "runtime",
+      "for_archs": ["MSVC.142.DBG.32"]
     }
   ],
   "projects": ["Implementation", "Qualification"],
@@ -54,6 +55,7 @@ The voyager.json is the file that is placed in the solution and projects folder 
 |version         |True    |Version to install, may contain wildcards like `3.*`|
 |options         |False   |Package specific options, more about this in the [Package format]({{< ref "package_format.md#options" >}})|
 |dependency_type |False   |Dependency type for the package `compile` or `runtime`, more about this in voyager_package.json|
+|for_archs       |False   |Only install this package when installing for one of the architectures in this list|
 
 ## Solution vs Project
 The voyager.json has two types: `solution` and `project`. When a solution contains a single project a single voyager.json with the project type is enough.
