@@ -24,6 +24,9 @@ The deploy folder contains scripts to deploy voyager to the different platforms
 
 ## Release notes
 
+### [1.8.0]
+- Add `for_archs` field in voyager.json to install package only for specific archs
+
 ### [1.7.1]
 - Fixed bug `NameError: name 'build_tools' is not defined`
 

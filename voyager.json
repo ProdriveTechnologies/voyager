@@ -30,7 +30,14 @@
     {
       "repo": "ptf-generic-local",
       "library": "ClientLibrary",
-      "version": "*"
+      "version": "*",
+      "for_archs": ["MSVC.142.DBG.32"]
+    },
+    {
+      "repo": "siatd-generic-local",
+      "library": "Test/nonExistingPackage",
+      "version": "*",
+      "for_archs": ["ASDF", "BCDE"]
     }
   ],
   "projects": ["Implementation", "Qualification"],

@@ -38,6 +38,13 @@ class ArtifactDownloader:
             click.echo(f"{level_str} Downloading {lib['library']} @ {lib['version']} ... ", nl=False)
 
             version_to_download = lib['version']
+            for_archs = lib.get('for_archs', None)
+
+            active_archs = self._get_active_archs()
+            if for_archs:
+                if not any(a in active_archs for a in for_archs):
+                    click.echo(click.style(u'SKIP: arch not active', fg='yellow'))
+                    continue
 
             # The version can either be semver or something like feature/xyz when referencing an Rxx version
             # When version is semver, parse and check which versions comply
@@ -93,12 +100,7 @@ class ArtifactDownloader:
         :param library: The name of the library, for example PA.JtagProgrammer
         :returns: A list of strings with versions: ['17.0.0', '18.0.0']
         """
-        archs = []
-        if self.build_tools:
-            archs = self.config.build_platform
-        else:
-            archs = self.config.host_platform
-        archs.append("Header")
+        archs = self._get_active_archs()
         versions = []
 
         package_dir = f"{repo}/{library}/"
@@ -120,12 +122,7 @@ class ArtifactDownloader:
         :returns: Relative directory to where the package is extracted
         :raises ValueError: When the package could not be found
         """
-        archs = []
-        if self.build_tools:
-            archs = self.config.build_platform
-        else:
-            archs = self.config.host_platform
-        archs.append("Header")
+        archs = self._get_active_archs()
         found = False
         path = None
         package_dir = ""
@@ -167,5 +164,15 @@ class ArtifactDownloader:
         else:
             s += "--"
         return s
+
+    def _get_active_archs(self):
+        archs = []
+        if self.build_tools:
+            archs = self.config.build_platform
+        else:
+            archs = self.config.host_platform
+        archs.append("Header")
+
+        return archs
 
 
