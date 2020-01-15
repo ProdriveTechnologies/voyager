@@ -102,12 +102,7 @@ class ArtifactDownloader:
         :param library: The name of the library, for example PA.JtagProgrammer
         :returns: A list of strings with versions: ['17.0.0', '18.0.0']
         """
-        archs = []
-        if self.build_tools:
-            archs = self.config.build_platform
-        else:
-            archs = self.config.host_platform
-        archs.append("Header")
+        archs = self._get_active_archs()
         versions = []
 
         package_dir = f"{repo}/{library}/"
@@ -129,12 +124,7 @@ class ArtifactDownloader:
         :returns: Relative directory to where the package is extracted
         :raises ValueError: When the package could not be found
         """
-        archs = []
-        if self.build_tools:
-            archs = self.config.build_platform
-        else:
-            archs = self.config.host_platform
-        archs.append("Header")
+        archs = self._get_active_archs()
         found = False
         path = None
         package_dir = ""
