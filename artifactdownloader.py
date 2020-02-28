@@ -65,7 +65,7 @@ class ArtifactDownloader:
                 click.echo(click.style(u'SKIP', fg='green'))
                 continue
 
-            extract_dir = self._find_download_extract_package(lib['repo'], lib['library'], version_to_download)
+            extract_dir = self._find_download_extract_package(lib['repo'], lib['library'], version_to_download, lib.get('output_dir', None))
 
             options = []
             if 'options' in lib:
@@ -113,7 +113,7 @@ class ArtifactDownloader:
 
         return versions
 
-    def _find_download_extract_package(self, repo, library, version):
+    def _find_download_extract_package(self, repo, library, version, output_dir):
         """
         Find, download and extract a package
         :param repo: The repository, for example siatd-generic-local
@@ -140,7 +140,10 @@ class ArtifactDownloader:
             click.echo(click.style(u'ERROR: package not found', fg='red'))
             raise ValueError(f"Package {library} @ {version} not found")
 
-        extract_dir = f"{self._download_dir}/{package_dir}/"
+        if output_dir:
+            extract_dir = output_dir
+        else:
+            extract_dir = f"{self._download_dir}/{package_dir}/"
         
         if 'deprecated' in path.properties:
             message = path.properties['deprecated']
