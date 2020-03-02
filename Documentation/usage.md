@@ -26,13 +26,13 @@ The voyager.json is the file that is placed in the solution and projects folder 
       "repo": "siatd-generic-local",
       "library": "Tools/cmake-toolchains",
       "version": "1",
-      "output_dir": ".cmake/toolchains"
+      "output_dir": ".voyager/cmake-toolchains"
     },
     {
       "repo": "siatd-generic-local",
       "library": "Tools/cmake-utils",
       "version": "1",
-      "output_dir": ".cmake/utils"
+      "output_dir": ".voyager/cmake-utils"
     }
   ],
   "libraries": [
