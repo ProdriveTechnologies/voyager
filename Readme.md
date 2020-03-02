@@ -24,6 +24,9 @@ The deploy folder contains scripts to deploy voyager to the different platforms
 
 ## Release notes
 
+### [1.9.0]
+- Add support for output_dir to specify extraction directory per library
+
 ### [1.8.0]
 - Add `for_archs` field in voyager.json to install package only for specific archs
 

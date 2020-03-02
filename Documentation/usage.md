@@ -21,6 +21,18 @@ The voyager.json is the file that is placed in the solution and projects folder 
       "repo": "siatd-generic-local",
       "library": "Tools/FillTemplate",
       "version": "3.*"
+    },
+    {
+      "repo": "siatd-generic-local",
+      "library": "Tools/cmake-toolchains",
+      "version": "1",
+      "output_dir": ".voyager/cmake-toolchains"
+    },
+    {
+      "repo": "siatd-generic-local",
+      "library": "Tools/cmake-utils",
+      "version": "1",
+      "output_dir": ".voyager/cmake-utils"
     }
   ],
   "libraries": [
@@ -56,6 +68,7 @@ The voyager.json is the file that is placed in the solution and projects folder 
 |options         |False   |Package specific options, more about this in the [Package format]({{< ref "package_format.md#options" >}})|
 |dependency_type |False   |Dependency type for the package `compile` or `runtime`, more about this in voyager_package.json|
 |for_archs       |False   |Only install this package when installing for one of the architectures in this list|
+|output_dir      |False   |Override the default output directory for the package. Can be useful if the build system has to make assumptions on the path|
 
 ## Solution vs Project
 The voyager.json has two types: `solution` and `project`. When a solution contains a single project a single voyager.json with the project type is enough.
