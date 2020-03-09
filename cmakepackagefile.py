@@ -22,6 +22,10 @@ target_link_libraries({package_name} INTERFACE
   {libs}
 )
 
+target_sources({package_name} INTERFACE
+  {sources}
+)
+
 target_compile_definitions({package_name} INTERFACE
   {defines}
 )
@@ -46,6 +50,9 @@ set(CMAKE_PROGRAM_PATH ${{CMAKE_PROGRAM_PATH}} PARENT_SCOPE)
         libs = '\n  '.join(
             ['"{}"'.format(lib) for lib in self.package.libs]
         )
+        sources = '\n  '.join(
+            ['"${{CMAKE_CURRENT_SOURCE_DIR}}/{}"'.format(src) for src in self.package.sources]
+        )
         defines = '\n  '.join(self.package.defines)
         bins = '\n  '.join(
             ['"${{CMAKE_CURRENT_SOURCE_DIR}}/{}"'.format(dir) for dir in self.package.bin_dirs]
@@ -59,6 +66,7 @@ set(CMAKE_PROGRAM_PATH ${{CMAKE_PROGRAM_PATH}} PARENT_SCOPE)
             include_dirs=include_dirs,
             lib_dirs=lib_dirs,
             libs=libs,
+            sources=sources,
             defines=defines,
             bins=bins,
             linker_flags=linker_flags
