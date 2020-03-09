@@ -175,6 +175,7 @@ class ArtifactDownloader:
         else:
             archs = self.config.host_platform
         archs.append("Header")
+        archs.append("Source")
 
         return archs
 

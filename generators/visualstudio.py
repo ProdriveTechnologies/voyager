@@ -21,11 +21,15 @@ class VisualStudioGenerator(Generator):
     <VoyagerLibraryDirectories>{lib_dirs}</VoyagerLibraryDirectories>
     <VoyagerBinaryDirectories>{bin_dirs}</VoyagerBinaryDirectories>
     <VoyagerLibraries>{libs}</VoyagerLibraries>
+    <VoyagerSourceFiles>{sources}</VoyagerSourceFiles>
   </PropertyGroup>
   <PropertyGroup{condition}>
     <LocalDebuggerEnvironment>PATH=%PATH%;{bin_dirs}</LocalDebuggerEnvironment>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
+  <ItemGroup>
+    <ClCompile Include="$(VoyagerSourceFiles)" />
+  </ItemGroup>
   <ItemDefinitionGroup{condition}>
     <ClCompile>
       <AdditionalIncludeDirectories>$(VoyagerIncludeDirectories)%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -69,6 +73,7 @@ class VisualStudioGenerator(Generator):
             'include_dirs': "".join("%s;" % p for p in self.build_info.include_paths),
             'lib_dirs': "".join("%s;" % p for p in self.build_info.lib_paths),
             'libs': "".join('%s;' % lib for lib in self.build_info.libs),
+            'sources': "".join("%s;" % src for src in self.build_info.source_files),
             'definitions': "".join("%s;" % d for d in self.build_info.defines),
             'compiler_flags': "",
             'linker_flags': " ".join(self.build_info.linker_flags),
