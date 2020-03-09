@@ -24,6 +24,9 @@ The deploy folder contains scripts to deploy voyager to the different platforms
 
 ## Release notes
 
+### [1.10.0]
+- Add support for source packages.
+
 ### [1.9.0]
 - Add support for output_dir to specify extraction directory per library
 
