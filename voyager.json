@@ -35,6 +35,11 @@
     },
     {
       "repo": "siatd-generic-local",
+      "library": "test/SourcePackage",
+      "version": "1"
+    },
+    {
+      "repo": "siatd-generic-local",
       "library": "Test/nonExistingPackage",
       "version": "*",
       "for_archs": ["ASDF", "BCDE"]

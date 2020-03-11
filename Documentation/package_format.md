@@ -62,6 +62,7 @@ Packages are compressed using tar/gz, the extension is .tgz. To compress a packa
 |include     |True*   |List of folders that contain the header files |
 |lib         |True*   |List of folders that contain the lib files |
 |link        |True*   |List of files to link to, files must be located in one of the `lib` directories|
+|compile     |False   |List of files to compile.|
 |definitions |True*   |Preprocessor definitions to set|
 |options     |True*   |List of options that override other elements|
 |dependencies|True*   |List of dependencies|

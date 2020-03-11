@@ -33,6 +33,9 @@ The following architectures are known
 |arm-xilinx-eabi-gcc-4.8.1|Arm GCC 4.8.1 for Ets-Prg (Config 0)|
 |x86_64-linux-gnu-gcc-6|GCC 6 for lnxdev|
 |go.linux.amd64|Golang 64 bit|
+|**Any platform**||
+|Header|Header-only packages|
+|Source|Source packages|
 
 ## Properties
 It is possible to add properties to an Artifact, these can be used to change the behavior of Voyager.
