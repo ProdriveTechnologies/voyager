@@ -5,7 +5,7 @@ certifi==2019.9.11
 chardet==3.0.4
 Click==7.0
 colorama==0.4.1
-dohq-artifactory==0.5.241
+dohq-artifactory==0.7.330
 future==0.18.0
 idna==2.8
 isort==4.3.21
