@@ -24,6 +24,9 @@ The deploy folder contains scripts to deploy voyager to the different platforms
 
 ## Release notes
 
+### [1.10.1]
+- Added installer
+
 ### [1.10.0]
 - Add support for source packages.
 
