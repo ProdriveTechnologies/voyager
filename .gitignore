@@ -131,3 +131,4 @@ voyager_package.json
 voyager.cmake
 voyager_solution.cmake
 voyager.includes
+setup/voyagerSetup.exe
