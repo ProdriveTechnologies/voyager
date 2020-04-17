@@ -8,28 +8,17 @@ weight: 10
 
 ### Installer
 
-1. Download the latest version of the installer from [artifactory](https://artifactory.prodrive.nl/artifactory/siatd-generic-local/Tools/Installer).
-2. Run the installer and select Voyager in the GUI.
-3. Log off and on again to process changes in the Windows registry.
-
-### Manual installation
-
-1. Download the latest version from [Artifactory](https://artifactory.prodrive.nl/artifactory/webapp/#/artifacts/browse/tree/General/siatd-generic-local/Tools/voyager)
-    1. Please note that the onefile versions are meant for CI (They start slower)
-2. Extract the zip file and place contents in `C:\voyager`
-3. Add `C:\voyager` to the PATH variable
-    1. Go to start and type `Edit environment variables for your account`
-    2. In the User variables section select `Path` and click `Edit...`
-    3. Add a `New` entry with the contents `C:\voyager`
-    4. Click `Ok` and again `Ok` to save
+1. Uninstall previous versions of voyager first
+1. Download the latest version of the installer from [artifactory](https://artifactory.prodrive.nl:443/artifactory/siatd-generic-local/Tools/voyager/latest/win-setup/voyagerSetup.exe).
+2. Run the installer
+3. If this is your first time using voyager, please follow the steps in the `First time configuration` section below
 
 ## Linux
 For installation in Linux run the following commands in the shell
 
 1. `mkdir -p ~/voyager`
 1. `cd ~/voyager`
-1. ``wget --user=`whoami` --ask-password https://artifactory.prodrive.nl/artifactory/siatd-generic-local/Tools/voyager/1.7.1/linux-onefile/voyager``
-   1. Don't forget to change the 1.7.1 to the latest version number
+1. ``wget --user=`whoami` --ask-password https://artifactory.prodrive.nl/artifactory/siatd-generic-local/Tools/voyager/latest/linux-onefile/voyager``
 1. `chmod +x ./voyager`
 1. `echo "export PATH=\$PATH:$(pwd)" >> ~/.profile`
 1. Follow the steps in the First time configuration chapter
