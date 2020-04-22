@@ -29,7 +29,7 @@ def cli():
         conf.create_default()
         click.echo(click.style(u'Default one generated, please fill in you Artifactory API key', fg='red'))
         exit(1)
-    
+
     if not conf.parse():
         click.echo(click.style(f'Problem with parsing the config file {conf.file_path}', fg='red'))
         exit(1)
@@ -76,7 +76,7 @@ def install(host, host_file):
         conf.set_host_platform(host)
     if host_file:
         conf.set_host_platform_file(host_file)
-    
+
     if host or host_file:
         print(f"Setting host platform to: {conf.host_platform}")
 
@@ -88,14 +88,17 @@ def install(host, host_file):
     down.clear_directory()
     down.make_directory()
 
-    build_info_global = down.download()
+    build_info_global = BuildInfo()
+    build_info_global.add_build_info(down.download(build_info_global))
 
     if file.has_build_tools():
         click.echo(click.style('Top level (build_tools):', fg='cyan'))
         down = ArtifactDownloader(file.build_tools, True)
-        build_info_tools = down.download()
+        build_info_tools = down.download(build_info_global)
         build_info_global.add_build_info(build_info_tools)
 
+# Build_info_global holds the toplevel build_info only
+# build_info_combined is everything summed up of top level and all subdirs
     build_info_combined = BuildInfo()
     build_info_combined.add_build_info(build_info_global)
 
@@ -104,18 +107,20 @@ def install(host, host_file):
         subdir_file = VoyagerFile(f"{subdir}/voyager.json")
         subdir_file.parse()
         down = ArtifactDownloader(subdir_file.libraries, False)
-        build_info_subdir = down.download()
+        build_info_subdir = down.download(build_info_combined)
 
         if file.has_build_tools():
             click.echo(click.style(f'{subdir} (build_tools):', fg='cyan'))
             down = ArtifactDownloader(subdir_file.build_tools, True)
-            build_info_tools = down.download()
+            build_info_tools = down.download(build_info_combined)
             build_info_subdir.add_build_info(build_info_tools)
 
+        # Add the subdir to Combined so it is up to date
+        # Add Global to subdir so generate_project includes top level as well
         build_info_combined.add_build_info(build_info_subdir)
         build_info_subdir.add_build_info(build_info_global)
         generate_project(file.generators, subdir, build_info_subdir)
-    
+
     # When working on a single project file
     if file.type == "project":
         generate_project(file.generators, "", build_info_global)
@@ -138,7 +143,7 @@ def package(template_filename):
     l = LockFileReader()
     l.parse()
     l.print()
-    
+
     p = VoyagerPackageFile(template_filename)
     p.parse_template()
     p.add_dependencies(l.compile_dependencies)
@@ -169,4 +174,3 @@ if __name__ == "__main__":
     except Exception as e:
         click.echo(f"Unexpected Error during execution of voyager: {e}", err=True)
         exit(2)
-    

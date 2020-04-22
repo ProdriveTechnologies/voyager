@@ -17,6 +17,12 @@
     },
     {
       "repo": "siatd-generic-local",
+      "library": "Interfaces/Can",
+      "version": "3.0",
+      "dependency_type": "compile"
+    },
+    {
+      "repo": "siatd-generic-local",
       "library": "test/MyCoolLib",
       "version": "1.0",
       "options": ["Opt1"],

@@ -6,6 +6,11 @@
       "repo": "siatd-generic-local",
       "library": "API/PA.JtagProgrammer",
       "version": ">=17.0"
+    },
+    {
+      "repo": "siatd-generic-local",
+      "library": "API/PA.Hal",
+      "version": "3.0"
     }
   ]
 }

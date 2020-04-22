@@ -17,7 +17,7 @@ class ArtifactDownloader:
         self.config = ConfigFile()
         self.build_info = BuildInfo()
         self.build_tools = are_build_tools
-    
+
     def clear_directory(self):
         try:
             shutil.rmtree(self._download_dir)
@@ -28,11 +28,11 @@ class ArtifactDownloader:
         p = Path(self._download_dir)
         p.mkdir()
 
-    def download(self):
-        self._download(self.libraries, 0)
+    def download(self, build_info_combined):
+        self._download(self.libraries, 0, build_info_combined)
         return self.build_info
-    
-    def _download(self, libs, level):
+
+    def _download(self, libs, level, build_info_combined):
         level_str = self._format_level(level)
         for lib in libs:
             click.echo(f"{level_str} Downloading {lib['library']} @ {lib['version']} ... ", nl=False)
@@ -57,11 +57,21 @@ class ArtifactDownloader:
                     click.echo(click.style(f"Available: {versions}", fg='red'))
                     raise ValueError("Version not found")
 
-            # Handle version conflicts
+            # Handle version conflicts within project
             if lib['library'] in self.build_info.package_names:
                 pack = self.build_info.get_package(lib['library'])
                 if pack.version != version_to_download:
-                    raise ValueError(f"Version conflict for {lib['library']}: {pack.version} vs {version_to_download}")
+                    click.echo(click.style(f"ERROR: Version conflict within project for {lib['library']}: {pack.version} vs {version_to_download}", fg='red'))
+                    raise ValueError("Version conflict")
+                click.echo(click.style(u'SKIP', fg='green'))
+                continue
+
+            # Handle version conflicts between multiple projects or with top level
+            if lib['library'] in build_info_combined.package_names:
+                pack = build_info_combined.get_package(lib['library'])
+                if pack.version != version_to_download:
+                    click.echo(click.style(f"ERROR: Version conflict between multiple projects or with top level for {lib['library']}: {pack.version} vs {version_to_download}", fg='red'))
+                    raise ValueError("Version conflict")
                 click.echo(click.style(u'SKIP', fg='green'))
                 continue
 
@@ -84,7 +94,7 @@ class ArtifactDownloader:
 
             # This is a recursive function that download dependencies
             # Each recursion the level is incremented for indentation printing
-            self._download(pack.compile_dependencies, level+1)
+            self._download(pack.compile_dependencies, level+1, build_info_combined)
 
     def _check_if_valid_semver(self, version):
         """ Check if a string is parseable by the semver library """
@@ -144,7 +154,7 @@ class ArtifactDownloader:
             extract_dir = output_dir
         else:
             extract_dir = f"{self._download_dir}/{package_dir}/"
-        
+
         if 'deprecated' in path.properties:
             message = path.properties['deprecated']
             click.echo(click.style(f'DEPRECATED: {message} ', fg='yellow'), nl=False)
@@ -178,5 +188,3 @@ class ArtifactDownloader:
         archs.append("Source")
 
         return archs
-
-
