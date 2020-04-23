@@ -24,6 +24,9 @@ The deploy folder contains scripts to deploy voyager to the different platforms
 
 ## Release notes
 
+### [1.10.2]
+- Fixed bug where version conflicts would not occur between projects in a solution or between top-level dependencies and project-level dependencies. This now correctly throws an `ERROR: Version conflict`
+
 ### [1.10.1]
 - Added installer
 
@@ -49,7 +52,7 @@ The deploy folder contains scripts to deploy voyager to the different platforms
 
 ### [1.6.0]
 - Add support for linker_flags
-- Fix bug for package names without a folder 
+- Fix bug for package names without a folder
 - Change the download folder from `libs` to `.voyager`
 
 ### [1.5.0]
