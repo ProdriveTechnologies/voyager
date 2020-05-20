@@ -23,11 +23,6 @@
       "dependency_type": "runtime"
     },
     {
-      "repo": "siatd-generic-local",
-      "library": "ThirdParty/fmt",
-      "version": "6.*"
-    },
-    {
       "repo": "ptf-generic-local",
       "library": "ClientLibrary",
       "version": "*",
