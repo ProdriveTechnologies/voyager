@@ -24,6 +24,9 @@ The deploy folder contains scripts to deploy voyager to the different platforms
 
 ## Release notes
 
+### [1.10.3]
+- Fixed a bug introduced in version 1.10.2 where package already included in another project would not be added to the build info and thus not included by the generators. 
+
 ### [1.10.2]
 - Fixed bug where version conflicts would not occur between projects in a solution or between top-level dependencies and project-level dependencies. This now correctly throws an `ERROR: Version conflict`
 

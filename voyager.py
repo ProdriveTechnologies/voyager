@@ -6,7 +6,7 @@ import random
 import json
 from pathlib import Path
 
-VERSION = "1.10.2"
+VERSION = "1.10.3"
 
 from voyagerfile import VoyagerFile
 from generators.visualstudio import VisualStudioGenerator
