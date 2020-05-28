@@ -67,13 +67,12 @@ class ArtifactDownloader:
                 continue
 
             # Handle version conflicts between multiple projects or with top level
+            # Packages that were included in other projects will be downloaded again and added to the build_info if the versions are the same.
             if lib['library'] in build_info_combined.package_names:
                 pack = build_info_combined.get_package(lib['library'])
                 if pack.version != version_to_download:
                     click.echo(click.style(f"ERROR: Version conflict between multiple projects or with top level for {lib['library']}: {pack.version} vs {version_to_download}", fg='red'))
                     raise ValueError("Version conflict")
-                click.echo(click.style(u'SKIP', fg='green'))
-                continue
 
             extract_dir = self._find_download_extract_package(lib['repo'], lib['library'], version_to_download, lib.get('output_dir', None))
 

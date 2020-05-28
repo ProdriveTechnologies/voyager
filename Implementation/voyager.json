@@ -2,6 +2,11 @@
   "version": 1,
   "type": "project",
   "build_tools": [
+    {
+      "repo": "siatd-generic-local",
+      "library": "ThirdParty/protoc",
+      "version": "3.5"
+    }
   ],
   "libraries": [
     {
