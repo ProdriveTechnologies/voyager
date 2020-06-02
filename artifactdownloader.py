@@ -64,7 +64,7 @@ class ArtifactDownloader:
                 if pack.version != version_to_download:
                     click.echo(click.style(f"ERROR: Version conflict within project for {lib['library']}: {pack.version} vs {version_to_download}", fg='red'))
                     raise ValueError("Version conflict")
-                click.echo(click.style(u'SKIP', fg='green'))
+                click.echo(click.style(u'SKIP: package already included in project', fg='green'))
                 continue
 
             # Handle version conflicts between multiple projects or with top level
@@ -73,11 +73,12 @@ class ArtifactDownloader:
                 if pack.version != version_to_download:
                     click.echo(click.style(f"ERROR: Version conflict between multiple projects or with top level for {lib['library']}: {pack.version} vs {version_to_download}", fg='red'))
                     raise ValueError("Version conflict")
-                click.echo(click.style(u'SKIP', fg='green'))
+                # Packages that were included in other projects with the same version are added to the build_info without downloading them again
+                click.echo(click.style(f"SKIP: package included from other project", fg='green'))
+                self.build_info.add_package(pack)
                 continue
 
             extract_dir = self._find_download_extract_package(lib['repo'], lib['library'], version_to_download, lib.get('output_dir', None), override_arch)
-
             options = []
             if 'options' in lib:
                 options = lib['options']
