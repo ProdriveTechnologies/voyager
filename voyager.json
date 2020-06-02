@@ -43,7 +43,7 @@
       "repo": "siatd-generic-local",
       "library": "API/PA.SwdProgrammer",
       "version": "*",
-      "override_arch": ["arm-xilinx-eabi-gcc-4.8.1"]
+      "override_archs": ["arm-xilinx-eabi-gcc-4.8.1"]
     }
 
   ],

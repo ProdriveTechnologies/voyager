@@ -38,7 +38,7 @@ class ArtifactDownloader:
             click.echo(f"{level_str} Downloading {lib['library']} @ {lib['version']} ... ", nl=False)
 
             version_to_download = lib['version']
-            override_arch = lib.get('override_arch', None)
+            override_archs = lib.get('override_archs', None)
             for_archs = lib.get('for_archs', None)
 
             active_archs = self._get_active_archs()
@@ -51,7 +51,7 @@ class ArtifactDownloader:
             # When version is semver, parse and check which versions comply
             # otherwise use the feature/xyz name to download
             if self._check_if_valid_semver(lib['version']):
-                versions = self._find_versions_for_package(lib['repo'], lib['library'], override_arch)
+                versions = self._find_versions_for_package(lib['repo'], lib['library'], override_archs)
                 version_to_download = max_satisfying(versions, lib['version'], True)
                 if not version_to_download:
                     click.echo(click.style(f"ERROR: version {lib['version']} not found.", fg='red'))
@@ -78,7 +78,7 @@ class ArtifactDownloader:
                 self.build_info.add_package(pack)
                 continue
 
-            extract_dir = self._find_download_extract_package(lib['repo'], lib['library'], version_to_download, lib.get('output_dir', None), override_arch)
+            extract_dir = self._find_download_extract_package(lib['repo'], lib['library'], version_to_download, lib.get('output_dir', None), override_archs)
             options = []
             if 'options' in lib:
                 options = lib['options']
@@ -105,15 +105,15 @@ class ArtifactDownloader:
             return True
         return False
 
-    def _find_versions_for_package(self, repo, library, override_arch):
+    def _find_versions_for_package(self, repo, library, override_archs):
         """
         Find the versions for a specific package
         :param repo: The repository, for example siatd-generic-local
         :param library: The name of the library, for example PA.JtagProgrammer
         :returns: A list of strings with versions: ['17.0.0', '18.0.0']
         """
-        if override_arch:
-            archs = override_arch
+        if override_archs:
+            archs = override_archs
         else:
             archs = self._get_active_archs()
         versions = []
@@ -128,7 +128,7 @@ class ArtifactDownloader:
 
         return versions
 
-    def _find_download_extract_package(self, repo, library, version, output_dir, override_arch):
+    def _find_download_extract_package(self, repo, library, version, output_dir, override_archs):
         """
         Find, download and extract a package
         :param repo: The repository, for example siatd-generic-local
@@ -137,8 +137,8 @@ class ArtifactDownloader:
         :returns: Relative directory to where the package is extracted
         :raises ValueError: When the package could not be found
         """
-        if override_arch:
-            archs = override_arch
+        if override_archs:
+            archs = override_archs
         else:
             archs = self._get_active_archs()
         found = False
