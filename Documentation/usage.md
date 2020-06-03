@@ -43,6 +43,14 @@ The voyager.json is the file that is placed in the solution and projects folder 
       "options": ["extended-header"],
       "dependency_type": "runtime",
       "for_archs": ["MSVC.142.DBG.32"]
+    },
+    {
+      "repo": "siatd-generic-local",
+      "library": "API/PA.SwdProgrammer",
+      "version": "*",
+      "override_archs": ["arm-xilinx-eabi-gcc-4.8.1"],
+      "download_only": true,
+      "output_dir": ".voyager/PA.SwdProgrammer"
     }
   ],
   "projects": ["Implementation", "Qualification"],
@@ -70,6 +78,7 @@ The voyager.json is the file that is placed in the solution and projects folder 
 |for_archs       |False   |Only install this package when installing for one of the architectures in this list|
 |output_dir      |False   |Override the default output directory for the package. Can be useful if the build system has to make assumptions on the path|
 |override_archs  |False   |Override the arch for a package, install the specified arch.|
+|download_only   |False   |Only download this package, dont include the package and dont download dependencies.|
 
 ## Solution vs Project
 The voyager.json has two types: `solution` and `project`. When a solution contains a single project a single voyager.json with the project type is enough.
