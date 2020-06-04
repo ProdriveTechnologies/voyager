@@ -61,48 +61,49 @@ class ArtifactDownloader:
                     click.echo(click.style(f"Available: {versions}", fg='red'))
                     raise ValueError("Version not found")
 
-            if not download_only:
-                # Handle version conflicts within project
-                if lib['library'] in self.build_info.package_names:
-                    pack = self.build_info.get_package(lib['library'])
-                    if pack.version != version_to_download:
-                        click.echo(click.style(f"ERROR: Version conflict within project for {lib['library']}: {pack.version} vs {version_to_download}", fg='red'))
-                        raise ValueError("Version conflict")
-                    click.echo(click.style(u'SKIP: package already included in project', fg='green'))
-                    continue
+            # Handle version conflicts within project
+            if not download_only and lib['library'] in self.build_info.package_names:
+                pack = self.build_info.get_package(lib['library'])
+                if pack.version != version_to_download:
+                    click.echo(click.style(f"ERROR: Version conflict within project for {lib['library']}: {pack.version} vs {version_to_download}", fg='red'))
+                    raise ValueError("Version conflict")
+                click.echo(click.style(u'SKIP: package already included in project', fg='green'))
+                continue
 
-                # Handle version conflicts between multiple projects or with top level
-                if lib['library'] in build_info_combined.package_names:
-                    pack = build_info_combined.get_package(lib['library'])
-                    if pack.version != version_to_download:
-                        click.echo(click.style(f"ERROR: Version conflict between multiple projects or with top level for {lib['library']}: {pack.version} vs {version_to_download}", fg='red'))
-                        raise ValueError("Version conflict")
-                    # Packages that were included in other projects with the same version are added to the build_info without downloading them again
-                    click.echo(click.style(f"SKIP: package included from other project", fg='green'))
-                    self.build_info.add_package(pack)
-                    continue
+            # Handle version conflicts between multiple projects or with top level
+            if not download_only and lib['library'] in build_info_combined.package_names:
+                pack = build_info_combined.get_package(lib['library'])
+                if pack.version != version_to_download:
+                    click.echo(click.style(f"ERROR: Version conflict between multiple projects or with top level for {lib['library']}: {pack.version} vs {version_to_download}", fg='red'))
+                    raise ValueError("Version conflict")
+                # Packages that were included in other projects with the same version are added to the build_info without downloading them again
+                click.echo(click.style(f"SKIP: package included from other project", fg='green'))
+                self.build_info.add_package(pack)
+                continue
 
             extract_dir = self._find_download_extract_package(lib['repo'], lib['library'], version_to_download, lib.get('output_dir', None), override_archs)
             options = []
             if 'options' in lib:
                 options = lib['options']
 
-            if not download_only:
-                # Pass along absolute path for the package so there are no problems with subdirectory projects
-                pack = Package(lib['library'], version_to_download, os.path.abspath(extract_dir) + "/", options, self.build_tools)
-                self.build_info.add_package(pack)
+            if download_only:
+                click.echo(click.style(u'OK', fg='green'))
+                continue
 
-                if level == 0:
-                    lib['version'] = version_to_download
-                    l = LockFileWriter()
-                    l.add_dependency(lib)
+            # Pass along absolute path for the package so there are no problems with subdirectory projects
+            pack = Package(lib['library'], version_to_download, os.path.abspath(extract_dir) + "/", options, self.build_tools)
+            self.build_info.add_package(pack)
+
+            if level == 0:
+                lib['version'] = version_to_download
+                l = LockFileWriter()
+                l.add_dependency(lib)
 
             click.echo(click.style(u'OK', fg='green'))
 
-            if not download_only:
-                # This is a recursive function that download dependencies
-                # Each recursion the level is incremented for indentation printing
-                self._download(pack.compile_dependencies, level+1, build_info_combined)
+            # This is a recursive function that download dependencies
+            # Each recursion the level is incremented for indentation printing
+            self._download(pack.compile_dependencies, level+1, build_info_combined)
 
     def _check_if_valid_semver(self, version):
         """ Check if a string is parseable by the semver library """
