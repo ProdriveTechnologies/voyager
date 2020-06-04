@@ -124,14 +124,26 @@ class ArtifactDownloader:
         else:
             archs = self._get_active_archs()
         versions = []
+        
+        path = ArtifactoryPath(self.config.artifactory_url, apikey=self.config.api_key)
 
-        package_dir = f"{repo}/{library}/"
-        url = f"{self.config.artifactory_url}/{package_dir}"
-        path = ArtifactoryPath(url, apikey=self.config.api_key)
-        for p in path.glob(f"*/*"):
-            if p.parts[-1] in archs:
-                if self._check_if_valid_semver(p.parts[-2]):
-                    versions.append(p.parts[-2])
+        args = [
+            "items.find",
+            {
+                "$and": [
+                    {"repo": {"$eq": repo}},
+                    {"path": {"$match": f"{library}/*"}},
+                ]
+            },
+        ]
+
+        artifacts_list = path.aql(*args)
+
+        for l in artifacts_list:
+            p = l['path'].split('/')
+            if p[-1] in archs:
+                if self._check_if_valid_semver(p[-2]):
+                    versions.append(p[-2])
 
         return versions
 
