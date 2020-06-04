@@ -27,6 +27,7 @@ The deploy folder contains scripts to deploy voyager to the different platforms
 ### [1.11.0]
 - Add option `override_archs` for voyager.json to download a package that is a different arch then the host system.
 - Add option `download_only` for downloading a package without including it.
+- Update internal `_find_versions_for_package` function to use aql. Should give a good speed boost
 
 ### [1.10.3]
 - Fixed a bug introduced in version 1.10.2 where package already included in another project would not be added to the build info and thus not included by the generators. 
