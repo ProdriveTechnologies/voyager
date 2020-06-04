@@ -38,7 +38,21 @@
       "library": "Test/nonExistingPackage",
       "version": "*",
       "for_archs": ["ASDF", "BCDE"]
+    },
+    {
+      "repo": "siatd-generic-local",
+      "library": "API/PA.SwdProgrammer",
+      "version": "*",
+      "override_archs": ["arm-xilinx-eabi-gcc-4.8.1"],
+      "download_only": true,
+      "output_dir": ".voyager/PA.SwdProgrammer"
+    },
+    {
+      "repo": "siatd-generic-local",
+      "library": "API/PA.SwdProgrammer",
+      "version": "*"
     }
+
   ],
   "projects": ["Implementation", "Qualification"],
   "generators": ["msbuild", "cmake", "headercheck"]
