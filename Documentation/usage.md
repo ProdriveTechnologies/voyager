@@ -42,7 +42,8 @@ The voyager.json is the file that is placed in the solution and projects folder 
       "version": "6.0",
       "options": ["extended-header"],
       "dependency_type": "runtime",
-      "for_archs": ["MSVC.142.DBG.32"]
+      "for_archs": ["MSVC.142.DBG.32"],
+      "force_version": true
     },
     {
       "repo": "siatd-generic-local",
@@ -79,6 +80,7 @@ The voyager.json is the file that is placed in the solution and projects folder 
 |output_dir      |False   |Override the default output directory for the package. Can be useful if the build system has to make assumptions on the path|
 |override_archs  |False   |Override the arch for a package, install the specified arch.|
 |download_only   |False   |Only download this package, dont include the package and dont download dependencies.|
+|force_version   |False   |Force this version when a dependency conflict occurs. See [Dependency Conflicts]({{< ref "conflicts.md" >}}) for more information|
 
 ## Solution vs Project
 The voyager.json has two types: `solution` and `project`. When a solution contains a single project a single voyager.json with the project type is enough.
