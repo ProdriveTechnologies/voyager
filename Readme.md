@@ -24,6 +24,9 @@ The deploy folder contains scripts to deploy voyager to the different platforms
 
 ## Release notes
 
+### [1.12.0]
+- Add option `force_version` to handle version conflicts
+
 ### [1.11.0]
 - Add option `override_archs` for voyager.json to download a package that is a different arch then the host system.
 - Add option `download_only` for downloading a package without including it.
