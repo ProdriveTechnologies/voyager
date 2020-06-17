@@ -5,6 +5,7 @@ import click
 from pathlib import Path
 from artifactory import ArtifactoryPath
 from semver import valid_range, max_satisfying
+import semver
 
 from buildinfo import Package, BuildInfo
 from configfile import ConfigFile
@@ -41,6 +42,7 @@ class ArtifactDownloader:
             override_archs = lib.get('override_archs', None)
             for_archs = lib.get('for_archs', None)
             download_only = lib.get('download_only', None)
+            force_version = lib.get('force_version', False)
             if download_only:
                 click.echo(click.style(u'Download only ', fg='green'), nl=False)
 
@@ -64,24 +66,24 @@ class ArtifactDownloader:
             # Handle version conflicts within project
             if not download_only and lib['library'] in self.build_info.package_names:
                 pack = self.build_info.get_package(lib['library'])
-                if pack.version != version_to_download:
-                    click.echo(click.style(f"ERROR: Version conflict within project for {lib['library']}: {pack.version} vs {version_to_download}", fg='red'))
-                    raise ValueError("Version conflict")
+                self._check_and_handle_dependency_conflict(pack, lib, version_to_download)
                 click.echo(click.style(u'SKIP: package already included in project', fg='green'))
                 continue
 
             # Handle version conflicts between multiple projects or with top level
             if not download_only and lib['library'] in build_info_combined.package_names:
                 pack = build_info_combined.get_package(lib['library'])
-                if pack.version != version_to_download:
-                    click.echo(click.style(f"ERROR: Version conflict between multiple projects or with top level for {lib['library']}: {pack.version} vs {version_to_download}", fg='red'))
-                    raise ValueError("Version conflict")
+                self._check_and_handle_dependency_conflict(pack, lib, version_to_download)
                 # Packages that were included in other projects with the same version are added to the build_info without downloading them again
                 click.echo(click.style(f"SKIP: package included from other project", fg='green'))
                 self.build_info.add_package(pack)
                 continue
 
             extract_dir = self._find_download_extract_package(lib['repo'], lib['library'], version_to_download, lib.get('output_dir', None), override_archs)
+
+            if force_version:
+                click.echo(click.style('(Force Version) ', fg='yellow'), nl=False)
+
             options = []
             if 'options' in lib:
                 options = lib['options']
@@ -91,7 +93,7 @@ class ArtifactDownloader:
                 continue
 
             # Pass along absolute path for the package so there are no problems with subdirectory projects
-            pack = Package(lib['library'], version_to_download, os.path.abspath(extract_dir) + "/", options, self.build_tools)
+            pack = Package(lib['library'], version_to_download, os.path.abspath(extract_dir) + "/", options, self.build_tools, force_version)
             self.build_info.add_package(pack)
 
             if level == 0:
@@ -104,6 +106,31 @@ class ArtifactDownloader:
             # This is a recursive function that download dependencies
             # Each recursion the level is incremented for indentation printing
             self._download(pack.compile_dependencies, level+1, build_info_combined)
+
+    def _check_and_handle_dependency_conflict(self, pack: Package, lib, version_to_download: str):
+        """
+        Check for dependency conflicts between 2 versions and handle in case of force version
+        :param pack: The package that was originally downloaded and may have force_version set
+        :param lib: The library that needs to be downloaded
+        :param version_to_download: The resolved version that needs to be downloaded
+        :raises ValueError: When a dependency conflict is not resolvable
+        """
+        if pack.version != version_to_download:
+            if not pack.force_version:
+                click.echo(click.style(f"ERROR: Version conflict within project for {lib['library']}: {pack.version} vs {version_to_download}", fg='red'))
+                raise ValueError("Version conflict")
+            else:
+                # Check if the forced version is greater
+                # when either uses a branch name as the version I consider it a free for all
+                # when both semvers are valid we must check that the forced version is newer
+                if self._check_if_valid_semver(pack.version) and self._check_if_valid_semver(version_to_download):
+                    sem_pack = semver.semver(pack.version, False)
+                    sem_down = semver.semver(version_to_download, False)
+                    if semver.lt(sem_pack, sem_down, False):  # sem_pack < sem_down
+                        click.echo(click.style(f'ERROR: Cannot force {version_to_download} to older version {pack.version} ', fg='red'))
+                        raise ValueError("Version forcing conflict")
+
+                click.echo(click.style(f'WARN: Forcing version {version_to_download} to {pack.version} ', fg='yellow'), nl=False)
 
     def _check_if_valid_semver(self, version):
         """ Check if a string is parseable by the semver library """

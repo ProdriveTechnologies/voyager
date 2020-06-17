@@ -11,6 +11,23 @@
   "libraries": [
     {
       "repo": "siatd-generic-local",
+      "library": "ThirdParty/fmt",
+      "version": "6.2",
+      "force_version": true
+    },
+    {
+      "repo": "siatd-generic-local",
+      "library": "Utils/Exceptions",
+      "version": "1.2",
+      "force_version": true
+    },
+    {
+      "repo": "siatd-generic-local",
+      "library": "Utils/Exceptions",
+      "version": "1.1"
+    },
+    {
+      "repo": "siatd-generic-local",
       "library": "Interfaces/Standard",
       "version": "*",
       "dependency_type": "compile"
