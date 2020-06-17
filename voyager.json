@@ -13,7 +13,8 @@
       "repo": "siatd-generic-local",
       "library": "ThirdParty/fmt",
       "version": "6.2",
-      "force_version": true
+      "force_version": true,
+      "dependency_type": "compile"
     },
     {
       "repo": "siatd-generic-local",

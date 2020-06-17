@@ -25,6 +25,12 @@ class VoyagerPackageFile():
             # Rename dependency_type to type for package file
             d['type'] = d['dependency_type']
             del d['dependency_type']
+
+            # Check and remove force_version
+            if 'force_version' in d:
+                print(f"Force version found for {d['library']}, this will be removed in package file")
+                del d['force_version']
+
             self._dependencies.append(d)
 
     def save(self):
