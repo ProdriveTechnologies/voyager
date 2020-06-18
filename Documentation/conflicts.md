@@ -61,7 +61,8 @@ All other packages that require fmt will now be forced to use fmt 6.2
 ```
 
 ## Rules
-* You can only use force_version to force to a higher version. Otherwise an error is thrown: `ERROR: Cannot force 6.2.0 to older version 6.0.0`
+* You can only use force_version to force to a higher version. Otherwise an error is thrown: `ERROR: Cannot force 6.2.0 to lower version 6.0.0`
 * You can always use force_version on non semver versions like branch names
 * It is forbidden to have a force_version attribute in the voyager_package.json, it will be removed when `voyager package` is called
 * Using force version can lead to unexpected behavior regarding ABI compatibility
+* Libraries with force_version should be defined in the voyager.json before they're downloaded through a dependency
