@@ -127,7 +127,7 @@ class ArtifactDownloader:
                     sem_pack = semver.semver(pack.version, False)
                     sem_down = semver.semver(version_to_download, False)
                     if semver.lt(sem_pack, sem_down, False):  # sem_pack < sem_down
-                        click.echo(click.style(f'ERROR: Cannot force {version_to_download} to older version {pack.version} ', fg='red'))
+                        click.echo(click.style(f'ERROR: Cannot force {version_to_download} to lower version {pack.version} ', fg='red'))
                         raise ValueError("Version forcing conflict")
 
                 click.echo(click.style(f'WARN: Forcing version {version_to_download} to {pack.version} ', fg='yellow'), nl=False)
