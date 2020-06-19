@@ -14,7 +14,7 @@ class Package:
         self.name = name
         self._version = version
         self.rootpath = root_folder
-        self.options = options
+        self._options = options
         self.build_tool = is_build_tool
         self._force_version = force_version
         self.include_dirs = [DEFAULT_INCLUDE]
@@ -37,6 +37,16 @@ class Package:
     @property
     def version(self):
         return self._version
+
+    @property
+    def options(self):
+        return self._options
+
+    @options.setter
+    def options(self, value):
+        self._options = value
+        if not self._parse_package_file():
+            self._find_link_file()
 
     @property
     def force_version(self):
@@ -103,7 +113,7 @@ class Package:
                 self._set_members_from_json(j)
 
                 # the options override certain dirs
-                for opt_key in self.options:
+                for opt_key in self._options:
                     opt_found = False
                     for opt in j['options']:
                         if opt['key'] == opt_key:

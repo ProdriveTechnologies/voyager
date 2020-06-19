@@ -73,6 +73,10 @@ class ArtifactDownloader:
             # Handle version conflicts between multiple projects or with top level
             if not download_only and lib['library'] in build_info_combined.package_names:
                 pack = build_info_combined.get_package(lib['library'])
+                options = []
+                if 'options' in lib:
+                    options = lib['options']
+                pack.options = options
                 self._check_and_handle_dependency_conflict(pack, lib, version_to_download)
                 # Packages that were included in other projects with the same version are added to the build_info without downloading them again
                 click.echo(click.style(f"SKIP: package downloaded for other project", fg='green'))
