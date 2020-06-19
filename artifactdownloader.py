@@ -75,33 +75,33 @@ class ArtifactDownloader:
                 pack = build_info_combined.get_package(lib['library'])
                 self._check_and_handle_dependency_conflict(pack, lib, version_to_download)
                 # Packages that were included in other projects with the same version are added to the build_info without downloading them again
-                click.echo(click.style(f"SKIP: package included from other project", fg='green'))
+                click.echo(click.style(f"SKIP: package downloaded for other project", fg='green'))
                 self.build_info.add_package(pack)
-                continue
-
-            extract_dir = self._find_download_extract_package(lib['repo'], lib['library'], version_to_download, lib.get('output_dir', None), override_archs)
-
-            if force_version:
-                click.echo(click.style('(Force Version) ', fg='yellow'), nl=False)
-
-            options = []
-            if 'options' in lib:
-                options = lib['options']
-
-            if download_only:
+            else:
+    
+                extract_dir = self._find_download_extract_package(lib['repo'], lib['library'], version_to_download, lib.get('output_dir', None), override_archs)
+    
+                if force_version:
+                    click.echo(click.style('(Force Version) ', fg='yellow'), nl=False)
+    
+                options = []
+                if 'options' in lib:
+                    options = lib['options']
+    
+                if download_only:
+                    click.echo(click.style(u'OK', fg='green'))
+                    continue
+    
+                # Pass along absolute path for the package so there are no problems with subdirectory projects
+                pack = Package(lib['library'], version_to_download, os.path.abspath(extract_dir) + "/", options, self.build_tools, force_version)
+                self.build_info.add_package(pack)
+    
+                if level == 0:
+                    lib['version'] = version_to_download
+                    l = LockFileWriter()
+                    l.add_dependency(lib)
+    
                 click.echo(click.style(u'OK', fg='green'))
-                continue
-
-            # Pass along absolute path for the package so there are no problems with subdirectory projects
-            pack = Package(lib['library'], version_to_download, os.path.abspath(extract_dir) + "/", options, self.build_tools, force_version)
-            self.build_info.add_package(pack)
-
-            if level == 0:
-                lib['version'] = version_to_download
-                l = LockFileWriter()
-                l.add_dependency(lib)
-
-            click.echo(click.style(u'OK', fg='green'))
 
             # This is a recursive function that download dependencies
             # Each recursion the level is incremented for indentation printing
