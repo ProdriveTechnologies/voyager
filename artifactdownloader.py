@@ -139,7 +139,7 @@ class ArtifactDownloader:
             return True
         return False
 
-    def _find_versions_for_package(self, repo, library, override_archs):
+    def find_versions_for_package(self, repo, library, override_archs):
         """
         Find the versions for a specific package
         :param repo: The repository, for example siatd-generic-local

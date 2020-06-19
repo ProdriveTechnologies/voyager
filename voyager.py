@@ -18,6 +18,7 @@ from artifactdownloader import ArtifactDownloader
 from lockfile import LockFileWriter, LockFileReader
 from voyagerpackagefile import VoyagerPackageFile
 from cmakepackagefile import CMakePackageFile
+from updatechecker import UpdateChecker
 
 @click.group()
 def cli():
@@ -163,6 +164,11 @@ def config():
 @cli.command()
 def init():
     VoyagerFile.generate_empty_file()
+
+@cli.command()
+def update():
+    u = UpdateChecker()
+    u.check_for_update("1.10.0")
 
 if __name__ == "__main__":
     print(f"Voyager version {VERSION}")
