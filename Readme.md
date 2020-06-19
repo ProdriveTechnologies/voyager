@@ -26,6 +26,7 @@ The deploy folder contains scripts to deploy voyager to the different platforms
 
 ### [1.12.0]
 - Add option `force_version` to handle version conflicts
+- Fix issue with including dependencies of a skipped package
 - Fix typo in missing config file message and make message stand out better
 
 ### [1.11.0]
