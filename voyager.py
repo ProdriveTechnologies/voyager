@@ -27,7 +27,7 @@ def cli():
         click.echo(click.style(f'It appears that there is no config file in {conf.file_path}', fg='yellow'))
         click.echo("Generating a default one")
         conf.create_default()
-        click.echo(click.style(u'Default one generated, please fill in you Artifactory API key', fg='red'))
+        click.echo(click.style(u'Default one generated, please fill in your Artifactory API key', fg='white', bg='yellow', bold=True))
         exit(1)
 
     if not conf.parse():
