@@ -56,7 +56,7 @@ class ArtifactDownloader:
             # When version is semver, parse and check which versions comply
             # otherwise use the feature/xyz name to download
             if self._check_if_valid_semver(lib['version']):
-                versions = self._find_versions_for_package(lib['repo'], lib['library'], override_archs)
+                versions = self.find_versions_for_package(lib['repo'], lib['library'], override_archs)
                 version_to_download = max_satisfying(versions, lib['version'], True)
                 if not version_to_download:
                     click.echo(click.style(f"ERROR: version {lib['version']} not found.", fg='red'))
