@@ -1,13 +1,12 @@
+# System imports
 from sys import exit # For generated executables
-from artifactory import ArtifactoryPath
-import click
-import time
-import random
-import json
 from pathlib import Path
 
-VERSION = "1.13.0"
+# pip imports
+import click
+import semver
 
+# local imports
 from voyagerfile import VoyagerFile
 from generators.visualstudio import VisualStudioGenerator
 from generators.cmake import CMakeGenerator, CMakeProjectGenerator
@@ -19,6 +18,10 @@ from lockfile import LockFileWriter, LockFileReader
 from voyagerpackagefile import VoyagerPackageFile
 from cmakepackagefile import CMakePackageFile
 from updatechecker import UpdateChecker
+from artifactorysearch import ArtifactorySearch
+
+VERSION = "1.13.0"
+
 
 @click.group()
 def cli():
@@ -38,11 +41,24 @@ def cli():
 @cli.command()
 @click.argument('query')
 def search(query):
-    conf = ConfigFile()
-    art_url = f"{conf.artifactory_url}/siatd-generic-local/"
-    path = ArtifactoryPath(art_url, apikey=conf.api_key)
-    for p in path.glob(query):
-        print(p)
+    """ Search for a specific package. For example: voyager search Udsm* or voyager search Utils/* """
+    split = query.split('/')
+    if len(split) == 1:
+        found = ArtifactorySearch.gavc(artifact_id=query)
+    elif len(split) == 2:
+        found = ArtifactorySearch.gavc(group_id=f"{split[0]}*", artifact_id=split[1])
+    else:
+        raise ValueError(f"Search query: {query} is not supported")
+
+    for key, values in found.items():
+        valid_semvers = []
+        for version in values:
+            if semver.valid_range(version, True):
+                valid_semvers.append(version)
+
+        latest_version = semver.max_satisfying(valid_semvers, "*", False)
+        print(f"{key}/{latest_version} {values}")
+
 
 def generate_project(generators: list, subdir: str, build_info: BuildInfo):
     """Generate dependency files for each project"""
