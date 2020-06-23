@@ -6,7 +6,7 @@ import random
 import json
 from pathlib import Path
 
-VERSION = "1.12.0"
+VERSION = "1.13.0"
 
 from voyagerfile import VoyagerFile
 from generators.visualstudio import VisualStudioGenerator
@@ -18,6 +18,7 @@ from artifactdownloader import ArtifactDownloader
 from lockfile import LockFileWriter, LockFileReader
 from voyagerpackagefile import VoyagerPackageFile
 from cmakepackagefile import CMakePackageFile
+from updatechecker import UpdateChecker
 
 @click.group()
 def cli():
@@ -71,6 +72,8 @@ def generate_project(generators: list, subdir: str, build_info: BuildInfo):
 @click.option('--host', default=None, help='Host platform for cross compilation')
 @click.option('--host-file', default=None, help='File with host platforms for cross compilation')
 def install(host, host_file):
+    u = UpdateChecker()
+    u.check_for_update_in_background(VERSION)
     conf = ConfigFile()
     if host:
         conf.set_host_platform(host)
@@ -136,6 +139,7 @@ def install(host, host_file):
 
     l = LockFileWriter()
     l.save()
+    u.print_result()
 
 @cli.command()
 @click.argument('template_filename')
@@ -163,6 +167,12 @@ def config():
 @cli.command()
 def init():
     VoyagerFile.generate_empty_file()
+
+@cli.command()
+def check_update():
+    u = UpdateChecker()
+    u.check_for_update_in_background(VERSION)
+    u.print_result()
 
 if __name__ == "__main__":
     print(f"Voyager version {VERSION}")

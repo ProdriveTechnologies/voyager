@@ -24,6 +24,10 @@ The deploy folder contains scripts to deploy voyager to the different platforms
 
 ## Release notes
 
+### [1.13.0]
+- Add an update check that runs in the background of `voyager install`
+- Add command to check for updates `voyager check-update`
+
 ### [1.12.0]
 - Add option `force_version` to handle version conflicts
 - Fix issue with including dependencies of a skipped package
