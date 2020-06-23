@@ -9,6 +9,33 @@ This chapter explains how to use voyager for the installation of packages
 To use voyager for a project that already contains voyager.json files just run `voyager install` in the top level directory.
 This should install all the dependencies.
 
+## Search
+You can search for packages by running `voyager search` with your query. A few example queries:
+- `voyager search Interfaces/D*` Search for interfaces that start with a `D`
+- `voyager search PA.*` Search for anything starting with PA
+
+Example output:
+```
+>voyager search PA.Jtag*
+Voyager version 1.13.0
+siatd-generic-local/API/PA.JtagProgrammer/19.0.2 ['18.0.0', '17.0.0', '19.0.0', '19.0.1', '19.0.2']
+siatd-generic-local/API/PA.Jtag/13.0.0 ['13.0.0']
+```
+The first string of the search result can be copied and pasted in to the argument of the `voyager add` function.
+
+## Add
+You can add packages by running `voyager add` with a string of the package you want to add.
+This package is then added in the voyager.json in the current working directory.
+Example:
+```
+>voyager add siatd-generic-local/API/PA.JtagProgrammer/19.0.2
+Voyager version 1.13.0
+Adding Library:
+  Repo:    siatd-generic-local
+  Library: API/PA.JtagProgrammer
+  Version: 19.0
+``` 
+
 ## voyager.json
 The voyager.json is the file that is placed in the solution and projects folder and lists all the dependencies.
 ### Overview
