@@ -2,6 +2,7 @@ import json
 import os
 import click
 from sys import exit # For generated executables
+import semver
 
 from Singleton import SingletonType
 
@@ -40,6 +41,35 @@ class VoyagerFile():
 
     def has_build_tools(self):
         return len(self.build_tools) > 0
+
+    def add_library(self, library_string: str):
+        """
+        Add a library to the voyager.json and save the file.
+        The library_string must use the following format: siatd-generic-local/Utils/Exceptions/1.2.0
+        """
+        split = library_string.split('/')
+        repo = split[0]
+        version = split[-1]
+        package = library_string.replace(f"{repo}/", '').replace(f"/{version}", '')
+
+        # filter out the patch number
+        if semver.valid_range(version, True):
+            vers = semver.parse(version, True)
+            version = f"{vers.major}.{vers.minor}"
+
+        self.data['libraries'].append({
+            "repo": repo,
+            "library": package,
+            "version": version
+        })
+
+        print("Adding Library:")
+        print(f"  Repo:    {repo}")
+        print(f"  Library: {package}")
+        print(f"  Version: {version}")
+
+        with open('voyager.json', 'w') as outfile:
+            json.dump(self.data, outfile, indent=2)
 
     @staticmethod
     def generate_empty_file():

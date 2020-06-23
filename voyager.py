@@ -59,6 +59,17 @@ def search(query):
         latest_version = semver.max_satisfying(valid_semvers, "*", False)
         print(f"{key}/{latest_version} {values}")
 
+@cli.command()
+@click.argument('library_string')
+def add(library_string):
+    """
+    Add a library to the working directory voyager.json and save the file.
+    The library_string must use the following format: siatd-generic-local/Utils/Exceptions/1.2.0
+    """
+    file = VoyagerFile("voyager.json")
+    file.parse()
+
+    file.add_library(library_string)
 
 def generate_project(generators: list, subdir: str, build_info: BuildInfo):
     """Generate dependency files for each project"""
