@@ -18,7 +18,7 @@ from lockfile import LockFileWriter, LockFileReader
 from voyagerpackagefile import VoyagerPackageFile
 from cmakepackagefile import CMakePackageFile
 from updatechecker import UpdateChecker
-from artifactorysearch import ArtifactorySearch
+import artifactorysearch
 
 VERSION = "1.13.0"
 
@@ -44,9 +44,9 @@ def search(query):
     """ Search for a specific package. For example: voyager search Udsm* or voyager search Utils/* """
     split = query.split('/')
     if len(split) == 1:
-        found = ArtifactorySearch.gavc(artifact_id=query)
+        found = artifactorysearch.gavc(artifact_id=query)
     elif len(split) == 2:
-        found = ArtifactorySearch.gavc(group_id=f"{split[0]}*", artifact_id=split[1])
+        found = artifactorysearch.gavc(group_id=f"{split[0]}*", artifact_id=split[1])
     else:
         raise ValueError(f"Search query: {query} is not supported")
 
