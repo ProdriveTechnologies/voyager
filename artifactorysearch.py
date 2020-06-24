@@ -18,10 +18,7 @@ def gavc(group_id=None, artifact_id=None, version=None, classifier=None, repos=N
     if classifier:
         payload['c'] = classifier
     if repos:
-        payload['repos'] = ''
-        for r in repos:
-            payload['repos'] += f"{r},"
-        payload['repos'] = payload['repos'][:-1] # remove last ,
+        payload['repos'] = ','.join(repos)
 
     path = ArtifactoryPath(art_url, apikey=conf.api_key)
     r = path.session.get(gavc_url, params=payload)
