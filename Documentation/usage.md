@@ -13,6 +13,7 @@ This should install all the dependencies.
 You can search for packages by running `voyager search` with your query. A few example queries:
 - `voyager search Interfaces/D*` Search for interfaces that start with a `D`
 - `voyager search PA.*` Search for anything starting with PA
+- `voyager search P?.Bdm*` Search for Bdm in PA and PI
 
 Example output:
 ```
