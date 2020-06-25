@@ -26,10 +26,11 @@ class VoyagerPackageFile():
             d['type'] = d['dependency_type']
             del d['dependency_type']
 
-            # Check and remove force_version
-            if 'force_version' in d:
-                print(f"Force version found for {d['library']}, this will be removed in package file")
-                del d['force_version']
+            fields_to_remove = ['force_version', 'output_dir']
+            for f in fields_to_remove:
+                if f in d:
+                    print(f"{f} found for {d['library']}, this will be removed in package file")
+                    del d[f]
 
             self._dependencies.append(d)
 
@@ -43,4 +44,3 @@ class VoyagerPackageFile():
         f = p.parent / 'voyager_package.json'
         with open(f, 'w') as outfile:
             json.dump(self._template_contents, outfile, indent=2)
-    
