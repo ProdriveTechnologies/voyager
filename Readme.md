@@ -29,6 +29,7 @@ The deploy folder contains scripts to deploy voyager to the different platforms
 - Add command to check for updates `voyager check-update`
 - Add command to search for packages `voyager search`
 - Add command to add found packages to voyager.json `voyager add`
+- Fix bug where `output_dir` was placed in the package file
 
 ### [1.12.0]
 - Add option `force_version` to handle version conflicts
