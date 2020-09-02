@@ -43,8 +43,11 @@ class ArtifactDownloader:
             for_archs = lib.get('for_archs', None)
             download_only = lib.get('download_only', None)
             force_version = lib.get('force_version', False)
+            local_path = lib.get('local_path', None)
             if download_only:
                 click.echo(click.style(u'Download only ', fg='green'), nl=False)
+            if local_path:
+                click.echo(click.style('Local ', fg='magenta'), nl=False)
 
             active_archs = self._get_active_archs()
             if for_archs:
@@ -55,7 +58,7 @@ class ArtifactDownloader:
             # The version can either be semver or something like feature/xyz when referencing an Rxx version
             # When version is semver, parse and check which versions comply
             # otherwise use the feature/xyz name to download
-            if self._check_if_valid_semver(lib['version']):
+            if self._check_if_valid_semver(lib['version']) and not local_path:
                 versions = self.find_versions_for_package(lib['repo'], lib['library'], override_archs)
                 version_to_download = max_satisfying(versions, lib['version'], True)
                 if not version_to_download:
@@ -82,9 +85,12 @@ class ArtifactDownloader:
                 click.echo(click.style(f"SKIP: package downloaded for other project", fg='green'))
                 self.build_info.add_package(pack)
             else:
-    
-                extract_dir = self._find_download_extract_package(lib['repo'], lib['library'], version_to_download, lib.get('output_dir', None), override_archs)
-    
+
+                if local_path:
+                    extract_dir = self._find_local_package(lib['library'], local_path, lib.get('output_dir', None))
+                else:
+                    extract_dir = self._find_download_extract_package(lib['repo'], lib['library'], version_to_download, lib.get('output_dir', None), override_archs)
+
                 if force_version:
                     click.echo(click.style('(Force Version) ', fg='yellow'), nl=False)
     
@@ -102,6 +108,9 @@ class ArtifactDownloader:
     
                 if level == 0:
                     lib['version'] = version_to_download
+                    # make sure the package file later lists an absolute path for dependencies of dependencies
+                    if local_path:
+                        lib['local_path'] = str(Path(local_path).absolute())
                     l = LockFileWriter()
                     l.add_dependency(lib)
     
@@ -220,6 +229,25 @@ class ArtifactDownloader:
         with path.open() as fd:
             tar = tarfile.open(fileobj=fd)
             tar.extractall(extract_dir)
+
+        return extract_dir
+
+    def _find_local_package(self, library, local_path, output_dir):
+        package_path = Path(local_path)
+
+        if not package_path.exists():
+            click.echo(click.style(u'ERROR: local package not found', fg='red'))
+            raise ValueError(f"Local package not found")
+
+        if not package_path.is_dir():
+            click.echo(click.style(u'ERROR: local package is not a directory', fg='red'))
+            raise ValueError(f"Local package not found")
+
+        if output_dir:
+            extract_dir = output_dir
+            shutil.copytree(local_path, extract_dir)
+        else:
+            extract_dir = local_path
 
         return extract_dir
 
