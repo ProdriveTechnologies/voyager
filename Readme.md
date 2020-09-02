@@ -24,6 +24,9 @@ The deploy folder contains scripts to deploy voyager to the different platforms
 
 ## Release notes
 
+### [1.14.0]
+- Add support for local packages through `local_path`
+
 ### [1.13.0]
 - Add an update check that runs in the background of `voyager install`
 - Add command to check for updates `voyager check-update`
