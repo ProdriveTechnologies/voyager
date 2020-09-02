@@ -20,7 +20,7 @@ from cmakepackagefile import CMakePackageFile
 from updatechecker import UpdateChecker
 import artifactorysearch
 
-VERSION = "1.13.0"
+VERSION = "1.14.0"
 
 
 @click.group()
