@@ -44,6 +44,9 @@ class ArtifactDownloader:
             download_only = lib.get('download_only', None)
             force_version = lib.get('force_version', False)
             local_path = lib.get('local_path', None)
+            overlay_active = lib.get('overlay', False)
+            if overlay_active:
+                click.echo(click.style('Overlay ', fg='yellow'), nl=False)
             if download_only:
                 click.echo(click.style(u'Download only ', fg='green'), nl=False)
             if local_path:

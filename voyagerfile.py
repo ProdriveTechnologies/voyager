@@ -64,6 +64,7 @@ class VoyagerFile():
                 # version_over = over['version']
 
                 if repo == repo_over and lib == lib_over:
+                    over['overlay'] = True
                     library.update(over)
                     break
 
