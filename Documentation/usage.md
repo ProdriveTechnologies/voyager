@@ -110,6 +110,7 @@ The voyager.json is the file that is placed in the solution and projects folder 
 |override_archs  |False   |Override the arch for a package, install the specified arch.|
 |download_only   |False   |Only download this package, dont include the package and dont download dependencies.|
 |force_version   |False   |Force this version when a dependency conflict occurs. See [Dependency Conflicts]({{< ref "conflicts.md" >}}) for more information|
+|local_path      |False   |Use a local package instead of downloading from Artifactory. Can be a relative or absolute path. Better to use this via the [Overlay file]({{< ref "overlay.md" >}})|
 
 ## Solution vs Project
 The voyager.json has two types: `solution` and `project`. When a solution contains a single project a single voyager.json with the project type is enough.
