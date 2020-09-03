@@ -33,14 +33,41 @@ class VoyagerFile():
             self.projects = self.data['projects']
         elif self.type == 'project':
             self.solution = False
+        elif self.type == 'overlay':
+            self.solution = 'false'
         else:
-            raise ValueError('Incorrect value of the type field in voyager JSON file. Supported: solution, project')
-    
+            raise ValueError('Incorrect value of the type field in voyager JSON file. Supported: solution, project, overlay')
+
     def print(self):
         print(self.data)
 
     def has_build_tools(self):
         return len(self.build_tools) > 0
+
+    def combine_with_overlay(self, overlay):
+        if overlay is None:
+            return
+
+        self._combine_libraries_or_build_tools(self.libraries, overlay.libraries)
+        self._combine_libraries_or_build_tools(self.build_tools, overlay.build_tools)
+
+    def _combine_libraries_or_build_tools(self, container, container_overlay):
+        # Search for each library or build_tool in the voyager.json file if there is an overlay available
+        for library in container:
+            repo = library['repo']
+            lib = library['library']
+            # version = library['version']
+
+            for over in container_overlay:
+                repo_over = over['repo']
+                lib_over = over['library']
+                # version_over = over['version']
+
+                if repo == repo_over and lib == lib_over:
+                    over['overlay'] = True
+                    library.update(over)
+                    break
+
 
     def add_library(self, library_string: str):
         """

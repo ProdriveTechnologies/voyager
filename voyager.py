@@ -20,7 +20,7 @@ from cmakepackagefile import CMakePackageFile
 from updatechecker import UpdateChecker
 import artifactorysearch
 
-VERSION = "1.13.0"
+VERSION = "1.14.0"
 
 
 @click.group()
@@ -110,10 +110,19 @@ def install(host, host_file):
     if host or host_file:
         print(f"Setting host platform to: {conf.host_platform}")
 
+    overlay_file = None
+
+    if Path("voyager.overlay.json").is_file():
+        click.echo(click.style('Overlay file active', fg='yellow'))
+        overlay_file = VoyagerFile("voyager.overlay.json")
+        overlay_file.parse()
+
     # First download the global dependencies
     click.echo(click.style('Top level:', fg='cyan'))
     file = VoyagerFile("voyager.json")
     file.parse()
+    file.combine_with_overlay(overlay_file)
+
     down = ArtifactDownloader(file.libraries, False)
     down.clear_directory()
     down.make_directory()
@@ -136,6 +145,7 @@ def install(host, host_file):
         click.echo(click.style(f'{subdir}:', fg='cyan'))
         subdir_file = VoyagerFile(f"{subdir}/voyager.json")
         subdir_file.parse()
+        subdir_file.combine_with_overlay(overlay_file)
         down = ArtifactDownloader(subdir_file.libraries, False)
         build_info_subdir = down.download(build_info_combined)
 
