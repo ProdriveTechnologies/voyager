@@ -88,6 +88,15 @@ class Package:
                 compile_deps.append(dep)
         return compile_deps
 
+    @property
+    def runtime_dependencies(self):
+        runtime_deps = []
+        for dep in self.deps:
+            if dep['type'] == "runtime":
+                runtime_deps.append(dep)
+        return runtime_deps
+
+
     def _filter_paths(self, paths):
         """This functions converts the internal package paths into full paths from the rootpath"""
         abs_paths = [os.path.join(self.rootpath, p)
@@ -128,22 +137,22 @@ class Package:
 
     def _set_members_from_json(self, j):
         if 'bin' in j:
-            self.bin_dirs = j['bin']
+            self.bin_dirs = [x for x in j['bin'] if x]  # remove empty "" elements
         # When package is a build tool don't add any other things then the bin path
         if self.build_tool:
             return
         if 'include' in j:
-            self.include_dirs = j['include']
+            self.include_dirs = [x for x in j['include'] if x]  # remove empty "" elements
         if 'lib' in j:
-            self.lib_dirs = j['lib']
+            self.lib_dirs = [x for x in j['lib'] if x]  # remove empty "" elements
         if 'link' in j:
-            self.libs = j['link']
+            self.libs = [x for x in j['link'] if x]  # remove empty "" elements
         if 'compile' in j:
-            self.sources = j['compile']
+            self.sources = [x for x in j['compile'] if x]  # remove empty "" elements
         if 'dependencies' in j:
             self.deps = j['dependencies']
         if 'definitions' in j:
-            self._defines = j['definitions']
+            self._defines = [x for x in j['definitions'] if x]  # remove empty "" elements
         if 'linker_flags' in j:
             self._linker_flags = self._template_substitution(j['linker_flags'])
 

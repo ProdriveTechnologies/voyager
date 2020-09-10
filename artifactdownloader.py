@@ -30,10 +30,10 @@ class ArtifactDownloader:
         p.mkdir()
 
     def download(self, build_info_combined):
-        self._download(self.libraries, 0, build_info_combined)
+        self._download(self.libraries, 0, build_info_combined, False)
         return self.build_info
 
-    def _download(self, libs, level, build_info_combined):
+    def _download(self, libs, level, build_info_combined, runtime_deps):
         level_str = self._format_level(level)
         for lib in libs:
             click.echo(f"{level_str} Downloading {lib['library']} @ {lib['version']} ... ", nl=False)
@@ -51,6 +51,9 @@ class ArtifactDownloader:
                 click.echo(click.style(u'Download only ', fg='green'), nl=False)
             if local_path:
                 click.echo(click.style('Local ', fg='magenta'), nl=False)
+            if runtime_deps:
+                click.echo(click.style('Runtime ', fg='green'), nl=False)
+                download_only = True  # Set to download only to skip any version conflict checks
 
             active_archs = self._get_active_archs()
             if for_archs:
@@ -96,32 +99,34 @@ class ArtifactDownloader:
 
                 if force_version:
                     click.echo(click.style('(Force Version) ', fg='yellow'), nl=False)
-    
-                options = []
-                if 'options' in lib:
-                    options = lib['options']
-    
+
+                # Set the downloaded version in the Lib object
+                lib['version'] = version_to_download
+                lib['package_path'] = os.path.abspath(extract_dir) + "/"
+                # Write the package to the voyager.lock file
+                l = LockFileWriter()
+                if level == 0:
+                    l.add_library(lib)
+                else:
+                    l.add_dependency(lib)
+
                 if download_only:
                     click.echo(click.style(u'OK', fg='green'))
                     continue
-    
+
+                options = []
+                if 'options' in lib:
+                    options = lib['options']
                 # Pass along absolute path for the package so there are no problems with subdirectory projects
                 pack = Package(lib['library'], version_to_download, os.path.abspath(extract_dir) + "/", options, self.build_tools, force_version)
                 self.build_info.add_package(pack)
-    
-                if level == 0:
-                    lib['version'] = version_to_download
-                    # make sure the package file later lists an absolute path for dependencies of dependencies
-                    if local_path:
-                        lib['local_path'] = str(Path(local_path).absolute())
-                    l = LockFileWriter()
-                    l.add_dependency(lib)
     
                 click.echo(click.style(u'OK', fg='green'))
 
             # This is a recursive function that download dependencies
             # Each recursion the level is incremented for indentation printing
-            self._download(pack.compile_dependencies, level+1, build_info_combined)
+            self._download(pack.compile_dependencies, level+1, build_info_combined, runtime_deps)
+            self._download(pack.runtime_dependencies, level + 1, build_info_combined, True)
 
     def _check_and_handle_dependency_conflict(self, pack: Package, lib, version_to_download: str):
         """

@@ -19,6 +19,7 @@ from voyagerpackagefile import VoyagerPackageFile
 from cmakepackagefile import CMakePackageFile
 from updatechecker import UpdateChecker
 import artifactorysearch
+import deployfromlockfile
 
 VERSION = "1.14.0"
 
@@ -211,13 +212,20 @@ def check_update():
     u.check_for_update_in_background(VERSION)
     u.print_result()
 
+@cli.command()
+def deploy():
+    print("Deploy")
+    deployfromlockfile.deploy_all_dependencies()
+
+
 if __name__ == "__main__":
     print(f"Voyager version {VERSION}")
-    try:
-        cli()
-    except ValueError as v:
-        click.echo(f"Error during execution of voyager: {v}", err=True)
-        exit(1)
-    except Exception as e:
-        click.echo(f"Unexpected Error during execution of voyager: {e}", err=True)
-        exit(2)
+    cli()
+    # try:
+    #     cli()
+    # except ValueError as v:
+    #     click.echo(f"Error during execution of voyager: {v}", err=True)
+    #     exit(1)
+    # except Exception as e:
+    #     click.echo(f"Unexpected Error during execution of voyager: {e}", err=True)
+    #     exit(2)
