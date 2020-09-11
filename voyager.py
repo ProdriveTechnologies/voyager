@@ -221,12 +221,11 @@ def deploy(deploy_dir):
 
 if __name__ == "__main__":
     print(f"Voyager version {VERSION}")
-    cli()
-    # try:
-    #     cli()
-    # except ValueError as v:
-    #     click.echo(f"Error during execution of voyager: {v}", err=True)
-    #     exit(1)
-    # except Exception as e:
-    #     click.echo(f"Unexpected Error during execution of voyager: {e}", err=True)
-    #     exit(2)
+    try:
+        cli()
+    except ValueError as v:
+        click.echo(f"Error during execution of voyager: {v}", err=True)
+        exit(1)
+    except Exception as e:
+        click.echo(f"Unexpected Error during execution of voyager: {e}", err=True)
+        exit(2)
