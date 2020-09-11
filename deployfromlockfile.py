@@ -1,4 +1,5 @@
 from distutils.dir_util import copy_tree
+import distutils.errors
 from pathlib import PurePath
 
 import click
@@ -19,7 +20,10 @@ def deploy_all_dependencies(deploy_dir):
             print(f"  {pack.name} @ {pack.version}: {bin_path}")
             # use copy_tree from distutils because shutil.copytree stops if directory already exists
             # and therefore can't work in this for loop construction
-            copied += copy_tree(bin_path, deploy_dir)
+            try:
+                copied += copy_tree(bin_path, deploy_dir)
+            except distutils.errors.DistutilsFileError:  # Found a package that defines a bin dir that does not exist
+                pass
 
     click.echo(click.style('Files copied', fg='cyan'))
     for elem in copied:
