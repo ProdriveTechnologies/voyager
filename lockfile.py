@@ -42,7 +42,7 @@ class LockFileReader():
         for dep in self.runtime_dependencies:
             print(f"  {dep['library']} @ {dep['version']}")
         print("All dependencies:")
-        for dep in self.all_dependecies:
+        for dep in self.all_dependencies:
             print(f"  {dep['library']} @ {dep['version']}")
 
     @property
@@ -64,5 +64,5 @@ class LockFileReader():
         return deps
 
     @property
-    def all_dependecies(self):
+    def all_dependencies(self):
         return self.data['libraries'] + self.data['dependencies']

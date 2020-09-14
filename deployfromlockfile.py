@@ -14,7 +14,7 @@ def deploy_all_dependencies(deploy_dir):
 
     click.echo(click.style('Dependencies with bin dirs:', fg='cyan'))
     copied = []
-    for dep in reader.all_dependecies:
+    for dep in reader.all_dependencies:
         pack = Package(dep['library'], dep['version'], dep['package_path'], dep.get('options', []), False, False)
         for bin_path in pack.bin_paths:
             print(f"  {pack.name} @ {pack.version}: {bin_path}")
