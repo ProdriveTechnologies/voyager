@@ -22,7 +22,7 @@ class LockFileWriter(metaclass=SingletonType):
         with open(LOCK_FILE_PATH, 'w') as outfile:
             data = {
                 "libraries": self.libs,
-                "dependencies": self.deps,
+                "transitive_dependencies": self.deps,
             }
             json.dump(data, outfile, indent=2)
 
@@ -65,4 +65,4 @@ class LockFileReader():
 
     @property
     def all_dependencies(self):
-        return self.data['libraries'] + self.data['dependencies']
+        return self.data['libraries'] + self.data['transitive_dependencies']
