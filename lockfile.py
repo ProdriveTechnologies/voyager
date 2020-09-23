@@ -22,7 +22,7 @@ class LockFileWriter(metaclass=SingletonType):
         with open(LOCK_FILE_PATH, 'w') as outfile:
             data = {
                 "libraries": self.libs,
-                "transitive_dependencies": self.deps,
+                "transitive_dependencies": self.transitive_deps,
             }
             json.dump(data, outfile, indent=2)
 
