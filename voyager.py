@@ -99,7 +99,8 @@ def generate_project(generators: list, subdir: str, build_info: BuildInfo):
 @cli.command()
 @click.option('--host', default=None, help='Host platform for cross compilation')
 @click.option('--host-file', default=None, help='File with host platforms for cross compilation')
-def install(host, host_file):
+@click.option('--with-runtime-deps', default=False, help='Install runtime dependencies', is_flag=True)
+def install(host, host_file, with_runtime_deps):
     u = UpdateChecker()
     u.check_for_update_in_background(VERSION)
     conf = ConfigFile()
@@ -124,7 +125,7 @@ def install(host, host_file):
     file.parse()
     file.combine_with_overlay(overlay_file)
 
-    down = ArtifactDownloader(file.libraries, False)
+    down = ArtifactDownloader(file.libraries, False, with_runtime_deps)
     down.clear_directory()
     down.make_directory()
 
@@ -133,7 +134,7 @@ def install(host, host_file):
 
     if file.has_build_tools():
         click.echo(click.style('Top level (build_tools):', fg='cyan'))
-        down = ArtifactDownloader(file.build_tools, True)
+        down = ArtifactDownloader(file.build_tools, True, with_runtime_deps)
         build_info_tools = down.download(build_info_global)
         build_info_global.add_build_info(build_info_tools)
 
@@ -147,12 +148,12 @@ def install(host, host_file):
         subdir_file = VoyagerFile(f"{subdir}/voyager.json")
         subdir_file.parse()
         subdir_file.combine_with_overlay(overlay_file)
-        down = ArtifactDownloader(subdir_file.libraries, False)
+        down = ArtifactDownloader(subdir_file.libraries, False, with_runtime_deps)
         build_info_subdir = down.download(build_info_combined)
 
         if file.has_build_tools():
             click.echo(click.style(f'{subdir} (build_tools):', fg='cyan'))
-            down = ArtifactDownloader(subdir_file.build_tools, True)
+            down = ArtifactDownloader(subdir_file.build_tools, True, with_runtime_deps)
             build_info_tools = down.download(build_info_combined)
             build_info_subdir.add_build_info(build_info_tools)
 

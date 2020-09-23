@@ -13,11 +13,12 @@ from lockfile import LockFileWriter
 
 class ArtifactDownloader:
     _download_dir = '.voyager'
-    def __init__(self, libraries: list, are_build_tools: bool):
+    def __init__(self, libraries: list, are_build_tools: bool, download_runtime_deps: bool):
         self.libraries = libraries
         self.config = ConfigFile()
         self.build_info = BuildInfo()
         self.build_tools = are_build_tools
+        self.download_runtime_deps = download_runtime_deps
 
     def clear_directory(self):
         try:
@@ -126,7 +127,8 @@ class ArtifactDownloader:
             # This is a recursive function that download dependencies
             # Each recursion the level is incremented for indentation printing
             self._download(pack.compile_dependencies, level+1, build_info_combined, runtime_deps)
-            self._download(pack.runtime_dependencies, level + 1, build_info_combined, True)
+            if self.download_runtime_deps:
+                self._download(pack.runtime_dependencies, level + 1, build_info_combined, True)
 
     def _check_and_handle_dependency_conflict(self, pack: Package, lib, version_to_download: str):
         """
