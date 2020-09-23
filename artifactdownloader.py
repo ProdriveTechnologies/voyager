@@ -108,7 +108,7 @@ class ArtifactDownloader:
                 if level == 0:
                     l.add_library(lib)
                 else:
-                    l.add_dependency(lib)
+                    l.add_transitive_dependency(lib)
 
                 if download_only:
                     click.echo(click.style(u'OK', fg='green'))

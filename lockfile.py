@@ -7,13 +7,13 @@ class LockFileWriter(metaclass=SingletonType):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.libs = []
-        self.deps = []
+        self.transitive_deps = []
     
     def add_library(self, lib):
         self.libs.append(lib)
 
-    def add_dependency(self, lib):
-        self.deps.append(lib)
+    def add_transitive_dependency(self, lib):
+        self.transitive_deps.append(lib)
 
     def print(self):
         print(self.libs)
