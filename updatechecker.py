@@ -11,7 +11,7 @@ class UpdateChecker:
         self._thread = None
 
     def check_for_update(self, current_version: str):
-        down = ArtifactDownloader([], False)
+        down = ArtifactDownloader([], False, False)
         vers = down.find_versions_for_package("siatd-generic-local", "Tools/voyager", ["win-setup"])
         latest_version = semver.max_satisfying(vers, "*", True)
         if semver.lt(current_version, latest_version, False):

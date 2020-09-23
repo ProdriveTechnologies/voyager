@@ -7,16 +7,24 @@ class LockFileWriter(metaclass=SingletonType):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.libs = []
+        self.transitive_deps = []
     
-    def add_dependency(self, lib):
+    def add_library(self, lib):
         self.libs.append(lib)
+
+    def add_transitive_dependency(self, lib):
+        self.transitive_deps.append(lib)
 
     def print(self):
         print(self.libs)
 
     def save(self):
         with open(LOCK_FILE_PATH, 'w') as outfile:
-            json.dump(self.libs, outfile, indent=2)
+            data = {
+                "libraries": self.libs,
+                "transitive_dependencies": self.transitive_deps,
+            }
+            json.dump(data, outfile, indent=2)
 
 class LockFileReader():
     def __init__(self, *args, **kwargs):
@@ -33,11 +41,14 @@ class LockFileReader():
         print("Runtime dependencies:")
         for dep in self.runtime_dependencies:
             print(f"  {dep['library']} @ {dep['version']}")
+        print("All dependencies:")
+        for dep in self.all_dependencies:
+            print(f"  {dep['library']} @ {dep['version']}")
 
     @property
     def compile_dependencies(self):
         deps = []
-        for dep in self.data:
+        for dep in self.data['libraries']:
             if 'dependency_type' in dep:
                 if dep['dependency_type'] == 'compile':
                     deps.append(dep)
@@ -46,8 +57,12 @@ class LockFileReader():
     @property
     def runtime_dependencies(self):
         deps = []
-        for dep in self.data:
+        for dep in self.data['libraries']:
             if 'dependency_type' in dep:
                 if dep['dependency_type'] == 'runtime':
                     deps.append(dep)
         return deps
+
+    @property
+    def all_dependencies(self):
+        return self.data['libraries'] + self.data['transitive_dependencies']

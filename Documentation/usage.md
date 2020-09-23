@@ -5,9 +5,10 @@ weight: 20
 # Usage
 This chapter explains how to use voyager for the installation of packages
 
-## Basics
+## Install
 To use voyager for a project that already contains voyager.json files just run `voyager install` in the top level directory.
-This should install all the dependencies.
+This should install all the dependencies. If you want to download the runtime transitive dependencies as well, run `voyager install --with-runtime-deps`
+or shorter: `voyager install -wrd`.
 
 ## Search
 You can search for packages by running `voyager search` with your query. A few example queries:
@@ -37,6 +38,11 @@ Adding Library:
   Library: API/PA.JtagProgrammer
   Version: 19.0
 ``` 
+
+## Deploy
+To copy all the downloaded binaries (dll, so, exe) to a single directory `voyager deploy` can be used.
+By default it will copy all the binaries to `.voyager/.deploy`, but the option `--dir` can be used to select a different directory.
+For example to copy all binaries to the Debug folder use: `voyager deploy --dir Debug`.
 
 ## voyager.json
 The voyager.json is the file that is placed in the solution and projects folder and lists all the dependencies.

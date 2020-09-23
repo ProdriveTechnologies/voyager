@@ -26,7 +26,7 @@ class VoyagerPackageFile():
             d['type'] = d['dependency_type']
             del d['dependency_type']
 
-            fields_to_remove = ['force_version', 'output_dir', 'overlay']
+            fields_to_remove = ['force_version', 'output_dir', 'overlay', 'package_path']
             for f in fields_to_remove:
                 if f in d:
                     print(f"{f} found for {d['library']}, this will be removed in package file")
