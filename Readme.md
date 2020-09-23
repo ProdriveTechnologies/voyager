@@ -26,6 +26,8 @@ The deploy folder contains scripts to deploy voyager to the different platforms
 
 ### [1.14.0]
 - Add support for local packages through `local_path`
+- Add option `--with-runtime-deps` for `voyager install` to also download runtime dependencies
+- Add `voyager deploy` that copies the contents of all bin paths to an output folder
 
 ### [1.13.0]
 - Add an update check that runs in the background of `voyager install`
