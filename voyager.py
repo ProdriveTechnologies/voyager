@@ -99,7 +99,7 @@ def generate_project(generators: list, subdir: str, build_info: BuildInfo):
 @cli.command()
 @click.option('--host', default=None, help='Host platform for cross compilation')
 @click.option('--host-file', default=None, help='File with host platforms for cross compilation')
-@click.option('--with-runtime-deps', default=False, help='Install runtime dependencies', is_flag=True)
+@click.option('--with-runtime-deps', '-wrd', default=False, help='Install runtime dependencies', is_flag=True)
 def install(host, host_file, with_runtime_deps):
     u = UpdateChecker()
     u.check_for_update_in_background(VERSION)
