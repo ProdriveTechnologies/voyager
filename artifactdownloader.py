@@ -111,7 +111,7 @@ class ArtifactDownloader:
                 else:
                     l.add_transitive_dependency(lib)
 
-                if download_only:
+                if download_only and not runtime_deps:
                     click.echo(click.style(u'OK', fg='green'))
                     continue
 
@@ -120,13 +120,15 @@ class ArtifactDownloader:
                     options = lib['options']
                 # Pass along absolute path for the package so there are no problems with subdirectory projects
                 pack = Package(lib['library'], version_to_download, os.path.abspath(extract_dir) + "/", options, self.build_tools, force_version)
-                self.build_info.add_package(pack)
+                if not runtime_deps:
+                    self.build_info.add_package(pack)
     
                 click.echo(click.style(u'OK', fg='green'))
 
             # This is a recursive function that download dependencies
             # Each recursion the level is incremented for indentation printing
-            self._download(pack.compile_dependencies, level+1, build_info_combined, runtime_deps)
+            if not runtime_deps:
+                self._download(pack.compile_dependencies, level+1, build_info_combined, runtime_deps)
             if self.download_runtime_deps:
                 self._download(pack.runtime_dependencies, level + 1, build_info_combined, True)
 
