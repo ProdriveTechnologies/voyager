@@ -7,7 +7,7 @@ This chapter explains how to use voyager for the installation of packages
 
 ## Install
 To use voyager for a project that already contains voyager.json files just run `voyager install` in the top level directory.
-This should install all the dependencies. If you want to download the runtime dependencies as well, run `voyager install --with-runtime-deps`.
+This should install all the dependencies. If you want to download the runtime transitive dependencies as well, run `voyager install --with-runtime-deps`.
 
 ## Search
 You can search for packages by running `voyager search` with your query. A few example queries:
