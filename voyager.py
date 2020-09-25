@@ -20,6 +20,7 @@ from cmakepackagefile import CMakePackageFile
 from updatechecker import UpdateChecker
 import artifactorysearch
 import deployfromlockfile
+import artifactorylogin
 
 VERSION = "1.14.0"
 
@@ -219,6 +220,10 @@ def deploy(deploy_dir):
     print("Deploy")
     deployfromlockfile.deploy_all_dependencies(deploy_dir)
 
+@cli.command()
+def login():
+    print("Login and get Artifactory API key for config file")
+    artifactorylogin.login()
 
 if __name__ == "__main__":
     print(f"Voyager version {VERSION}")

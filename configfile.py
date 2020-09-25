@@ -57,9 +57,22 @@ class ConfigFile(metaclass=SingletonType):
         location = resource_path('static/config_template.json')
         shutil.copy(location, self._config_file)
 
+    def update(self):
+        json_data = {
+            'api_key': self._api_key,
+            'artifactory_url': self._artifactory_url,
+            'default_arch': self._default_arch
+        }
+        with open(self._config_file, 'w') as json_file:
+            json.dump(json_data, json_file, indent=2)
+
     @property
     def api_key(self):
         return self._api_key
+
+    @api_key.setter
+    def api_key(self, api_key):
+        self._api_key = api_key
 
     @property
     def artifactory_url(self):
