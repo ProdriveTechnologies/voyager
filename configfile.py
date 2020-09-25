@@ -1,9 +1,13 @@
-import json, os, shutil
+import json
+import os
+import shutil
+import platform
 
 from jsonschema import validate
 
 from Singleton import SingletonType
 from utilities import resource_path
+
 
 class ConfigFile(metaclass=SingletonType):
     schema = {
@@ -54,7 +58,10 @@ class ConfigFile(metaclass=SingletonType):
 
     def create_default(self):
         os.makedirs(self._config_dir, exist_ok=True)
-        location = resource_path('static/config_template.json')
+        if platform.system() == 'Linux':
+            location = resource_path('static/config_template_linux.json')
+        else:
+            location = resource_path('static/config_template_windows.json')
         shutil.copy(location, self._config_file)
 
     def update(self):
