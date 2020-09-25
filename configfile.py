@@ -51,9 +51,6 @@ class ConfigFile(metaclass=SingletonType):
                 self._default_arch = data['default_arch']
                 self._host_platform = data['default_arch']
         
-        if not self.api_key:
-            return False
-        
         return True
 
     def create_default(self):
@@ -80,6 +77,14 @@ class ConfigFile(metaclass=SingletonType):
     @api_key.setter
     def api_key(self, api_key):
         self._api_key = api_key
+
+    @staticmethod
+    def check_for_valid_api_key():
+        conf = ConfigFile()
+        conf.parse()
+
+        if not conf.api_key:
+            raise ValueError("No API key found in ConfigFile. Please run 'voyager login' first")
 
     @property
     def artifactory_url(self):

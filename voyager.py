@@ -44,6 +44,7 @@ def cli():
 @click.argument('query')
 def search(query):
     """ Search for a specific package. For example: voyager search Udsm* or voyager search Utils/* """
+    ConfigFile.check_for_valid_api_key()
     split = query.split('/')
     if len(split) == 1:
         found = artifactorysearch.gavc(artifact_id=query)
@@ -102,6 +103,7 @@ def generate_project(generators: list, subdir: str, build_info: BuildInfo):
 @click.option('--host-file', default=None, help='File with host platforms for cross compilation')
 @click.option('--with-runtime-deps', '-wrd', default=False, help='Install runtime dependencies', is_flag=True)
 def install(host, host_file, with_runtime_deps):
+    ConfigFile.check_for_valid_api_key()
     u = UpdateChecker()
     u.check_for_update_in_background(VERSION)
     conf = ConfigFile()
@@ -210,6 +212,7 @@ def init():
 
 @cli.command()
 def check_update():
+    ConfigFile.check_for_valid_api_key()
     u = UpdateChecker()
     u.check_for_update_in_background(VERSION)
     u.print_result()
