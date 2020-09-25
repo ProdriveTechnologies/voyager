@@ -215,7 +215,7 @@ def check_update():
     u.print_result()
 
 @cli.command()
-@click.option('--dir', 'deploy_dir', default=".voyager/.deploy", help='Host platform for cross compilation')
+@click.option('--dir', 'deploy_dir', default=".voyager/.deploy", help='Folder to place the binaries in')
 def deploy(deploy_dir):
     print("Deploy")
     deployfromlockfile.deploy_all_dependencies(deploy_dir)
