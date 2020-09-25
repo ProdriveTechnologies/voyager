@@ -22,7 +22,7 @@ import artifactorysearch
 import deployfromlockfile
 import artifactorylogin
 
-VERSION = "1.14.0"
+VERSION = "1.15.0"
 
 
 @click.group()
