@@ -30,3 +30,4 @@ class UpdateChecker:
         if self._update_available:
             click.echo(click.style(f"New version of voyager is available ({self._new_version}) please update",
                                    fg='yellow'))
+            click.echo("Download link: https://artifactory.prodrive.nl:443/artifactory/siatd-generic-local/Tools/voyager/latest")
