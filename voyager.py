@@ -20,8 +20,9 @@ from cmakepackagefile import CMakePackageFile
 from updatechecker import UpdateChecker
 import artifactorysearch
 import deployfromlockfile
+import artifactorylogin
 
-VERSION = "1.14.0"
+VERSION = "1.15.0"
 
 
 @click.group()
@@ -32,7 +33,7 @@ def cli():
         click.echo(click.style(f'It appears that there is no config file in {conf.file_path}', fg='yellow'))
         click.echo("Generating a default one")
         conf.create_default()
-        click.echo(click.style(u'Default one generated, please fill in your Artifactory API key', fg='black', bg='yellow'))
+        click.echo(click.style(u'Default one generated, please fill in your Artifactory API key or use \'voyager login\'', fg='black', bg='yellow'))
         exit(1)
 
     if not conf.parse():
@@ -43,6 +44,7 @@ def cli():
 @click.argument('query')
 def search(query):
     """ Search for a specific package. For example: voyager search Udsm* or voyager search Utils/* """
+    ConfigFile.check_for_valid_api_key()
     split = query.split('/')
     if len(split) == 1:
         found = artifactorysearch.gavc(artifact_id=query)
@@ -101,6 +103,7 @@ def generate_project(generators: list, subdir: str, build_info: BuildInfo):
 @click.option('--host-file', default=None, help='File with host platforms for cross compilation')
 @click.option('--with-runtime-deps', '-wrd', default=False, help='Install runtime dependencies', is_flag=True)
 def install(host, host_file, with_runtime_deps):
+    ConfigFile.check_for_valid_api_key()
     u = UpdateChecker()
     u.check_for_update_in_background(VERSION)
     conf = ConfigFile()
@@ -209,16 +212,21 @@ def init():
 
 @cli.command()
 def check_update():
+    ConfigFile.check_for_valid_api_key()
     u = UpdateChecker()
     u.check_for_update_in_background(VERSION)
     u.print_result()
 
 @cli.command()
-@click.option('--dir', 'deploy_dir', default=".voyager/.deploy", help='Host platform for cross compilation')
+@click.option('--dir', 'deploy_dir', default=".voyager/.deploy", help='Folder to place the binaries in')
 def deploy(deploy_dir):
     print("Deploy")
     deployfromlockfile.deploy_all_dependencies(deploy_dir)
 
+@cli.command()
+def login():
+    print("Login and get Artifactory API key for config file")
+    artifactorylogin.login()
 
 if __name__ == "__main__":
     print(f"Voyager version {VERSION}")

@@ -29,7 +29,8 @@ class VoyagerPackageFile():
             fields_to_remove = ['force_version', 'output_dir', 'overlay', 'package_path']
             for f in fields_to_remove:
                 if f in d:
-                    print(f"{f} found for {d['library']}, this will be removed in package file")
+                    if f != 'package_path':  # Do not show message for package path since it is not a user parameter
+                        print(f"{f} found for {d['library']}, this will be removed in package file")
                     del d[f]
 
             self._dependencies.append(d)

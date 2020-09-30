@@ -1,9 +1,13 @@
-import json, os, shutil
+import json
+import os
+import shutil
+import platform
 
 from jsonschema import validate
 
 from Singleton import SingletonType
 from utilities import resource_path
+
 
 class ConfigFile(metaclass=SingletonType):
     schema = {
@@ -47,19 +51,40 @@ class ConfigFile(metaclass=SingletonType):
                 self._default_arch = data['default_arch']
                 self._host_platform = data['default_arch']
         
-        if not self.api_key:
-            return False
-        
         return True
 
     def create_default(self):
         os.makedirs(self._config_dir, exist_ok=True)
-        location = resource_path('static/config_template.json')
+        if platform.system() == 'Linux':
+            location = resource_path('static/config_template_linux.json')
+        else:
+            location = resource_path('static/config_template_windows.json')
         shutil.copy(location, self._config_file)
+
+    def update(self):
+        json_data = {
+            'api_key': self._api_key,
+            'artifactory_url': self._artifactory_url,
+            'default_arch': self._default_arch
+        }
+        with open(self._config_file, 'w') as json_file:
+            json.dump(json_data, json_file, indent=2)
 
     @property
     def api_key(self):
         return self._api_key
+
+    @api_key.setter
+    def api_key(self, api_key):
+        self._api_key = api_key
+
+    @staticmethod
+    def check_for_valid_api_key():
+        conf = ConfigFile()
+        conf.parse()
+
+        if not conf.api_key:
+            raise ValueError("No API key found in ConfigFile. Please run 'voyager login' first")
 
     @property
     def artifactory_url(self):

@@ -24,6 +24,12 @@ The deploy folder contains scripts to deploy voyager to the different platforms
 
 ## Release notes
 
+### [1.15.0]
+- Add `voyager login` so no more copying of API key is needed
+- Fix bug where recursive runtime dependencies were not downloaded
+- The generated default config file on Linux now contains the correct architectures
+- When an update is available, the download link is printed
+
 ### [1.14.0]
 - Add support for local packages through `local_path`
 - Add option `--with-runtime-deps` for `voyager install` to also download runtime dependencies
