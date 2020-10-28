@@ -31,8 +31,10 @@ The following architectures are known
 |windows|Generic Windows|
 |**Linux**||
 |arm-xilinx-eabi-gcc-4.8.1|Arm GCC 4.8.1 for Ets-Prg (Config 0)|
+|arm-linux-gnueabi-gcc-7.2.1|Arm GCC 7.2.1 for Ets-Prg (Config 3)|
 |x86_64-linux-gnu-gcc-6|GCC 6 for lnxdev|
 |go.linux.amd64|Golang 64 bit|
+|arm-marvell-linux-gnueabi-gcc-4.6.4|Arm GCC 4.6.4 for AET Bottom Backplane|
 |**Any platform**||
 |Header|Header-only packages|
 |Source|Source packages|
