@@ -13,6 +13,14 @@ weight: 10
 2. Run the installer
 3. If this is your first time using voyager, please follow the steps in the `First time configuration` section below
 
+### Git bash
+If you're planning to use voyager within git bash it is needed to run through winpty. 
+Otherwise `voyager login` and text highlighting don't work.
+Please run the following code to add an alias to your `.bashrc` file:
+```Bash
+echo "alias voyager='winpty voyager'" >> ~/.bashrc
+```
+
 ## Linux
 For installation in Linux run the following commands in the shell
 
