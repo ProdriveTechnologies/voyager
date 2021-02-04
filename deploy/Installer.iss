@@ -26,7 +26,7 @@ ChangesEnvironment=true
 Name: modifypath; Description: &Add application directory to your system path
 
 [Files]
-Source: "dist/voyager/*"; DestDir: {app}; Flags: ignoreversion recursesubdirs
+Source: "../dist/voyager/*"; DestDir: {app}; Flags: ignoreversion recursesubdirs
 
 
 [Code]
