@@ -4,8 +4,8 @@ from pathlib import PurePath
 
 import click
 
-from lockfile import LockFileReader
-from buildinfo import Package
+from .lockfile import LockFileReader
+from .buildinfo import Package
 
 
 def deploy_all_dependencies(deploy_dir):

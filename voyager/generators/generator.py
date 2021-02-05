@@ -1,5 +1,5 @@
 
-from buildinfo import BuildInfo
+from voyager.buildinfo import BuildInfo
 
 class Generator(object):
     def __init__(self, build_info:BuildInfo):

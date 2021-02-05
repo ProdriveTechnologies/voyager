@@ -7,20 +7,20 @@ import click
 import semver
 
 # local imports
-from voyagerfile import VoyagerFile
-from generators.visualstudio import VisualStudioGenerator
-from generators.cmake import CMakeGenerator, CMakeProjectGenerator
-from generators.headercheck import HeaderCheckGenerator
-from buildinfo import BuildInfo
-from configfile import ConfigFile
-from artifactdownloader import ArtifactDownloader
-from lockfile import LockFileWriter, LockFileReader
-from voyagerpackagefile import VoyagerPackageFile
-from cmakepackagefile import CMakePackageFile
-from updatechecker import UpdateChecker
-import artifactorysearch
-import deployfromlockfile
-import artifactorylogin
+from .voyagerfile import VoyagerFile
+from .generators.visualstudio import VisualStudioGenerator
+from .generators.cmake import CMakeGenerator, CMakeProjectGenerator
+from .generators.headercheck import HeaderCheckGenerator
+from .buildinfo import BuildInfo
+from .configfile import ConfigFile
+from .artifactdownloader import ArtifactDownloader
+from .lockfile import LockFileWriter, LockFileReader
+from .voyagerpackagefile import VoyagerPackageFile
+from .cmakepackagefile import CMakePackageFile
+from .updatechecker import UpdateChecker
+import voyager.artifactorysearch as artifactorysearch
+import voyager.deployfromlockfile as deployfromlockfile
+import voyager.artifactorylogin as artifactorylogin
 
 VERSION = "1.15.0"
 
@@ -228,7 +228,8 @@ def login():
     print("Login and get Artifactory API key for config file")
     artifactorylogin.login()
 
-if __name__ == "__main__":
+
+def main():
     print(f"Voyager version {VERSION}")
     try:
         cli()
@@ -238,3 +239,7 @@ if __name__ == "__main__":
     except Exception as e:
         click.echo(f"Unexpected Error during execution of voyager: {e}", err=True)
         exit(2)
+
+
+if __name__ == "__main__":
+    main()

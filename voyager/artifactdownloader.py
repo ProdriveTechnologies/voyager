@@ -7,9 +7,9 @@ from artifactory import ArtifactoryPath
 from semver import valid_range, max_satisfying
 import semver
 
-from buildinfo import Package, BuildInfo
-from configfile import ConfigFile
-from lockfile import LockFileWriter
+from .buildinfo import Package, BuildInfo
+from .configfile import ConfigFile
+from .lockfile import LockFileWriter
 
 class ArtifactDownloader:
     _download_dir = '.voyager'

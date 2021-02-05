@@ -1,4 +1,4 @@
-from buildinfo import Package
+from .buildinfo import Package
 
 class CMakePackageFile:
     def __init__(self, package: Package):
