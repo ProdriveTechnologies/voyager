@@ -3,7 +3,7 @@
 block_cipher = None
 
 
-a = Analysis(['../voyager/voyager.py'],
+a = Analysis(['../cli.py'],
              binaries=[],
              datas=[('../voyager/static/*', 'static')],
              hiddenimports=[],
