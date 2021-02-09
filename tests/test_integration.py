@@ -2,7 +2,7 @@ import unittest
 import warnings
 import os
 
-import voyager
+import voyager.voyager as voyager
 from click.testing import CliRunner
 
 class TestIntegration(unittest.TestCase):
@@ -19,6 +19,13 @@ class TestIntegration(unittest.TestCase):
         """
         Test that voyager install finishes with the last to download library
         """
+        wd = os.getcwd()
+        if 'tests' in wd:  # depends from where tests are started
+            os.chdir('./files')
+        else:
+            os.chdir('./tests/files')
+        wd = os.getcwd()
+        print(wd)
         # Disable annoying warnings that screw up the test output
         warnings.filterwarnings(action="ignore", message="unclosed", 
                          category=ResourceWarning)

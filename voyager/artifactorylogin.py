@@ -2,7 +2,7 @@ from artifactory import ArtifactoryPath
 from collections import defaultdict
 import getpass
 
-from configfile import ConfigFile
+from .configfile import ConfigFile
 
 
 def login():

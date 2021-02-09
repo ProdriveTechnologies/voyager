@@ -1,7 +1,7 @@
 from artifactory import ArtifactoryPath
 from collections import defaultdict
 
-from configfile import ConfigFile
+from .configfile import ConfigFile
 
 
 def gavc(group_id=None, artifact_id=None, version=None, classifier=None, repos=None):

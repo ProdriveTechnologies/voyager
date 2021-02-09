@@ -1,5 +1,5 @@
 import json
-from Singleton import SingletonType
+from .Singleton import SingletonType
 
 LOCK_FILE_PATH = ".voyager/voyager.lock"
 

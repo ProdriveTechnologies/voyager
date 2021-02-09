@@ -1,5 +1,5 @@
 
-from generators.generator import Generator
+from voyager.generators.generator import Generator
 
 class VisualStudioGenerator(Generator):
     template = '''<?xml version="1.0" encoding="utf-8"?>

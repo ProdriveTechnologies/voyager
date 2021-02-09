@@ -1,10 +1,9 @@
 import json
 import os
 import click
-from sys import exit # For generated executables
+from sys import exit  # For generated executables
 import semver
 
-from Singleton import SingletonType
 
 class VoyagerFile():
     def __init__(self, fileName):
