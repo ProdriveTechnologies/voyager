@@ -5,8 +5,8 @@ import platform
 
 from jsonschema import validate
 
-from Singleton import SingletonType
-from utilities import resource_path
+from .Singleton import SingletonType
+from .utilities import resource_path
 
 
 class ConfigFile(metaclass=SingletonType):

@@ -1,5 +1,5 @@
 
-from generators.generator import Generator
+from voyager.generators.generator import Generator
 from pathlib import Path
 
 class HeaderCheckGenerator(Generator):

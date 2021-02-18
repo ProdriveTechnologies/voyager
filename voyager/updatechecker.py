@@ -2,7 +2,7 @@
 import threading
 import semver
 import click
-from artifactdownloader import ArtifactDownloader
+from .artifactdownloader import ArtifactDownloader
 
 class UpdateChecker:
     def __init__(self):
