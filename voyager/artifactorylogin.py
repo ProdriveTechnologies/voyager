@@ -12,14 +12,14 @@ def login():
     art_url = f"{conf.artifactory_url}"
     api_key_url = f"{art_url}/api/security/apiKey"
 
-    art_url_user = click.prompt("Please enter the artifactory url", type=str)
+    art_url_user = click.prompt("Please enter the Artifactory url", type=str)
     art_url = build_artifactory_url_from_user_input(art_url_user)
 
     user = getpass.getuser()
     user = click.prompt(f"User", default=user)
     pw = getpass.getpass(prompt=f"Password for {user}: ")
 
-    click.confirm(f"Connecting as {user} to {art_url} continue?", abort=True)
+    click.confirm(f"Connecting as {user} to {art_url}. Continue?", abort=True)
 
     path = ArtifactoryPath(art_url, auth=(user, pw))
     print("Requesting API Key")
