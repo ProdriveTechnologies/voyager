@@ -1,5 +1,5 @@
 {
   "api_key": "",
-  "artifactory_url": "https://artifactory.prodrive.nl/artifactory",
+  "artifactory_url": "",
   "default_arch": ["x86_64-linux-gnu-gcc-6", "go.linux.amd64"]
 }
