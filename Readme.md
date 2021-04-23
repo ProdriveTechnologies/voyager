@@ -24,6 +24,10 @@ The deploy folder contains scripts to deploy voyager to the different platforms
 
 ## Release notes
 
+### [x.x.x]
+- `voyager login` now asks for the artifactory url and username
+- Remove artifactory_url default value from config templates
+
 ### [1.15.0]
 - Add `voyager login` so no more copying of API key is needed
 - Fix bug where recursive runtime dependencies were not downloaded
