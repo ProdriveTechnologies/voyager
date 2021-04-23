@@ -1,126 +1,46 @@
----
-title: "Voyager"
-bookCollapseSection: true
----
+# Voyager
+Package manager for C/C++ software.
 
-## Introduction
-Voyager is the package manager for SIATD and possibly Test Development.
+Voyager is an enterprise focused package manager for C and C++ that integrates with Artifactory:
+- Integrates with Visual Studio (MSBuild) and CMake
+- Host packages in your own network on your own server
+- Works with the free Community Edition of Artifactory
+- Easy to use, just call `voyager install` and then build your software the regular way
+- Very simple package format, allowing easy packaging of existing software solutions (no need to overhaul your entire build system)
 
-It is documented [on SiatDoc](https://artifactory.prodrive.nl/artifactory/siatd-generic-local/SiatDoc/docs/SIATD/Other/voyager/introduction.html).
+The reason that we've created voyager at Prodrive was that the third-party options did not fit our workflow.
+We have a lot of existing software which would need significant changes to integrate with one of the existing package manager for C/C++.
 
-## General usage
-1. Run `voyager install` in the directory that contains the top level voyager.json file
+## Installation and usage
+To use voyager, install one of the releases and run `voyager login` to authenticate with an Artifactory server.
+After that run `voyager install` to install the dependencies of the project that you want to build.
+For more information look through the documentation site
 
-## Contact information
-If you have any feedback or request on this item, you can contact one of the following persons:
+## Developing
+Voyager is written in Python, 3.7 is the recommended version. To develop on the project create a virtual environment and run the python file.
+```bash
+python -m venv env
+# On macOS and Linux:
+source env/bin/activate
+# On Windows:
+.\env\Scripts\activate
 
-|Function|Name|
-|--------|----|
-|Owner   |Maarten Tamboer|
-|Last Modified |<tag_last_commit_by>|
+pip install -r requirements.txt
+python cli.py
+```
 
-## Deploy folder
-The deploy folder contains scripts to deploy voyager to the different platforms
+## Contributing
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
-## Release notes
+Please make sure to update tests as appropriate.
 
-### [x.x.x]
-- `voyager login` now asks for the artifactory url and username
-- Remove artifactory_url default value from config templates
+## Roadmap
+- Investigate support for anonymous authentication
+- Support for Artifactory Cloud. According to dohq-artifactory another [class](https://devopshq.github.io/artifactory/#artifactory-saas) needs to be used
 
-### [1.15.0]
-- Add `voyager login` so no more copying of API key is needed
-- Fix bug where recursive runtime dependencies were not downloaded
-- The generated default config file on Linux now contains the correct architectures
-- When an update is available, the download link is printed
+## License
+[Apache License 2.0](https://choosealicense.com/licenses/apache-2.0/)
 
-### [1.14.0]
-- Add support for local packages through `local_path`
-- Add option `--with-runtime-deps` for `voyager install` to also download runtime dependencies
-- Add `voyager deploy` that copies the contents of all bin paths to an output folder
-
-### [1.13.0]
-- Add an update check that runs in the background of `voyager install`
-- Add command to check for updates `voyager check-update`
-- Add command to search for packages `voyager search`
-- Add command to add found packages to voyager.json `voyager add`
-- Fix bug where `output_dir` was placed in the package file
-
-### [1.12.0]
-- Add option `force_version` to handle version conflicts
-- Fix issue with including dependencies of a skipped package
-- Fix typo in missing config file message and make message stand out better
-
-### [1.11.0]
-- Add option `override_archs` for voyager.json to download a package that is a different arch then the host system.
-- Add option `download_only` for downloading a package without including it.
-- Update internal `_find_versions_for_package` function to use aql. Should give a good speed boost
-
-### [1.10.3]
-- Fixed a bug introduced in version 1.10.2 where package already included in another project would not be added to the build info and thus not included by the generators. 
-
-### [1.10.2]
-- Fixed bug where version conflicts would not occur between projects in a solution or between top-level dependencies and project-level dependencies. This now correctly throws an `ERROR: Version conflict`
-
-### [1.10.1]
-- Added installer
-
-### [1.10.0]
-- Add support for source packages.
-
-### [1.9.0]
-- Add support for output_dir to specify extraction directory per library
-
-### [1.8.0]
-- Add `for_archs` field in voyager.json to install package only for specific archs
-
-### [1.7.1]
-- Fixed bug `NameError: name 'build_tools' is not defined`
-
-### [1.7.0]
-- Add support for cross compilation through build_tools and selectable host_platform
-- `voyager install` has now two optional commands: `--host` and `--host-file`
-- Add support for `build_tools` element in voyager.json
-
-### [1.6.1]
-- Fix bug where project files were not getting touched
-
-### [1.6.0]
-- Add support for linker_flags
-- Fix bug for package names without a folder
-- Change the download folder from `libs` to `.voyager`
-
-### [1.5.0]
-- Add support for CMake to the `voyager install` command.
-- Add a configuration option `generators` to the solution-level voyager file,
-  to choose the desired project file generators.
-- Add generator for -I parameters for header checks
-- Add deprecation warnings through Artifactory properties
-- Fix the exception when a branch name was available in Artifactory but the user used a semver
-
-### [1.4.2]
-- `voyager install` now touches the project files to force a Visual Studio reload
-
-### [1.4.1]
-- `voyager package` now accepts non-semver versions as dependencies (with a warning)
-
-### [1.4.0]
-- `voyager package` now expects an input file path and writes the output file in the same folder as the input file
-
-### [1.3.0]
-- Change environment variable names to the ones provided by the bamboo variables
-- `voyager config` now prints the location of the config file
-- Add support for preprocessor definitions
-
-### [1.2.0]
-- Add `voyager package` command
-
-### [1.1.0]
-- Add support for environment variables to override config file
-- Multiple projects with a top level solution can be made
-- Compatible architectures can now be defined in the config file
-- Dependencies are automatically downloaded
-- The version number can be indicated via semver ranges
-
-### [1.0.0]
-- First release of concept
+## Contact
+Feel free to open an issue with your questions or ideas.
+If there's something that cannot be disclosed through an issue, for example a vulnerability email opensource@prodrive-technologies.com
