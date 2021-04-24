@@ -8,13 +8,13 @@ Voyager is an enterprise focused package manager for C and C++ that integrates w
 - Easy to use, just call `voyager install` and then build your software the regular way
 - Very simple package format, allowing easy packaging of existing software solutions (no need to overhaul your entire build system)
 
-The reason that we've created voyager at Prodrive was that the third-party options did not fit our workflow.
-We have a lot of existing software which would need significant changes to integrate with one of the existing package manager for C/C++.
+The reason we've created voyager at Prodrive Technologies is that third-party options did not fit our workflow.
+We have a lot of existing software which would need significant changes to integrate with one of the existing package managers for C/C++.
 
 ## Installation and usage
 To use voyager, install one of the releases and run `voyager login` to authenticate with an Artifactory server.
 After that run `voyager install` to install the dependencies of the project that you want to build.
-For more information look through the documentation site
+For more information about the usage of voyager, take a look at the documentation site.
 
 ## Developing
 Voyager is written in Python, 3.7 is the recommended version. To develop on the project create a virtual environment and run the python file.
@@ -43,4 +43,4 @@ Please make sure to update tests as appropriate.
 
 ## Contact
 Feel free to open an issue with your questions or ideas.
-If there's something that cannot be disclosed through an issue, for example a vulnerability email opensource@prodrive-technologies.com
+If there's something that cannot be disclosed through an issue, for example, a vulnerability, then send an email to: opensource@prodrive-technologies.com
