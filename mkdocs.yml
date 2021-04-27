@@ -1,0 +1,80 @@
+site_name: Voyager Package Manager
+
+site_url: https://ProdriveTechnologies.github.io/voyager/
+site_author: Maarten Tamboer
+
+# Repository
+repo_name: ProdriveTechnologies/voyager
+repo_url: https://github.com/ProdriveTechnologies/voyager
+edit_uri: ""
+
+# Copyright
+copyright: Copyright &copy; 2021 Prodrive Technologies
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to dark mode
+    - scheme: slate
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode
+  features:
+    - navigation.instant
+    - navigation.top
+
+# Plugins
+plugins:
+  - search
+
+  # Customization
+extra:
+  social:
+    - icon: fontawesome/solid/desktop
+      link: https://prodrive-technologies.com/
+    - icon: fontawesome/brands/github
+      link: https://github.com/ProdriveTechnologies
+    - icon: fontawesome/brands/instagram
+      link: https://www.instagram.com/prodrive_technologies
+    - icon: fontawesome/brands/youtube
+      link: https://www.youtube.com/user/ProdriveTechnologies
+    - icon: fontawesome/brands/linkedin
+      link: https://nl.linkedin.com/company/prodrivetechnologies
+    - icon: fontawesome/brands/facebook
+      link: https://www.facebook.com/Prodrive-Technologies-491351567649515/
+
+# Extensions
+markdown_extensions:
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - attr_list
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - abbr
+  - pymdownx.inlinehilite
+
+nav:
+  - Home: index.md
+  - Getting started:
+    - Installation: getting-started/installation.md
+    - Configuration: getting-started/configuration.md
+    - Command reference: getting-started/command-reference.md
+    - Voyager.json: getting-started/voyager-json.md
+  - Artifactory: artifactory.md
+  - Package format: package-format.md
+  - Advanced:
+    - Dependency conflicts: advanced/dependency-conflicts.md
+    - Cross compilation: advanced/cross-compilation.md
+    - Overlay file: advanced/overlay-file.md
+    - CI Integration: advanced/ci-integration.md
+  - Integrations:
+    - CMake: integrations/cmake.md
+    - MSBuild (Visual Studio): integrations/msbuild.md
+  - Release notes: release-notes.md
