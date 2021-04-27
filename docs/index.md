@@ -2,6 +2,7 @@
 Package manager for C/C++ software.
 
 Voyager is an enterprise focused package manager for C and C++ that integrates with Artifactory:
+
 - Integrates with Visual Studio (MSBuild) and CMake
 - Host packages in your own network on your own server
 - Works with the free Community Edition of Artifactory
