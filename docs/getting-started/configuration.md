@@ -1,5 +1,5 @@
 # Configuration
-Voyager works together with Artifactory, connecting to an Artifactory instance can be done with the `voyager login` command.
+Voyager works together with Artifactory. Connecting to an Artifactory instance can be done with the `voyager login` command.
 
 1. Open a shell and run `voyager config` to generate the default config file
 2. Run `voyager login` and follow the on screen instructions

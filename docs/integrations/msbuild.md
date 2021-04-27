@@ -8,3 +8,7 @@ In case the project is not yet configured for voyager the user must add the prop
 
 Go to your Visual Studio project, and open the **Property Manager** (usually in **View -> Other Windows -> Property Manager**).
 Highlight the project to which the props file has to be added. Click the + icon and select the generated `voyager.props` file.
+
+### Project not loading
+When a user forgets to run `voyager install`, Visual Studio won't load the project because the .props file is missing.
+This can be fixed by adding a condition to the Import in the .vcxproj file: `<Import Project="voyager.props" Condition="exists('voyager.props')" />`

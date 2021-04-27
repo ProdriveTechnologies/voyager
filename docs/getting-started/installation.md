@@ -1,7 +1,7 @@
 # Installation
 
 ## Windows
-For Windows we provide standard installers that will install voyager into appdata and setup your path variable.
+For Windows we provide standard installers that will install voyager into AppData and set up your `PATH` variable.
 
 1. Uninstall previous versions of voyager first
 1. Download the latest version of the installer from the releases page.

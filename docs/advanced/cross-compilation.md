@@ -11,8 +11,7 @@ dependencies are downloaded for the build architecture, while `libraries`
 dependencies are downloaded for the host architecture.
 
 The build architecture is defined by the `default_arch` field in the
-configuration file or the environment variables
-defined in that section. When not explicitly defined, the host architecture
+configuration file or the environment variables. When not explicitly defined, the host architecture
 defaults to the build architecture. The host architecture can be defined while
 running `voyager install`:
 

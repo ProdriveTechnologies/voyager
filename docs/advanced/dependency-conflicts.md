@@ -1,5 +1,5 @@
 # Dependency conflicts
-This page explains how dependency conflicts are handled when using the `force_version` keyword
+This page explains how to use the `force_version` keyword to handle dependency conflicts.
 
 ## When
 Conflicts occur when a voyager package requires a different version of an already included package.
