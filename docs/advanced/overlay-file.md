@@ -35,7 +35,7 @@ voyager.overlay.json
     {
       "repo": "siatd-generic-local",
       "library": "WowALocalPackage",
-      "local_path": "..\\pa.jtagprogrammer\\Debug\\voyager_package"
+      "local_path": "..\\WowALocalPackage\\Debug\\voyager_package"
     }
   ]
 }

@@ -10,15 +10,15 @@ or shorter: `voyager install -wrd`.
 You can search for packages by running `voyager search` with your query. A few example queries:
 
 - `voyager search Interfaces/D*` Search for interfaces that start with a `D`
-- `voyager search PA.*` Search for anything starting with PA.
-- `voyager search P?.Bdm*` Search for Bdm in P?
+- `voyager search ASD.*` Search for anything starting with ASD.
+- `voyager search P?.Xyz*` Search for Xyz in P?
 
 Example output:
 ```
->voyager search PA.Jtag*
+>voyager search Jtag*
 Voyager version 1.13.0
-example-generic-local/API/PA.JtagProgrammer/19.0.2 ['18.0.0', '17.0.0', '19.0.0', '19.0.1', '19.0.2']
-example-generic-local/API/PA.Jtag/13.0.0 ['13.0.0']
+example-generic-local/API/JtagProgrammer/19.0.2 ['18.0.0', '17.0.0', '19.0.0', '19.0.1', '19.0.2']
+example-generic-local/API/Jtag/13.0.0 ['13.0.0']
 ```
 The first string of the search result can be copied and pasted in to the argument of the `voyager add` function.
 
@@ -27,11 +27,11 @@ You can add packages by running `voyager add` with a string of the package you w
 This package is then added in the voyager.json in the current working directory.
 Example:
 ```
->voyager add example-generic-local/API/PA.JtagProgrammer/19.0.2
+>voyager add example-generic-local/API/JtagProgrammer/19.0.2
 Voyager version 1.13.0
 Adding Library:
   Repo:    example-generic-local
-  Library: API/PA.JtagProgrammer
+  Library: API/JtagProgrammer
   Version: 19.0
 ``` 
 

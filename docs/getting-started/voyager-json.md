@@ -28,12 +28,12 @@ The voyager.json is the file that is placed in the solution and projects folder 
   "libraries": [
     {
       "repo": "example-generic-local",
-      "library": "API/PA.ExampleLibrary",
+      "library": "API/ExampleLibrary",
       "version": "8.*",
     },
     {
       "repo": "example-generic-local",
-      "library": "API/PA.JtagProgrammer",
+      "library": "API/JtagProgrammer",
       "version": "6.0",
       "options": ["extended-header"],
       "dependency_type": "runtime",
@@ -42,11 +42,11 @@ The voyager.json is the file that is placed in the solution and projects folder 
     },
     {
       "repo": "example-generic-local",
-      "library": "API/PA.SwdProgrammer",
+      "library": "API/SwdProgrammer",
       "version": "*",
       "override_archs": ["arm-xilinx-eabi-gcc-4.8.1"],
       "download_only": true,
-      "output_dir": ".voyager/PA.SwdProgrammer"
+      "output_dir": ".voyager/SwdProgrammer"
     }
   ],
   "projects": ["Implementation", "Qualification"],
