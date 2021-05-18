@@ -30,7 +30,7 @@ def gavc(group_id=None, artifact_id=None, version=None, classifier=None, repos=N
         split_uri = result['uri'].split('/')
         if split_uri[-1] == "voyager_package.tgz":
             version = split_uri[-3] # 1.0.0
-            package_name = f"{split_uri[-5]}/{split_uri[-4]}"  # API/PA.JtagProgrammer
+            package_name = f"{split_uri[-5]}/{split_uri[-4]}"  # API/PA.Library
             repo = split_uri[-6]  # example-generic-local
             identifier = f"{repo}/{package_name}"
             if version not in found[identifier]:

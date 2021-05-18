@@ -9,7 +9,7 @@ Voyager packages that are deployed must comply with the following path:
 |----------|-----------|
 |repository|The artifact repository, for example: `example-generic-local`|
 |group     |Group folder in the repository: `API`, `ThirdParty`, ...|
-|package   |Name of the package: `PA.JtagProgrammer`, `fmt`, ...|
+|package   |Name of the package: `protoc`, `fmt`, ...|
 |version   |Version of the package, can be a semver number (x.y.z) or the name of a branch|
 |arch      |The architecture of the packages, see [Architectures](#architectures)|
 
