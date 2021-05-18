@@ -37,6 +37,8 @@ Please make sure to update tests as appropriate.
 ## Roadmap
 - Investigate support for anonymous authentication
 - Support for Artifactory Cloud. According to dohq-artifactory another [class](https://devopshq.github.io/artifactory/#artifactory-saas) needs to be used
+- Add proper testcases that use Artifactory Cloud, so they are runable by everyone
+- Change UpdateChecker class to read the latest version from Github releases
 
 ## License
 [Apache License 2.0](https://choosealicense.com/licenses/apache-2.0/)
