@@ -17,7 +17,6 @@ from .artifactdownloader import ArtifactDownloader
 from .lockfile import LockFileWriter, LockFileReader
 from .voyagerpackagefile import VoyagerPackageFile
 from .cmakepackagefile import CMakePackageFile
-from .updatechecker import UpdateChecker
 import voyager.artifactorysearch as artifactorysearch
 import voyager.deployfromlockfile as deployfromlockfile
 import voyager.artifactorylogin as artifactorylogin
@@ -104,8 +103,6 @@ def generate_project(generators: list, subdir: str, build_info: BuildInfo):
 @click.option('--with-runtime-deps', '-wrd', default=False, help='Install runtime dependencies', is_flag=True)
 def install(host, host_file, with_runtime_deps):
     ConfigFile.check_for_valid_api_key()
-    u = UpdateChecker()
-    u.check_for_update_in_background(VERSION)
     conf = ConfigFile()
     if host:
         conf.set_host_platform(host)
@@ -181,7 +178,6 @@ def install(host, host_file, with_runtime_deps):
 
     l = LockFileWriter()
     l.save()
-    u.print_result()
 
 @cli.command()
 @click.argument('template_filename')
@@ -209,13 +205,6 @@ def config():
 @cli.command()
 def init():
     VoyagerFile.generate_empty_file()
-
-@cli.command()
-def check_update():
-    ConfigFile.check_for_valid_api_key()
-    u = UpdateChecker()
-    u.check_for_update_in_background(VERSION)
-    u.print_result()
 
 @cli.command()
 @click.option('--dir', 'deploy_dir', default=".voyager/.deploy", help='Folder to place the binaries in')
