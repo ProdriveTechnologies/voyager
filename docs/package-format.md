@@ -32,7 +32,7 @@ This overview gives an idea of all the functionality in the package file. For a 
     "bin": ["Bin"],
     "include": ["Include"],
     "lib": ["Lib"],
-    "link": ["PA.Library.R06.lib"],
+    "link": ["Library.R06.lib"],
     "definitions": [],
     "options": [{
         "key": "extended-header",
@@ -88,7 +88,7 @@ This overview gives an idea of all the functionality in the package file. For a 
 Options have the ability to override certain settings of the package. These options are completely package specific.
 Example use cases for options include:
 
-* Adding an extra include path for a 'secret' header (PA.Library.Extended.h)
+* Adding an extra include path for a 'secret' header (Library.Extended.h)
 * Modifying the link element to link to a static version of the library
 
 ### Template substitutions
