@@ -67,7 +67,7 @@ def search(query):
 def add(library_string):
     """
     Add a library to the working directory voyager.json and save the file.
-    The library_string must use the following format: siatd-generic-local/Utils/Exceptions/1.2.0
+    The library_string must use the following format: example-generic-local/Utils/Exceptions/1.2.0
     """
     file = VoyagerFile("voyager.json")
     file.parse()

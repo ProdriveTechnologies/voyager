@@ -167,8 +167,8 @@ class ArtifactDownloader:
     def find_versions_for_package(self, repo, library, override_archs):
         """
         Find the versions for a specific package
-        :param repo: The repository, for example siatd-generic-local
-        :param library: The name of the library, for example PA.JtagProgrammer
+        :param repo: The repository, for example example-generic-local
+        :param library: The name of the library, for example ThirdParty/fmt
         :returns: A list of strings with versions: ['17.0.0', '18.0.0']
         """
         if override_archs:
@@ -202,8 +202,8 @@ class ArtifactDownloader:
     def _find_download_extract_package(self, repo, library, version, output_dir, override_archs):
         """
         Find, download and extract a package
-        :param repo: The repository, for example siatd-generic-local
-        :param library: The name of the library, for example PA.JtagProgrammer
+        :param repo: The repository, for example example-generic-local
+        :param library: The name of the library, for example ThirdParty/fmt
         :param version: The version of the library, for example 17.0.0
         :returns: Relative directory to where the package is extracted
         :raises ValueError: When the package could not be found
