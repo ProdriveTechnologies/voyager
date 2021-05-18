@@ -30,18 +30,18 @@ Which will result in the following error:
 To resolve conflicts in the above example change the voyager.json to this:
 ```json
 [{
-  "repo": "siatd-generic-local",
+  "repo": "example-generic-local",
   "library": "ThirdParty/fmt",
   "version": "6.2",
   "force_version": true
 },
 {
-  "repo": "siatd-generic-local",
+  "repo": "example-generic-local",
   "library": "Utils/Exceptions",
   "version": "1.2"
 },
 {
-  "repo": "siatd-generic-local",
+  "repo": "example-generic-local",
   "library": "Utils/BitFields",
   "version": "1.1"
 }]
