@@ -3,17 +3,11 @@
   "type": "project",
   "build_tools": [
     {
-      "repo": "siatd-generic-local",
+      "repo": "example-generic-local",
       "library": "ThirdParty/protoc",
       "version": "3.5"
     }
   ],
   "libraries": [
-    {
-      "repo": "siatd-generic-local",
-      "library": "API/PA.VirtualMachine",
-      "version": "2.0.0",
-      "dependency_type": "runtime"
-    }
   ]
 }

@@ -2,75 +2,19 @@
   "version": 1,
   "type": "solution",
   "build_tools": [
-    {
-      "repo": "siatd-generic-local",
-      "library": "Tools/FillTemplate",
-      "version": "3.*"
-    }
   ],
   "libraries": [
     {
-      "repo": "siatd-generic-local",
-      "library": "ThirdParty/fmt",
-      "version": "6.2",
-      "force_version": true,
-      "dependency_type": "compile"
-    },
-    {
-      "repo": "siatd-generic-local",
-      "library": "Utils/Exceptions",
-      "version": "1.2",
-      "force_version": true
-    },
-    {
-      "repo": "siatd-generic-local",
-      "library": "Utils/Exceptions",
-      "version": "1.1"
-    },
-    {
-      "repo": "siatd-generic-local",
-      "library": "Interfaces/Standard",
-      "version": "*",
-      "dependency_type": "compile"
-    },
-    {
-      "repo": "siatd-generic-local",
-      "library": "test/MyCoolLib",
-      "version": "1.0",
-      "options": ["Opt1"],
-      "dependency_type": "runtime"
-    },
-    {
-      "repo": "ptf-generic-local",
-      "library": "ClientLibrary",
-      "version": "*",
-      "for_archs": ["MSVC.142.DBG.32"]
-    },
-    {
-      "repo": "siatd-generic-local",
+      "repo": "example-generic-local",
       "library": "test/SourcePackage",
       "version": "1"
     },
     {
-      "repo": "siatd-generic-local",
+      "repo": "example-generic-local",
       "library": "Test/nonExistingPackage",
       "version": "*",
       "for_archs": ["ASDF", "BCDE"]
-    },
-    {
-      "repo": "siatd-generic-local",
-      "library": "API/PA.SwdProgrammer",
-      "version": "*",
-      "override_archs": ["arm-xilinx-eabi-gcc-4.8.1"],
-      "download_only": true,
-      "output_dir": ".voyager/PA.SwdProgrammer"
-    },
-    {
-      "repo": "siatd-generic-local",
-      "library": "API/PA.SwdProgrammer",
-      "version": "*"
     }
-
   ],
   "projects": ["Implementation", "Qualification"],
   "generators": ["msbuild", "cmake", "headercheck"]
