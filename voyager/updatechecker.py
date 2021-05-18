@@ -3,8 +3,15 @@ import threading
 import semver
 import click
 from .artifactdownloader import ArtifactDownloader
+from .configfile import ConfigFile
+
 
 class UpdateChecker:
+    """
+    This class checks for updates to voyager when the user runs voyager install or voyager check-update.
+    Currently it checks on an internal Prodrive repository, this class needs an update to read from github releases
+    once the OSS release is finished
+    """
     def __init__(self):
         self._update_available = False
         self._new_version = None
@@ -30,4 +37,5 @@ class UpdateChecker:
         if self._update_available:
             click.echo(click.style(f"New version of voyager is available ({self._new_version}) please update",
                                    fg='yellow'))
-            click.echo("Download link: https://artifactory.prodrive.nl:443/artifactory/siatd-generic-local/Tools/voyager/latest")
+            url = f"{ConfigFile().artifactory_url}"
+            click.echo(f"Download link: {url}/siatd-generic-local/Tools/voyager/latest")
