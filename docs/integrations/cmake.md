@@ -6,7 +6,7 @@ load voyager dependencies. The generator requires CMake 3.13 or higher.
 ## Usage
 `CMakeLists.txt`:
 ```cmake
-project(PA.BdmProgrammer)
+project(Library)
 include(voyager_solution.cmake)
 ```
 

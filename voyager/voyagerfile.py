@@ -71,7 +71,7 @@ class VoyagerFile():
     def add_library(self, library_string: str):
         """
         Add a library to the voyager.json and save the file.
-        The library_string must use the following format: siatd-generic-local/Utils/Exceptions/1.2.0
+        The library_string must use the following format: example-generic-local/Utils/Exceptions/1.2.0
         """
         split = library_string.split('/')
         repo = split[0]

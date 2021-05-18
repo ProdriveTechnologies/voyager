@@ -15,7 +15,7 @@ voyager.json
   ],
   "libraries": [
     {
-      "repo": "siatd-generic-local",
+      "repo": "example-generic-local",
       "library": "WowALocalPackage",
       "version": "500.0.0"
     }
@@ -33,7 +33,7 @@ voyager.overlay.json
   "build_tools": [],
   "libraries": [
     {
-      "repo": "siatd-generic-local",
+      "repo": "example-generic-local",
       "library": "WowALocalPackage",
       "local_path": "..\\WowALocalPackage\\Debug\\voyager_package"
     }

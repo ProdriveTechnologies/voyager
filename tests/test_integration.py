@@ -32,7 +32,7 @@ class TestIntegration(unittest.TestCase):
         runner = CliRunner()
         result = runner.invoke(voyager.cli, ['install'])
         print(result.output)
-        assert 'Downloading API/PA.JtagProgrammer @ >=17.0 ...' in result.output
+        assert 'Downloading test/SourcePackage @ 1 ...' in result.output
         assert os.path.isfile('.voyager/voyager.lock')
 
 if __name__ == '__main__':
