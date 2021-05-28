@@ -51,7 +51,7 @@ jobs:
           python -m pip install -r requirements.txt
       - name: Build with PyInstaller
         run: |
-          pyinstaller deploy/voyager-onefile.spec
+          pyinstaller deploy/voyager_onefile.spec
       - uses: actions/upload-artifact@v2
         with:
           name: Voyager-Executable-Ubuntu-20.04
