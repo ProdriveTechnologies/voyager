@@ -1,0 +1,75 @@
+name: Build
+
+on:
+  push:
+    branches: [ master ]
+    tags:
+      - '*.*.*'
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build-Windows:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.7
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install pyinstaller
+        python -m pip install -r requirements.txt
+    - name: Build with PyInstaller
+      run: |
+        pyinstaller deploy/voyager.spec
+    - name: Building installer
+      run: |
+        "%programfiles(x86)%\Inno Setup 6\iscc.exe" "deploy/Installer.iss"
+      shell: cmd
+    - uses: actions/upload-artifact@v2
+      with:
+        name: Voyager-Installer-Windows
+        path: deploy/setup/voyagerSetup.exe
+
+  build-Linux:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pyinstaller
+          python -m pip install -r requirements.txt
+      - name: Build with PyInstaller
+        run: |
+          pyinstaller deploy/voyager-onefile.spec
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Voyager-Executable-Ubuntu-20.04
+          path: dist/
+
+  release:
+    needs: [build-Windows, build-Linux]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v2
+      - name: Display structure of downloaded files
+        run: ls -R
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            Voyager-Executable-Ubuntu-20.04/voyager
+            Voyager-Installer-Windows/voyagerSetup.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
