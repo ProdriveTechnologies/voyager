@@ -30,9 +30,7 @@ python cli.py
 ```
 
 ## Contributing
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
-
-Please make sure to update tests as appropriate.
+See the [Contributing guidelines](CONTRIBUTING.md)
 
 ## Roadmap
 - Investigate support for anonymous authentication
