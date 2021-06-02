@@ -9,7 +9,6 @@ from .configfile import ConfigFile
 
 def login():
     conf = ConfigFile()
-    art_url = f"{conf.artifactory_url}"
 
     art_url_user = click.prompt("Please enter the Artifactory url", type=str)
     art_url = build_artifactory_url_from_user_input(art_url_user)
