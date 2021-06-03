@@ -90,6 +90,10 @@ class ConfigFile(metaclass=SingletonType):
     def artifactory_url(self):
         return self._artifactory_url
 
+    @artifactory_url.setter
+    def artifactory_url(self, url):
+        self._artifactory_url = url
+
     @property
     def build_platform(self):
         return self._default_arch

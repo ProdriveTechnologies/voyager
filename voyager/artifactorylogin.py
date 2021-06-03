@@ -9,12 +9,10 @@ from .configfile import ConfigFile
 
 def login():
     conf = ConfigFile()
-    art_url = f"{conf.artifactory_url}"
-    api_key_url = f"{art_url}/api/security/apiKey"
 
     art_url_user = click.prompt("Please enter the Artifactory url", type=str)
     art_url = build_artifactory_url_from_user_input(art_url_user)
-
+    
     user = getpass.getuser()
     user = click.prompt(f"User", default=user)
     pw = getpass.getpass(prompt=f"Password for {user}: ")
@@ -23,6 +21,7 @@ def login():
 
     path = ArtifactoryPath(art_url, auth=(user, pw))
     print("Requesting API Key")
+    api_key_url = f"{art_url}/api/security/apiKey"
     r = path.session.get(api_key_url)
     r.raise_for_status()
     content = r.json()
@@ -41,6 +40,7 @@ def login():
     print(f"Saving API key: {api_key} to config file")
 
     conf.api_key = api_key
+    conf.artifactory_url = art_url
 
     conf.update()
 
