@@ -2,6 +2,7 @@ import unittest
 import unittest.mock
 
 import voyager.plugins as plugins
+import sys
 
 class TestPlugins(unittest.TestCase):
     def test_add_list(self):
@@ -21,6 +22,17 @@ class TestPlugins(unittest.TestCase):
         underTest.register(plugin2)
         self.assertIn(plugin1, underTest.list())
         self.assertIn(plugin2, underTest.list())
+
+    def test_load_plugins(self):
+        underTest = plugins.Plugins()
+        underTest.reset()
+
+        sys.path = ["tests/plugins"] + sys.path
+        plugins.load_plugins()
+        sys.path = sys.path[1:]
+
+        self.assertEqual(len(underTest.list()), 1)
+        self.assertEqual(type(underTest.list()[0]).__name__, "FakePlugin")
 
 if __name__ == '__main__':
     unittest.main()
