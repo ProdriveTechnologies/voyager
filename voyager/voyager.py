@@ -34,6 +34,7 @@ from .cmakepackagefile import CMakePackageFile
 import voyager.artifactorysearch as artifactorysearch
 import voyager.deployfromlockfile as deployfromlockfile
 import voyager.artifactorylogin as artifactorylogin
+import voyager.plugins as plugins
 
 VERSION = "1.15.0"
 
@@ -235,6 +236,7 @@ def login():
 def main():
     print(f"Voyager version {VERSION}")
     try:
+        plugins.load_plugins()
         cli()
     except ValueError as v:
         click.echo(f"Error during execution of voyager: {v}", err=True)

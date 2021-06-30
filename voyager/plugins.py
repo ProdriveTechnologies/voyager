@@ -17,6 +17,9 @@ class Plugin:
     def on_end(self):
         pass
 
+    def __str__(self):
+        return type(self).__name__
+
 
 class Plugins(metaclass=SingletonType):
     """

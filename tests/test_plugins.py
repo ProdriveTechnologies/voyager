@@ -31,7 +31,7 @@ class TestPlugins(unittest.TestCase):
         plugins.load_plugins()
         sys.path = sys.path[1:]
 
-        self.assertEqual(len(underTest.list()), 1)
+        self.assertEqual(len(underTest.list()), 2) # one for voyager_plugin
         self.assertEqual(type(underTest.list()[0]).__name__, "FakePlugin")
 
 if __name__ == '__main__':
