@@ -18,15 +18,11 @@ class Plugin:
     Plugins don't have to inherit from it, but all Plugin methods must be defined.
     """
 
+    # Default compatibility is with nothing, so you have to set this in a plugin.
     REQUIRED_INTERFACE_VERSION = semver.Range("0.0.0", False)
 
     def __init__(self, interface):
         self.interface: Interface = interface
-
-    @classmethod
-    def required_plugin_version(cls) -> semver.Range:
-        """Returns the Plugins.INTERFACE_VERSION required for this plugin."""
-        return cls.REQUIRED_INTERFACE_VERSION
 
     def on_start(self):
         pass
@@ -41,7 +37,7 @@ class Plugin:
 class Interface(ABC):
     """The interface passed to plugins through which they should make calls into voyager."""
 
-    INTERFACE_VERSION = semver.SemVer("0.1.0", False)
+    VERSION = semver.SemVer("0.1.0", False)
 
     @abstractproperty
     def plugins(self) -> List[Plugin]:
@@ -109,12 +105,12 @@ class Registry(metaclass=SingletonType):
 
 
 def load_plugin(plugin: Type[Plugin]):
-    iface_version = Registry().interface.INTERFACE_VERSION
-    if semver.satisfies(iface_version, plugin.required_plugin_version()):
+    iface_version = Registry().interface.VERSION
+    if semver.satisfies(iface_version, plugin.REQUIRED_INTERFACE_VERSION):
         Registry().register(plugin(Registry().interface))
     else:
         print(f"Not loading plugin {plugin} - version mismatch "
-              + f"(required {plugin.required_plugin_version()}, actual {iface_version}")
+              + f"(required {plugin.REQUIRED_INTERFACE_VERSION}, actual {iface_version}")
 
 
 def load_plugins():
