@@ -1,23 +1,27 @@
 import importlib
 import pkgutil
+from abc import ABC, abstractmethod, abstractproperty
 from pathlib import Path
 from typing import List, Type
 
 import click
 import semver
 
-from . import voyager
-from .Singleton import SingletonType
+from voyager.Singleton import SingletonType
+from voyager import voyager
 
 
 class Plugin:
     """
-    Base for a voyager plugin.
+    The interface a voyager plugin should implement.
 
     Plugins don't have to inherit from it, but all Plugin methods must be defined.
     """
 
     REQUIRED_INTERFACE_VERSION = semver.Range("0.0.0", False)
+
+    def __init__(self, interface):
+        self.interface: Interface = interface
 
     @classmethod
     def required_plugin_version(cls) -> semver.Range:
@@ -34,7 +38,28 @@ class Plugin:
         return type(self).__name__
 
 
-class Plugins(metaclass=SingletonType):
+class Interface(ABC):
+    """The interface passed to plugins through which they should make calls into voyager."""
+
+    INTERFACE_VERSION = semver.SemVer("0.1.0", False)
+
+    @abstractproperty
+    def plugins(self) -> List[Plugin]:
+        """Get a list of all currently loaded plugins."""
+        pass
+
+    @abstractmethod
+    def add_command(self, name=None, cls=None, **attrs) -> click.Command:
+        """
+        Add a command to voyager.
+
+        This is routed directly to click.command; see its documentation for more
+        details.
+        """
+        pass
+
+
+class Registry(metaclass=SingletonType):
     """
     Plugin manager.
 
@@ -42,15 +67,25 @@ class Plugins(metaclass=SingletonType):
     trigger event handlers in the registered plugins.
     """
 
-    INTERFACE_VERSION = semver.SemVer("0.1.0", False)
+    class RegistryInterface(Interface):
+        def __init__(self, registry):
+            self.registry: Registry = registry
+
+        @property
+        def plugins(self) -> List[Plugin]:
+            return list(self.registry.plugins)
+
+        def add_command(self, name=None, cls=None, **attrs) -> click.Command:
+            return voyager.cli.command(name, cls, **attrs)
 
     def __init__(self):
         super().__init__()
-        self._plugins: List[Plugin] = []
+        self.plugins: List[Plugin] = []
+        self._interface = Registry.RegistryInterface(self)
 
     def reset(self):
         """Reset the plugin registry. Only for test usage."""
-        self._plugins = []
+        self.plugins = []
 
     def register(self, plugin: Plugin):
         """
@@ -58,7 +93,11 @@ class Plugins(metaclass=SingletonType):
 
         All registered plugins will be notified of events.
         """
-        self._plugins.append(plugin)
+        self.plugins.append(plugin)
+
+    @property
+    def interface(self) -> Interface:
+        return self._interface
 
     def on_start(self):
         for plugin in self.plugins:
@@ -68,21 +107,14 @@ class Plugins(metaclass=SingletonType):
         for plugin in self.plugins:
             plugin.on_end()
 
-    # Everything below here is covered under interface versioning
 
-    @property
-    def plugins(self) -> List[Plugin]:
-        return list(self._plugins)
-
-    def add_command(self, name=None, cls=None, **attrs) -> click.Command:
-        """
-        Add a command to voyager.
-
-        This is routed directly to click.command; see its documentation for more
-        details.
-        """
-
-        return voyager.cli.command(name, cls, **attrs)
+def load_plugin(plugin: Type[Plugin]):
+    iface_version = Registry().interface.INTERFACE_VERSION
+    if semver.satisfies(iface_version, plugin.required_plugin_version()):
+        Registry().register(plugin(Registry().interface))
+    else:
+        print(f"Not loading plugin {plugin} - version mismatch "
+              + f"(required {plugin.required_plugin_version()}, actual {iface_version}")
 
 
 def load_plugins():
@@ -95,9 +127,5 @@ def load_plugins():
     """
     for finder, name, ispkg in pkgutil.iter_modules():
         if (name.startswith("voyager_")):
-            plugin: Type[Plugin] = importlib.import_module(name).Plugin
-            if semver.satisfies(Plugins.INTERFACE_VERSION, plugin.required_plugin_version()):
-                Plugins().register(plugin())
-            else:
-                print(f"Not loading plugin {plugin} - version mismatch "
-                      + f"(required {plugin.required_plugin_version()}, actual {Plugins.INTERFACE_VERSION}")
+            plugin = importlib.import_module(name).Plugin
+            load_plugin(plugin)
