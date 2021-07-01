@@ -12,16 +12,16 @@ class TestPlugins(unittest.TestCase):
         plugin1 = unittest.mock.Mock(spec=plugins.Plugin)
         plugin2 = unittest.mock.Mock(spec=plugins.Plugin)
 
-        self.assertNotIn(plugin1, underTest.list())
-        self.assertNotIn(plugin2, underTest.list())
+        self.assertNotIn(plugin1, underTest.plugins)
+        self.assertNotIn(plugin2, underTest.plugins)
       
         underTest.register(plugin1)
-        self.assertIn(plugin1, underTest.list())
-        self.assertNotIn(plugin2, underTest.list())
+        self.assertIn(plugin1, underTest.plugins)
+        self.assertNotIn(plugin2, underTest.plugins)
 
         underTest.register(plugin2)
-        self.assertIn(plugin1, underTest.list())
-        self.assertIn(plugin2, underTest.list())
+        self.assertIn(plugin1, underTest.plugins)
+        self.assertIn(plugin2, underTest.plugins)
 
     def test_load_plugins(self):
         underTest = plugins.Plugins()
@@ -31,8 +31,8 @@ class TestPlugins(unittest.TestCase):
         plugins.load_plugins()
         sys.path = sys.path[1:]
 
-        self.assertEqual(len(underTest.list()), 2) # one for voyager_plugin
-        self.assertEqual(type(underTest.list()[0]).__name__, "FakePlugin")
+        self.assertEqual(len(underTest.plugins), 2) # one for voyager_plugin
+        self.assertEqual(type(underTest.plugins[0]).__name__, "FakePlugin")
 
 if __name__ == '__main__':
     unittest.main()

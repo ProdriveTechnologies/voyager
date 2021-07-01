@@ -5,7 +5,7 @@ import click
 
 def list_plugins():
     print("Loaded plugins:")
-    for plugin in voyager.plugins.Plugins().list():
+    for plugin in voyager.plugins.Plugins().plugins:
         print(f"  - {plugin}")
 
 class VoyagerPlugin(voyager.plugins.Plugin):

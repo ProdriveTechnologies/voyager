@@ -4,6 +4,7 @@ from typing import List
 
 import importlib
 import pkgutil
+import semver
 
 class Plugin:
     """
@@ -30,7 +31,7 @@ class Plugins(metaclass=SingletonType):
     """
     def __init__(self):
         super().__init__()
-        self.plugins: List[Plugin] = []
+        self._plugins: List[Plugin] = []
 
     def register(self, plugin: Plugin):
         """
@@ -38,14 +39,15 @@ class Plugins(metaclass=SingletonType):
         
         All registered plugins will be notified of events.
         """
-        self.plugins.append(plugin)
+        self._plugins.append(plugin)
 
-    def list(self) -> List[Plugin]:
-        return list(self.plugins)
+    @property
+    def plugins(self) -> List[Plugin]:
+        return list(self._plugins)
 
     def reset(self):
         """Reset the plugin registry. Only for test usage."""
-        self.plugins = []
+        self._plugins = []
 
     def on_start(self):
         for plugin in self.plugins:
