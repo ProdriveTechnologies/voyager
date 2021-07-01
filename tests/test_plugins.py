@@ -28,7 +28,7 @@ class TestPlugins(unittest.TestCase):
         under_test = plugins.Registry()
         under_test.reset()
 
-        sys.path = ["tests/plugins"] + sys.path
+        sys.path = ["tests"] + sys.path
         plugins.load_plugins()
         sys.path = sys.path[1:]
 
