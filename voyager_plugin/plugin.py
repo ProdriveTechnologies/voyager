@@ -1,7 +1,6 @@
 import click
 import semver
-
-from voyager.plugins import Plugin, Interface
+from voyager.plugins import Interface, Plugin
 
 
 class VoyagerPlugin(Plugin):
