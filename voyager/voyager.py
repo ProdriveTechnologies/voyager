@@ -118,6 +118,7 @@ def generate_project(generators: list, subdir: str, build_info: BuildInfo):
 @click.option('--with-runtime-deps', '-wrd', default=False, help='Install runtime dependencies', is_flag=True)
 def install(host, host_file, with_runtime_deps):
     ConfigFile.check_for_valid_api_key()
+    plugins.Registry().on_install_start()
     conf = ConfigFile()
     if host:
         conf.set_host_platform(host)
@@ -193,6 +194,7 @@ def install(host, host_file, with_runtime_deps):
 
     l = LockFileWriter()
     l.save()
+    plugins.Registry().on_install_end()
 
 @cli.command()
 @click.argument('template_filename')

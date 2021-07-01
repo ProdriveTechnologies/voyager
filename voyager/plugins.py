@@ -24,10 +24,12 @@ class Plugin:
     def __init__(self, interface):
         self.interface: Interface = interface
 
-    def on_start(self):
+    def on_install_start(self):
+        """Called whenever voyager install starts."""
         pass
 
-    def on_end(self):
+    def on_install_end(self):
+        """Called when voyager install finishes."""
         pass
 
     def __str__(self):
@@ -95,13 +97,13 @@ class Registry(metaclass=SingletonType):
     def interface(self) -> Interface:
         return self._interface
 
-    def on_start(self):
+    def on_install_start(self):
         for plugin in self.plugins:
-            plugin.on_start()
+            plugin.on_install_start()
 
-    def on_end(self):
+    def on_install_end(self):
         for plugin in self.plugins:
-            plugin.on_end()
+            plugin.on_install_end()
 
 
 def load_plugin(plugin: Type[Plugin]):
