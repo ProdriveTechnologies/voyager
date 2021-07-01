@@ -1,12 +1,14 @@
-from voyager import plugins
-
 import click
 import semver
+
+from voyager import plugins
+
 
 def list_plugins():
     print("Loaded plugins:")
     for plugin in plugins.Plugins().plugins:
         print(f"  - {plugin}")
+
 
 class VoyagerPlugin(plugins.Plugin):
     """A demo plugin for voyager that also tells you about the loaded plugins."""

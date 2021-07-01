@@ -1,13 +1,13 @@
-from .Singleton import SingletonType
+import importlib
+import pkgutil
 from pathlib import Path
 from typing import List, Type
 
-from . import voyager
-
-import importlib
-import pkgutil
-import semver
 import click
+import semver
+
+from . import voyager
+from .Singleton import SingletonType
 
 
 class Plugin:
@@ -60,6 +60,14 @@ class Plugins(metaclass=SingletonType):
         """
         self._plugins.append(plugin)
 
+    def on_start(self):
+        for plugin in self.plugins:
+            plugin.on_start()
+
+    def on_end(self):
+        for plugin in self.plugins:
+            plugin.on_end()
+
     # Everything below here is covered under interface versioning
 
     @property
@@ -75,14 +83,6 @@ class Plugins(metaclass=SingletonType):
         """
 
         return voyager.cli.command(name, cls, **attrs)
-
-    def on_start(self):
-        for plugin in self.plugins:
-            plugin.on_start()
-
-    def on_end(self):
-        for plugin in self.plugins:
-            plugin.on_end()
 
 
 def load_plugins():
