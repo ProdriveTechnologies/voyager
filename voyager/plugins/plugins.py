@@ -8,15 +8,15 @@
 
 import click
 import semver
-from voyager import plugins
+from voyager import plugin_registry
 
 
-class PluginsPlugin(plugins.Plugin):
+class PluginsPlugin(plugin_registry.Plugin):
     """A demo plugin for voyager that also tells you about the loaded plugins."""
 
     REQUIRED_INTERFACE_VERSION = semver.Range("^0.1.0", False)
 
-    def __init__(self, interface: plugins.Interface):
+    def __init__(self, interface: plugin_registry.Interface):
         super().__init__(interface)
         # Register during plugin init - don't do *anything* without the plugin framework acting first
         self.interface.add_command("plugins")(self.list_plugins)

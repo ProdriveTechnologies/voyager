@@ -2,16 +2,16 @@ import sys
 import unittest
 import unittest.mock
 
-import voyager.plugins as plugins
+import voyager.plugin_registry as registry
 
 
 class TestPlugins(unittest.TestCase):
     def test_add_list(self):
         """When plugins are added, they show up in the plugin list"""
-        under_test = plugins.Registry()
+        under_test = registry.Registry()
 
-        plugin1 = unittest.mock.Mock(spec=plugins.Plugin)
-        plugin2 = unittest.mock.Mock(spec=plugins.Plugin)
+        plugin1 = unittest.mock.Mock(spec=registry.Plugin)
+        plugin2 = unittest.mock.Mock(spec=registry.Plugin)
 
         self.assertNotIn(plugin1, under_test.plugins)
         self.assertNotIn(plugin2, under_test.plugins)
@@ -25,15 +25,13 @@ class TestPlugins(unittest.TestCase):
         self.assertIn(plugin2, under_test.plugins)
 
     def test_load_plugins(self):
-        under_test = plugins.Registry()
+        under_test = registry.Registry()
         under_test.reset()
 
-        sys.path = ["tests"] + sys.path
-        plugins.load_plugins()
-        sys.path = sys.path[1:]
+        registry.load_plugins()
 
-        self.assertEqual(len(under_test.plugins), 2)  # one for voyager_plugin
-        self.assertEqual(type(under_test.plugins[0]).__name__, "FakePlugin")
+        self.assertEqual(len(under_test.plugins), 1)
+        self.assertEqual(type(under_test.plugins[0]).__name__, "PluginsPlugin")
 
 
 if __name__ == '__main__':

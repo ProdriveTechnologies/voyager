@@ -7,9 +7,9 @@ from typing import List, Type
 import click
 import semver
 
+import voyager.plugins
+import voyager.voyager
 from voyager.Singleton import SingletonType
-from voyager import voyager
-import voyplugins
 
 
 class Plugin:
@@ -75,7 +75,7 @@ class Registry(metaclass=SingletonType):
             return list(self.registry.plugins)
 
         def add_command(self, name=None, cls=None, **attrs) -> click.Command:
-            return voyager.cli.command(name, cls, **attrs)
+            return voyager.voyager.cli.command(name, cls, **attrs)
 
     def __init__(self):
         super().__init__()
@@ -106,7 +106,44 @@ class Registry(metaclass=SingletonType):
         for plugin in self.plugins:
             plugin.on_install_end()
 
-# look into https://github.com/pyinstaller/pyinstaller/issues/1905#issuecomment-525221546
+#
+# Plugin loading tools. Borrowed from:
+# - https://packaging.python.org/guides/creating-and-discovering-plugins/
+# - https://github.com/pyinstaller/pyinstaller/issues/1905#issuecomment-525221546
+#
+
+
+def iter_namespace(ns_pkg):
+    """Pyinstaller-compatible namespace iteration.
+
+    Yields the name of all modules found at a given Fully-qualified path.
+
+    To have it running with pyinstaller, it requires to ensure a hook inject the
+    "hidden" modules from your plugins folder inside the executable:
+
+    - if your plugins are under the ``myappname/pluginfolder`` module
+    - create a file ``specs/hook-<myappname.pluginfolder>.py``
+    - content of this file should be:
+
+        .. code-block:: python
+
+            from PyInstaller.utils.hooks import collect_submodules
+            hiddenimports = collect_submodules('<myappname.pluginfolder>')
+    """
+    prefix = ns_pkg.__name__ + "."
+    for p in pkgutil.iter_modules(ns_pkg.__path__, prefix):
+        yield p[1]
+
+    # special handling when the package is bundled with PyInstaller 3.5
+    # See https://github.com/pyinstaller/pyinstaller/issues/1905#issuecomment-445787510
+    toc = set()
+    for importer in pkgutil.iter_importers(ns_pkg.__name__.partition(".")[0]):
+        if hasattr(importer, 'toc'):
+            toc |= importer.toc
+    for name in toc:
+        if name.startswith(prefix):
+            yield name
+
 
 def load_plugin(plugin: Type[Plugin]):
     iface_version = Registry().interface.VERSION
@@ -116,21 +153,15 @@ def load_plugin(plugin: Type[Plugin]):
         print(f"Not loading plugin {plugin} - version mismatch "
               + f"(required {plugin.REQUIRED_INTERFACE_VERSION}, actual {iface_version}")
 
-def iter_namespace(ns_pkg):
-    # Specifying the second argument (prefix) to iter_modules makes the
-    # returned name an absolute name instead of a relative one. This allows
-    # import_module to work without having to do additional modification to
-    # the name.
-    return pkgutil.iter_modules(ns_pkg.__path__, ns_pkg.__name__ + ".")
 
 def load_plugins():
     """
     Load plugins by importing all packages that start with "voyager_".
 
-    Borrowed from https://packaging.python.org/guides/creating-and-discovering-plugins/
+    Borrowed from 
 
     Big TODO: provide diagnostic info when importing or registration fails
     """
-    for finder, name, ispkg in iter_namespace(voyplugins):
+    for name in iter_namespace(voyager.plugins):
         plugin = importlib.import_module(name).Plugin
         load_plugin(plugin)

@@ -34,7 +34,7 @@ from .cmakepackagefile import CMakePackageFile
 import voyager.artifactorysearch as artifactorysearch
 import voyager.deployfromlockfile as deployfromlockfile
 import voyager.artifactorylogin as artifactorylogin
-import voyager.plugins as plugins
+import voyager.plugin_registry as plugin_registry
 
 VERSION = "1.15.0"
 
@@ -118,7 +118,7 @@ def generate_project(generators: list, subdir: str, build_info: BuildInfo):
 @click.option('--with-runtime-deps', '-wrd', default=False, help='Install runtime dependencies', is_flag=True)
 def install(host, host_file, with_runtime_deps):
     ConfigFile.check_for_valid_api_key()
-    plugins.Registry().on_install_start()
+    plugin_registry.Registry().on_install_start()
     conf = ConfigFile()
     if host:
         conf.set_host_platform(host)
@@ -194,7 +194,7 @@ def install(host, host_file, with_runtime_deps):
 
     l = LockFileWriter()
     l.save()
-    plugins.Registry().on_install_end()
+    plugin_registry.Registry().on_install_end()
 
 @cli.command()
 @click.argument('template_filename')
@@ -238,7 +238,7 @@ def login():
 def main():
     print(f"Voyager version {VERSION}")
     try:
-        plugins.load_plugins()
+        plugin_registry.load_plugins()
         cli()
     except ValueError as v:
         click.echo(f"Error during execution of voyager: {v}", err=True)
