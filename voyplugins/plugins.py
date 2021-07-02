@@ -11,7 +11,7 @@ import semver
 from voyager import plugins
 
 
-class VoyagerPlugin(plugins.Plugin):
+class PluginsPlugin(plugins.Plugin):
     """A demo plugin for voyager that also tells you about the loaded plugins."""
 
     REQUIRED_INTERFACE_VERSION = semver.Range("^0.1.0", False)
@@ -31,4 +31,4 @@ class VoyagerPlugin(plugins.Plugin):
 
 
 # Finally, re-export the plugin class as "Plugin" so the plugin loader can find it.
-Plugin = VoyagerPlugin
+Plugin = PluginsPlugin

@@ -9,6 +9,7 @@ import semver
 
 from voyager.Singleton import SingletonType
 from voyager import voyager
+import voyplugins
 
 
 class Plugin:
@@ -105,6 +106,7 @@ class Registry(metaclass=SingletonType):
         for plugin in self.plugins:
             plugin.on_install_end()
 
+# look into https://github.com/pyinstaller/pyinstaller/issues/1905#issuecomment-525221546
 
 def load_plugin(plugin: Type[Plugin]):
     iface_version = Registry().interface.VERSION
@@ -114,6 +116,12 @@ def load_plugin(plugin: Type[Plugin]):
         print(f"Not loading plugin {plugin} - version mismatch "
               + f"(required {plugin.REQUIRED_INTERFACE_VERSION}, actual {iface_version}")
 
+def iter_namespace(ns_pkg):
+    # Specifying the second argument (prefix) to iter_modules makes the
+    # returned name an absolute name instead of a relative one. This allows
+    # import_module to work without having to do additional modification to
+    # the name.
+    return pkgutil.iter_modules(ns_pkg.__path__, ns_pkg.__name__ + ".")
 
 def load_plugins():
     """
@@ -123,7 +131,6 @@ def load_plugins():
 
     Big TODO: provide diagnostic info when importing or registration fails
     """
-    for finder, name, ispkg in pkgutil.iter_modules():
-        if (name.startswith("voyager_")):
-            plugin = importlib.import_module(name).Plugin
-            load_plugin(plugin)
+    for finder, name, ispkg in iter_namespace(voyplugins):
+        plugin = importlib.import_module(name).Plugin
+        load_plugin(plugin)
