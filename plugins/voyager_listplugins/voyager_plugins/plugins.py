@@ -1,6 +1,6 @@
 # Sample voyager plugin that adds a "plugins" command to list the loaded plugins.
 #
-# A voyager plugin is a module that..
+# A voyager plugin is a pip-installable module that..
 # - is part of the namespace package "voyager_plugins"
 # - exports a type Plugin, which
 # - implements voyager.plugin_registry.Plugin
@@ -26,3 +26,6 @@ class PluginsPlugin(plugin_registry.Plugin):
 
     def __str__(self):
         return f"{type(self).__name__} (module {__name__})"
+
+# And export the plugin class with name "Plugin" so the loader can find it.
+Plugin = PluginsPlugin
