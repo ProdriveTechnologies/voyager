@@ -7,7 +7,7 @@ from typing import List, Type
 import click
 import semver
 
-import voyager.plugins
+import voyager_plugins
 import voyager.voyager
 from voyager.Singleton import SingletonType
 
@@ -162,6 +162,6 @@ def load_plugins():
 
     Big TODO: provide diagnostic info when importing or registration fails
     """
-    for name in iter_namespace(voyager.plugins):
+    for name in iter_namespace(voyager_plugins):
         plugin = importlib.import_module(name).Plugin
         load_plugin(plugin)
