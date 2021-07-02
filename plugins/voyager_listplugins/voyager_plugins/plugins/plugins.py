@@ -1,12 +1,10 @@
 # Sample voyager plugin that adds a "plugins" command to list the loaded plugins.
 #
 # A voyager plugin is a module that..
-# - starts with "voyager_"
+# - is part of the namespace package "voyager_plugins"
 # - exports a type Plugin, which
-# - implements voyager.plugins.Plugin
-# It doesn't have to be a single file - a package will work just as well.
+# - implements voyager.plugin_registry.Plugin
 
-import click
 import semver
 from voyager import plugin_registry
 
@@ -28,7 +26,3 @@ class PluginsPlugin(plugin_registry.Plugin):
 
     def __str__(self):
         return f"{type(self).__name__} (module {__name__})"
-
-
-# Finally, re-export the plugin class as "Plugin" so the plugin loader can find it.
-Plugin = PluginsPlugin
