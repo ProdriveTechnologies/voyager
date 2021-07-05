@@ -18,18 +18,19 @@ import os
 
 class CMakeGenerator(Generator):
     subdir_template = 'add_subdirectory("{rootpath}")'
-    voyager_download_dir_template = 'set(VOYAGER_DOWNLOAD_DIR "{current_working_dir}/.voyager")'
+    voyager_package_dir_template = 'set(VOYAGER_PACKAGE_DIR "{current_working_dir}/.voyager")'
 
     def _format_subdirs(self):
         paths = [Path(package.rootpath) for _, package in self.build_info.packages]
         lines = [self.subdir_template.format(rootpath=path.as_posix()) for path in paths]
         return "\n".join(lines)
 
+    def _format_package_dir(self):
+        return self.voyager_package_dir_template.format(current_working_dir=os.getcwd())
+
     @property
     def content(self):
-        return self._format_subdirs() + "\n" + self.voyager_download_dir_template.format(
-            current_working_dir=os.getcwd()
-        )
+        return self._format_subdirs() + "\n" + self._format_package_dir()
 
 class CMakeProjectGenerator(Generator):
     template = \
