@@ -34,6 +34,7 @@ class VisualStudioGenerator(Generator):
     <VoyagerResourceDirectories>{res_dirs}</VoyagerResourceDirectories>
     <VoyagerLibraryDirectories>{lib_dirs}</VoyagerLibraryDirectories>
     <VoyagerBinaryDirectories>{bin_dirs}</VoyagerBinaryDirectories>
+    <VoyagerPackageDirectory>{package_dir}</VoyagerPackageDirectory>
     <VoyagerLibraries>{libs}</VoyagerLibraries>
     <VoyagerSourceFiles>{sources}</VoyagerSourceFiles>
   </PropertyGroup>
