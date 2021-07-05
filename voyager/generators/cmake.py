@@ -16,7 +16,6 @@ from voyager.generators.generator import Generator
 from pathlib import Path
 import os
 
-
 class CMakeGenerator(Generator):
     subdir_template = 'add_subdirectory("{rootpath}")'
     voyager_package_dir_template = 'set(VOYAGER_PACKAGE_DIR "{voyager_package_dir}")'
