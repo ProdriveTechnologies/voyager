@@ -36,6 +36,8 @@ targets defined for each package. In your top-level `CMakeLists.txt`, add
 `include(voyager.cmake)` before any other `add_subdirectory` commands to make
 them available to your subprojects.
 
+The `voyager_solution.cmake` file also adds a variable pointing to the `.voyager` directory. This can be useful to point to a build tool inside the `.voyager` directory for example.
+
 ### Project dependency files
 In each of your sub-projects, a file `voyager.cmake` is generated. This module
 defines a function `target_add_voyager(<target>)`, which adds all dependencies

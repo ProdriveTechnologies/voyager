@@ -14,18 +14,24 @@
 
 from voyager.generators.generator import Generator
 from pathlib import Path
+import os
 
 class CMakeGenerator(Generator):
     subdir_template = 'add_subdirectory("{rootpath}")'
+    voyager_package_dir_template = 'set(VOYAGER_PACKAGE_DIR "{voyager_package_dir}")'
 
     def _format_subdirs(self):
         paths = [Path(package.rootpath) for _, package in self.build_info.packages]
         lines = [self.subdir_template.format(rootpath=path.as_posix()) for path in paths]
         return "\n".join(lines)
 
+    def _format_package_dir(self):
+        path = Path(os.path.join(os.getcwd(), '.voyager')).as_posix()
+        return self.voyager_package_dir_template.format(voyager_package_dir=path)
+
     @property
     def content(self):
-        return self._format_subdirs()
+        return self._format_subdirs() + "\n" + self._format_package_dir()
 
 class CMakeProjectGenerator(Generator):
     template = \

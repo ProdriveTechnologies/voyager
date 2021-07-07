@@ -13,6 +13,7 @@
 # limitations under the License.
 
 from voyager.generators.generator import Generator
+import os
 
 class VisualStudioGenerator(Generator):
     template = '''<?xml version="1.0" encoding="utf-8"?>
@@ -33,6 +34,7 @@ class VisualStudioGenerator(Generator):
     <VoyagerResourceDirectories>{res_dirs}</VoyagerResourceDirectories>
     <VoyagerLibraryDirectories>{lib_dirs}</VoyagerLibraryDirectories>
     <VoyagerBinaryDirectories>{bin_dirs}</VoyagerBinaryDirectories>
+    <VoyagerPackageDirectory>{package_dir}</VoyagerPackageDirectory>
     <VoyagerLibraries>{libs}</VoyagerLibraries>
     <VoyagerSourceFiles>{sources}</VoyagerSourceFiles>
   </PropertyGroup>
@@ -90,7 +92,8 @@ class VisualStudioGenerator(Generator):
             'definitions': "".join("%s;" % d for d in self.build_info.defines),
             'compiler_flags': "",
             'linker_flags': " ".join(self.build_info.linker_flags),
-            'exe_flags': ""
+            'exe_flags': "",
+            'package_dir': "".join(os.path.join(os.getcwd(), ".voyager"))
         }
         formatted_template = self.properties_template.format(**fields)
         return formatted_template
