@@ -46,7 +46,7 @@ class Plugin:
 class Interface(ABC):
     """The interface passed to plugins through which they should make calls into voyager."""
 
-    VERSION = semver.SemVer("0.1.0", False)
+    VERSION = semver.SemVer("0.1.1", False)
 
     @abstractproperty
     def plugins(self) -> List[Plugin]:
