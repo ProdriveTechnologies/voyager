@@ -24,6 +24,7 @@ import semver
 import voyager_plugins
 import voyager.voyager
 from voyager.Singleton import SingletonType
+from voyager.artifactdownloader import ArtifactDownloader
 from voyager.plugin_interfaces import Interface, Plugin
 
 class Registry(metaclass=SingletonType):
@@ -44,6 +45,11 @@ class Registry(metaclass=SingletonType):
 
         def add_command(self, name=None, cls=None, **attrs) -> click.Command:
             return voyager.voyager.cli.command(name, cls, **attrs)
+
+        def find_versions_for_package(self, repo, library, override_archs) -> List[semver.SemVer]:
+            downloader = ArtifactDownloader([], False, False)
+            version_strings = downloader.find_versions_for_package(repo, library, override_archs)
+            return [semver.make_semver(version, False) for version in version_strings]
 
     def __init__(self):
         super().__init__()

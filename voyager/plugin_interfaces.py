@@ -62,3 +62,13 @@ class Interface(ABC):
         details.
         """
         pass
+
+    @abstractmethod
+    def find_versions_for_package(self, repo, library, override_archs) -> List[semver.SemVer]:
+      """
+      Get a list of available versions for a particular package.
+
+      Internally, this delegates to ArtifactDownloader and uses the same auth
+      information.
+      """
+      pass

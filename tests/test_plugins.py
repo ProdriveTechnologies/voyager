@@ -2,8 +2,10 @@ import sys
 import unittest
 import unittest.mock
 
-import voyager.plugin_registry as registry
+import semver
 
+import voyager.plugin_registry as registry
+from voyager.configfile import ConfigFile
 
 class TestPlugins(unittest.TestCase):
     def test_add_list(self):
@@ -33,6 +35,13 @@ class TestPlugins(unittest.TestCase):
         self.assertEqual(len(under_test.plugins), 1)
         self.assertEqual(type(under_test.plugins[0]).__name__, "PluginsPlugin")
 
+    def test_find_versions_for_package(self):
+        under_test = registry.Registry()
+        ConfigFile().parse()
+        voyager_versions = under_test.interface.find_versions_for_package(
+            "siatd-generic-local", "Tools/voyager", ["win-setup"])
+        self.assertTrue(any([semver.eq(x, "1.10.3", False) for x in voyager_versions]))
+        self.assertTrue(any([semver.eq(x, "1.15.0", False) for x in voyager_versions]))
 
 if __name__ == '__main__':
     unittest.main()
