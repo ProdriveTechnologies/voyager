@@ -1,5 +1,5 @@
 {
   "api_key": "",
   "artifactory_url": "",
-  "default_arch": ["MSVC.142.DBG.32", "MSVC.141.DBG.32", "MSVC.140.DBG.32", "go.windows.amd64", "windows"]
+  "default_arch": ["MSVC.143.DBG.32", "MSVC.142.DBG.32", "MSVC.141.DBG.32", "MSVC.140.DBG.32", "go.windows.amd64", "windows"]
 }
