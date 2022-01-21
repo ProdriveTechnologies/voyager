@@ -23,6 +23,8 @@ The table below provides some examples of architecture strings.
 |MSVC.141.DBG.32|Visual Studio 2017 32bit Debug|
 |MSVC.142.DBG.32|Visual Studio 2019 32bit Debug|
 |MSVC.142.REL.32|Visual Studio 2019 32bit Release|
+|MSVC.143.DBG.32|Visual Studio 2022 32bit Debug|
+|MSVC.143.REL.32|Visual Studio 2022 32bit Release|
 |go.windows.amd64|Golang 64 bit|
 |windows|Generic Windows|
 |**Linux**||
