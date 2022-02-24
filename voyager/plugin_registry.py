@@ -109,13 +109,13 @@ def iter_namespace(ns_pkg):
 
     # special handling when the package is bundled with PyInstaller 3.5
     # See https://github.com/pyinstaller/pyinstaller/issues/1905#issuecomment-445787510
-    toc = set()
-    for importer in pkgutil.iter_importers(ns_pkg.__name__.partition(".")[0]):
-        if hasattr(importer, 'toc'):
-            toc |= importer.toc
-    for name in toc:
-        if name.startswith(prefix):
-            yield name
+    # toc = set()
+    # for importer in pkgutil.iter_importers(ns_pkg.__name__.partition(".")[0]):
+    #     if hasattr(importer, 'toc'):
+    #         toc |= importer.toc
+    # for name in toc:
+    #     if name.startswith(prefix):
+    #         yield name
 
 
 def load_plugin(plugin: Type[Plugin]):
@@ -132,5 +132,6 @@ def load_plugins():
     Load plugins by importing all packages in the voyager_plugins namespace.
     """
     for name in iter_namespace(voyager_plugins):
+        print(name)
         plugin = importlib.import_module(name).Plugin
         load_plugin(plugin)
