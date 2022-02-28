@@ -107,16 +107,6 @@ def iter_namespace(ns_pkg):
     for p in pkgutil.iter_modules(ns_pkg.__path__, prefix):
         yield p[1]
 
-    # special handling when the package is bundled with PyInstaller 3.5
-    # See https://github.com/pyinstaller/pyinstaller/issues/1905#issuecomment-445787510
-    toc = set()
-    for importer in pkgutil.iter_importers(ns_pkg.__name__.partition(".")[0]):
-        if hasattr(importer, 'toc'):
-            toc |= importer.toc
-    for name in toc:
-        if name.startswith(prefix):
-            yield name
-
 
 def load_plugin(plugin: Type[Plugin]):
     iface_version = Registry().interface.VERSION

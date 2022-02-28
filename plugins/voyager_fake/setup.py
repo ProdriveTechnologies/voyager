@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from setuptools import setup, find_packages
+from setuptools import setup, find_namespace_packages
 
 
 setup(
@@ -25,5 +25,5 @@ setup(
     author_email='dominic.van.berkel@prodrive-technologies.com',
     license='Apache Software License 2.0',
 
-    packages=find_packages(),
+    packages=find_namespace_packages(include=['voyager_plugins.*']),
 )
