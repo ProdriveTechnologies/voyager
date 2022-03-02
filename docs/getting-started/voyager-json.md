@@ -96,3 +96,14 @@ MyProject
    |->voyager.json (project)
    |->voyager.props (generated)
 ```
+
+## Generators
+
+Voyager supports multiple generators depending on what you're trying to build.
+The default generator (if none are provided) is "msbuild".
+
+|Name|Description|
+|----|-----------|
+|[msbuild](../integrations/msbuild.md)|Generates .props files to add to MSBuild projects.|
+|[cmake](../integrations/cmake.md)|Generates .cmake files with INTERFACE libraries for each package for the CMake build system.|
+|packagelist|Generates a `voyager.h` with a name &rarr; version map of all dependencies.|
