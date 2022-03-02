@@ -15,6 +15,7 @@
 # System imports
 from sys import exit # For generated executables
 from pathlib import Path
+import logging
 
 # pip imports
 import click
@@ -237,14 +238,21 @@ def login():
 
 def main():
     print(f"Voyager version {VERSION}")
+
+    # On default disable the output of the voyager logger. Use a plugin to enable and make use of custom handlers
+    logging.getLogger('voyager').disabled = True
+
     try:
         plugin_registry.load_plugins()
+        logging.getLogger('voyager').info("Voyager Startup")
         cli()
     except ValueError as v:
         click.echo(f"Error during execution of voyager: {v}", err=True)
+        logging.getLogger('voyager').exception(f"ValueError: {v}")
         exit(1)
     except Exception as e:
         click.echo(f"Unexpected Error during execution of voyager: {e}", err=True)
+        logging.getLogger('voyager').exception(f"Unexpected error: {e}")
         exit(2)
 
 
