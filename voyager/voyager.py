@@ -41,7 +41,14 @@ VERSION = "1.15.0"
 
 @click.group()
 def cli():
-    """This function is always called before any other command function"""
+    """The Voyager package manager.
+
+    Voyager can be used to install binary or source packages from Artifactory,
+    and configure your build to integrate them. For more info about individual
+    actions, see
+
+      voyager <action> --help
+    """
     conf = ConfigFile()
     if not conf.exists():
         click.echo(click.style(f'It appears that there is no config file in {conf.file_path}', fg='yellow'))
@@ -57,7 +64,7 @@ def cli():
 @cli.command()
 @click.argument('query')
 def search(query):
-    """ Search for a specific package. For example: voyager search Udsm* or voyager search Utils/* """
+    """Search for a specific package. For example: voyager search Udsm* or voyager search Utils/* """
     ConfigFile.check_for_valid_api_key()
     split = query.split('/')
     if len(split) == 1:
@@ -79,8 +86,8 @@ def search(query):
 @cli.command()
 @click.argument('library_string')
 def add(library_string):
-    """
-    Add a library to the working directory voyager.json and save the file.
+    """Add a library to the working directory voyager.json and save it.
+
     The library_string must use the following format: example-generic-local/Utils/Exceptions/1.2.0
     """
     file = VoyagerFile("voyager.json")
@@ -117,6 +124,12 @@ def generate_project(generators: list, subdir: str, build_info: BuildInfo):
 @click.option('--host-file', default=None, help='File with host platforms for cross compilation')
 @click.option('--with-runtime-deps', '-wrd', default=False, help='Install runtime dependencies', is_flag=True)
 def install(host, host_file, with_runtime_deps):
+    """Install packages according to voyager.json.
+
+    The voyager.json in the working directory is assumed to be the top-level
+    configuration file. If 'type' is 'solution', the folders listed in
+    'projects' are also processed.
+    """
     ConfigFile.check_for_valid_api_key()
     plugin_registry.Registry().on_install_start()
     conf = ConfigFile()
@@ -199,6 +212,11 @@ def install(host, host_file, with_runtime_deps):
 @cli.command()
 @click.argument('template_filename')
 def package(template_filename):
+    """Populate a voyager_package.json's "dependencies" section.
+
+    Takes a template file and adds all the current project's public dependencies
+    (any with a "dependency_type") to its "dependencies" section.
+    """
     l = LockFileReader()
     l.parse()
     l.print()
@@ -213,6 +231,7 @@ def package(template_filename):
 
 @cli.command()
 def config():
+    """Generate a default voyager configuration file in your home dir."""
     conf = ConfigFile()
     print("Location: ", conf.file_path)
     print("Key: ", conf.api_key)
@@ -221,16 +240,23 @@ def config():
 
 @cli.command()
 def init():
+    """Generate a starting point for voyager.json."""
     VoyagerFile.generate_empty_file()
 
 @cli.command()
 @click.option('--dir', 'deploy_dir', default=".voyager/.deploy", help='Folder to place the binaries in')
 def deploy(deploy_dir):
+    """Deploy all binary dependencies to a target folder.
+
+    This command is useful when you have binary dependencies (such as DLLs or
+    executables) that are otherwise not available on the target system.
+    """
     print("Deploy")
     deployfromlockfile.deploy_all_dependencies(deploy_dir)
 
 @cli.command()
 def login():
+    """Configure access to Artifactory."""
     print("Login and get Artifactory API key for config file")
     artifactorylogin.login()
 
