@@ -19,8 +19,8 @@ from voyager.buildinfo import Package
 class PackageListGenerator(Generator):
     FILE_TEMPLATE = """#pragma once
 
-#include <string>
 #include <map>
+#include <string>
 
 namespace Voyager
 {{
