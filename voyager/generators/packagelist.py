@@ -9,20 +9,20 @@ class PackageListGenerator(Generator):
 #include <map>
 
 namespace Voyager
-{
+{{
 const std::map<std::string, std::string> ArtifactVersions =
-{
-  {}
-};
-}
+{{
+  {0}
+}};
+}} // namespace Voyager
 """
 
     def _format_package_list(self):
         lines = list()
-        for package in self.build_info.packages:
+        for (name, package) in self.build_info.packages:
             package : Package = package
-            lines += f'{{"{package.name}", "{package.version}" }},'
-        return self.FILE_TEMPLATE.format("\n".join(lines))
+            lines.append(f'{{ "{name}", "{package.version}" }},')
+        return self.FILE_TEMPLATE.format("\n  ".join(lines))
 
     @property
     def content(self):
