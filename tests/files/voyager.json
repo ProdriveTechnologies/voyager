@@ -17,5 +17,5 @@
     }
   ],
   "projects": ["Implementation", "Qualification"],
-  "generators": ["msbuild", "cmake", "headercheck"]
+  "generators": ["msbuild", "cmake", "headercheck", "packagelist"]
 }
