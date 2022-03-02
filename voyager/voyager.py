@@ -45,7 +45,7 @@ def cli():
 
     Voyager can be used to install binary or source packages from Artifactory,
     and configure your build to integrate them. For more info about individual
-    actions, see
+    actions, see https://prodrivetechnologies.github.io/voyager/ or
 
       voyager <action> --help
     """
