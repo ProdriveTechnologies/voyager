@@ -195,7 +195,8 @@ def install(host, host_file, with_runtime_deps):
 
     # Log statistics
     number_of_packages = len(build_info_combined.packages)
-    logging.getLogger('voyager').info(f"Installed {number_of_packages} packages")
+    logging.getLogger('voyager').info(
+        f"Installed {number_of_packages} packages", extra={'Packages': number_of_packages})
 
     l = LockFileWriter()
     l.save()
