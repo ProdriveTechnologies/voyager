@@ -34,6 +34,7 @@ class PluginsPlugin(plugin_registry.Plugin):
         self.interface.add_command("plugins")(self.list_plugins)
 
     def list_plugins(self):
+        """List loaded plugins."""
         print("Loaded plugins:")
         for plugin in self.interface.plugins:
             print(f"  - {plugin}")
