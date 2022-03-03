@@ -83,9 +83,9 @@ class ArtifactDownloader:
                 versions = self.find_versions_for_package(lib['repo'], lib['library'], override_archs)
                 version_to_download = max_satisfying(versions, lib['version'], True)
                 if not version_to_download:
-                    click.echo(click.style(f"ERROR: version {lib['version']} not found.", fg='red'))
-                    click.echo(click.style(f"Available: {versions}", fg='red'))
-                    raise ValueError("Version not found")
+                    msg = f"ERROR: version {lib['version']} not found.\n Available: {versions}"
+                    click.echo(click.style(msg, fg='red'))
+                    raise ValueError(msg)
 
             # Handle version conflicts within project
             if not download_only and lib['library'] in self.build_info.package_names:
@@ -156,8 +156,9 @@ class ArtifactDownloader:
         """
         if pack.version != version_to_download:
             if not pack.force_version:
-                click.echo(click.style(f"ERROR: Version conflict within project for {lib['library']}: {pack.version} vs {version_to_download}", fg='red'))
-                raise ValueError("Version conflict")
+                msg = f"ERROR: Version conflict within project for {lib['library']}: {pack.version} vs {version_to_download}"
+                click.echo(click.style(msg, fg='red'))
+                raise ValueError(msg)
             else:
                 # Check if the forced version is greater
                 # when either uses a branch name as the version I consider it a free for all
@@ -166,8 +167,9 @@ class ArtifactDownloader:
                     sem_pack = semver.semver(pack.version, False)
                     sem_down = semver.semver(version_to_download, False)
                     if semver.lt(sem_pack, sem_down, False):  # sem_pack < sem_down
-                        click.echo(click.style(f'ERROR: Cannot force {version_to_download} to lower version {pack.version} ', fg='red'))
-                        raise ValueError("Version forcing conflict")
+                        msg = f'ERROR: Cannot force {version_to_download} to lower version {pack.version} '
+                        click.echo(click.style(msg, fg='red'))
+                        raise ValueError(msg)
 
                 click.echo(click.style(f'WARN: Forcing version {version_to_download} to {pack.version} ', fg='yellow'), nl=False)
 
