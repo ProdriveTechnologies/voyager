@@ -241,6 +241,7 @@ def main():
 
     # On default disable the output of the voyager logger. Use a plugin to enable and make use of custom handlers
     logging.getLogger('voyager').disabled = True
+    logging.getLogger('voyager').propagate = False
 
     try:
         plugin_registry.load_plugins()
