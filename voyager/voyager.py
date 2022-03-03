@@ -193,6 +193,10 @@ def install(host, host_file, with_runtime_deps):
         with open('voyager_solution.cmake', 'w') as f:
             f.write(gen_cmake_solution.content)
 
+    # Log statistics
+    number_of_packages = len(build_info_combined.packages)
+    logging.getLogger('voyager').info(f"Installed {number_of_packages} packages")
+
     l = LockFileWriter()
     l.save()
     plugin_registry.Registry().on_install_end()
