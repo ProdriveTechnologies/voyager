@@ -15,6 +15,7 @@
 # System imports
 from sys import exit # For generated executables
 from pathlib import Path
+import logging
 
 # pip imports
 import click
@@ -207,6 +208,11 @@ def install(host, host_file, with_runtime_deps):
         with open('voyager_solution.cmake', 'w') as f:
             f.write(gen_cmake_solution.content)
 
+    # Log statistics
+    number_of_packages = len(build_info_combined.packages)
+    logging.getLogger('voyager').info(
+        f"Installed {number_of_packages} packages", extra={'Packages': number_of_packages})
+
     l = LockFileWriter()
     l.save()
     plugin_registry.Registry().on_install_end()
@@ -265,14 +271,22 @@ def login():
 
 def main():
     print(f"Voyager version {VERSION}")
+
+    # On default disable the output of the voyager logger. Use a plugin to enable and make use of custom handlers
+    logging.getLogger('voyager').disabled = True
+    logging.getLogger('voyager').propagate = False
+
     try:
         plugin_registry.load_plugins()
+        logging.getLogger('voyager').info("Voyager Startup")
         cli()
     except ValueError as v:
         click.echo(f"Error during execution of voyager: {v}", err=True)
+        logging.getLogger('voyager').exception(f"ValueError: {v}")
         exit(1)
     except Exception as e:
         click.echo(f"Unexpected Error during execution of voyager: {e}", err=True)
+        logging.getLogger('voyager').exception(f"Unexpected error: {e}")
         exit(2)
 
 
