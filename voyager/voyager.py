@@ -37,6 +37,7 @@ import voyager.artifactorysearch as artifactorysearch
 import voyager.deployfromlockfile as deployfromlockfile
 import voyager.artifactorylogin as artifactorylogin
 import voyager.plugin_registry as plugin_registry
+import voyager.doc as doc_server
 
 VERSION = "1.15.0"
 
@@ -268,6 +269,10 @@ def login():
     print("Login and get Artifactory API key for config file")
     artifactorylogin.login()
 
+@cli.command()
+def doc():
+    """Run a local website that links to the docs of the individual packages"""
+    doc_server.run_doc_server()
 
 def main():
     print(f"Voyager version {VERSION}")
