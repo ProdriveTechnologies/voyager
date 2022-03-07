@@ -51,6 +51,9 @@ class Registry(metaclass=SingletonType):
             version_strings = downloader.find_versions_for_package(repo, library, override_archs)
             return [semver.make_semver(version, False) for version in version_strings]
 
+        def get_version(self) -> str:
+            return voyager.voyager.VERSION
+
     def __init__(self):
         super().__init__()
         self.plugins: List[Plugin] = []
