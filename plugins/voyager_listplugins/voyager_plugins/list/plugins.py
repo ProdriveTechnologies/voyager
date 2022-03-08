@@ -28,6 +28,8 @@ class PluginsPlugin(plugin_registry.Plugin):
 
     REQUIRED_INTERFACE_VERSION = semver.Range("^0.1.0", False)
 
+    PLUGIN_VERSION = "Integrated"
+
     def __init__(self, interface: plugin_registry.Interface):
         super().__init__(interface)
         # Register during plugin init - don't do *anything* without the plugin framework acting first
@@ -38,9 +40,6 @@ class PluginsPlugin(plugin_registry.Plugin):
         print("Loaded plugins:")
         for plugin in self.interface.plugins:
             print(f"  - {plugin}")
-
-    def __str__(self):
-        return f"{type(self).__name__} (module {__name__})"
 
 # And export the plugin class with name "Plugin" so the loader can find it.
 Plugin = PluginsPlugin
