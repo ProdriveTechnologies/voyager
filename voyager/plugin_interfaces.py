@@ -77,3 +77,8 @@ class Interface(ABC):
     def get_version(self) -> str:
         """Get the current version number of voyager"""
         pass
+
+    @abstractmethod
+    def get_artifactory_url(self) -> str:
+        """Get the artifactory url from the config file"""
+        pass
