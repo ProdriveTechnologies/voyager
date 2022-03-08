@@ -26,6 +26,7 @@ import voyager.voyager
 from voyager.Singleton import SingletonType
 from voyager.artifactdownloader import ArtifactDownloader
 from voyager.plugin_interfaces import Interface, Plugin
+from voyager.configfile import ConfigFile
 
 class Registry(metaclass=SingletonType):
     """
@@ -50,6 +51,12 @@ class Registry(metaclass=SingletonType):
             downloader = ArtifactDownloader([], False, False)
             version_strings = downloader.find_versions_for_package(repo, library, override_archs)
             return [semver.make_semver(version, False) for version in version_strings]
+
+        def get_version(self) -> str:
+            return voyager.voyager.VERSION
+
+        def get_artifactory_url(self) -> str:
+            return ConfigFile().artifactory_url
 
     def __init__(self):
         super().__init__()

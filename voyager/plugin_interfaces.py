@@ -46,7 +46,7 @@ class Plugin:
 class Interface(ABC):
     """The interface passed to plugins through which they should make calls into voyager."""
 
-    VERSION = semver.SemVer("0.1.1", False)
+    VERSION = semver.SemVer("0.1.2", False)
 
     @abstractproperty
     def plugins(self) -> List[Plugin]:
@@ -72,3 +72,13 @@ class Interface(ABC):
       information.
       """
       pass
+
+    @abstractmethod
+    def get_version(self) -> str:
+        """Get the current version number of voyager"""
+        pass
+
+    @abstractmethod
+    def get_artifactory_url(self) -> str:
+        """Get the artifactory url from the config file"""
+        pass
