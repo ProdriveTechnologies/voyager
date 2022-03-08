@@ -28,6 +28,9 @@ class Plugin:
     # Default compatibility is with nothing, so you have to set this in a plugin.
     REQUIRED_INTERFACE_VERSION = semver.Range("0.0.0", False)
 
+    # Version identifier of the plugin, set this in the plugin
+    PLUGIN_VERSION = "Undefined version"
+
     def __init__(self, interface):
         self.interface: Interface = interface
 
@@ -40,7 +43,7 @@ class Plugin:
         pass
 
     def __str__(self):
-        return type(self).__name__
+        return f"{type(self).__name__} - {self.PLUGIN_VERSION}"
 
 
 class Interface(ABC):
