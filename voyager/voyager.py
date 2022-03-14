@@ -88,7 +88,7 @@ def search(query):
 
 @cli.command()
 @click.argument('library_string')
-@click.option('--force-version', '-ff', default=False, help='Add force version attribute', is_flag=True)
+@click.option('--force-version', '-f', default=False, help='Add force version attribute', is_flag=True)
 def add(library_string, force_version):
     """Add a library to the working directory voyager.json and save it.
 
