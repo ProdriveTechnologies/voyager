@@ -255,14 +255,15 @@ def init():
 
 @cli.command()
 @click.option('--dir', 'deploy_dir', default=".voyager/.deploy", help='Folder to place the binaries in')
-def deploy(deploy_dir):
+@click.option('--only-runtime-deps', '-r', default=False, help='Install only runtime dependencies', is_flag=True)
+def deploy(deploy_dir, only_runtime_deps):
     """Deploy all binary dependencies to a target folder.
 
     This command is useful when you have binary dependencies (such as DLLs or
     executables) that are otherwise not available on the target system.
     """
     print("Deploy")
-    deployfromlockfile.deploy_all_dependencies(deploy_dir)
+    deployfromlockfile.deploy_all_dependencies(deploy_dir, only_runtime_deps)
 
 @cli.command()
 def login():

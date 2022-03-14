@@ -22,7 +22,7 @@ from .lockfile import LockFileReader
 from .buildinfo import Package
 
 
-def deploy_all_dependencies(deploy_dir):
+def deploy_all_dependencies(deploy_dir, only_runtime_deps):
     reader = LockFileReader()
     reader.parse()
 
@@ -30,6 +30,11 @@ def deploy_all_dependencies(deploy_dir):
     copied = []
     for dep in reader.all_dependencies:
         pack = Package(dep['library'], dep['version'], dep['package_path'], dep.get('options', []), False, False)
+
+        if only_runtime_deps:
+            if dep.get('dependency_type') != "runtime":
+                continue
+
         for bin_path in pack.bin_paths:
             print(f"  {pack.name} @ {pack.version}: {bin_path}")
             # use copy_tree from distutils because shutil.copytree stops if directory already exists
