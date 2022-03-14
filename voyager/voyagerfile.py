@@ -81,8 +81,7 @@ class VoyagerFile():
                     library.update(over)
                     break
 
-
-    def add_library(self, library_string: str):
+    def add_library(self, library_string: str, force_version: bool):
         """
         Add a library to the voyager.json and save the file.
         The library_string must use the following format: example-generic-local/Utils/Exceptions/1.2.0
@@ -97,16 +96,24 @@ class VoyagerFile():
             vers = semver.parse(version, True)
             version = f"{vers.major}.{vers.minor}"
 
-        self.data['libraries'].append({
+        elem = {
             "repo": repo,
             "library": package,
             "version": version
-        })
+        }
+
+        if force_version:
+            elem['force_version'] = True
+
+        self.data['libraries'].append(elem)
 
         print("Adding Library:")
         print(f"  Repo:    {repo}")
         print(f"  Library: {package}")
-        print(f"  Version: {version}")
+        if force_version:
+            print(f"  Version: {version} (Force Version)")
+        else:
+            print(f"  Version: {version}")
 
         with open('voyager.json', 'w') as outfile:
             json.dump(self.data, outfile, indent=2)
