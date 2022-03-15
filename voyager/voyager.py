@@ -38,6 +38,7 @@ import voyager.deployfromlockfile as deployfromlockfile
 import voyager.artifactorylogin as artifactorylogin
 import voyager.plugin_registry as plugin_registry
 import voyager.doc as doc_server
+import voyager.package_update as package_updater
 
 VERSION = "1.15.0"
 
@@ -275,6 +276,11 @@ def login():
 def doc():
     """Run a local website that links to the docs of the individual packages"""
     doc_server.run_doc_server()
+
+@cli.command()
+def check_update():
+    """Check for available updates in the listed packages"""
+    package_updater.execute_package_update()
 
 def main():
     print(f"Voyager version {VERSION}")
