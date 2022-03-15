@@ -96,6 +96,7 @@ def check_for_updates(libraries_or_build_tools):
     if not updates_proposed:
         click.echo("  No updates")
 
+
 def get_recommended_version_str(version: str) -> str:
     """Construct a recommended version string (major.minor) for the voyager.json"""
     ver = semver.semver(version, False)
