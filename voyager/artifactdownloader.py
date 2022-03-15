@@ -79,7 +79,7 @@ class ArtifactDownloader:
             # The version can either be semver or something like feature/xyz when referencing an Rxx version
             # When version is semver, parse and check which versions comply
             # otherwise use the feature/xyz name to download
-            if self._check_if_valid_semver(lib['version']) and not local_path:
+            if self.check_if_valid_semver(lib['version']) and not local_path:
                 versions = self.find_versions_for_package(lib['repo'], lib['library'], override_archs)
                 version_to_download = max_satisfying(versions, lib['version'], True)
                 if not version_to_download:
@@ -163,7 +163,7 @@ class ArtifactDownloader:
                 # Check if the forced version is greater
                 # when either uses a branch name as the version I consider it a free for all
                 # when both semvers are valid we must check that the forced version is newer
-                if self._check_if_valid_semver(pack.version) and self._check_if_valid_semver(version_to_download):
+                if self.check_if_valid_semver(pack.version) and self.check_if_valid_semver(version_to_download):
                     sem_pack = semver.semver(pack.version, False)
                     sem_down = semver.semver(version_to_download, False)
                     if semver.lt(sem_pack, sem_down, False):  # sem_pack < sem_down
@@ -173,7 +173,7 @@ class ArtifactDownloader:
 
                 click.echo(click.style(f'WARN: Forcing version {version_to_download} to {pack.version} ', fg='yellow'), nl=False)
 
-    def _check_if_valid_semver(self, version):
+    def check_if_valid_semver(self, version):
         """ Check if a string is parseable by the semver library """
         r = valid_range(version, True)
         if r:
@@ -210,7 +210,7 @@ class ArtifactDownloader:
         for l in artifacts_list:
             p = l['path'].split('/')
             if p[-1] in archs:
-                if self._check_if_valid_semver(p[-2]):
+                if self.check_if_valid_semver(p[-2]):
                     versions.append(p[-2])
 
         return versions
