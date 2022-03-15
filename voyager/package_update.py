@@ -114,10 +114,10 @@ def semver_reduce_patch(versions: List[str]) -> List[str]:
         major_minor_str = F"{version.major}.{version.minor}"
 
         if major_minor_str in reduce_dict:
-            if reduce_dict[major_minor_str] < version.minor:
-                reduce_dict[major_minor_str] = version.minor
+            if reduce_dict[major_minor_str] < version.patch:
+                reduce_dict[major_minor_str] = version.patch
         else:
-            reduce_dict[major_minor_str] = version.minor
+            reduce_dict[major_minor_str] = version.patch
 
     results = []
     for key, value in reduce_dict.items():
