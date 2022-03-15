@@ -8,12 +8,12 @@
 [Setup]
 AppPublisher={#Publisher}
 AppName=voyager
-AppId=voyager_{#Release}
+AppId=voyager
 AppVersion={#Release}
 WizardStyle=modern
 DefaultDirName={localappdata}\ProdriveTechnologies\voyager\
 DefaultGroupName={#Publisher}\voyager
-UninstallDisplayIcon=.\icon_black.ico
+UninstallDisplayIcon={app}\voyager.exe
 UninstallDisplayName=voyager {#Release}
 Compression=lzma2
 SolidCompression=yes
