@@ -24,25 +24,25 @@ def execute_package_update():
     file = VoyagerFile("voyager.json")
     file.parse()
 
-    check_for_updates(file.libraries)
+    _check_for_updates(file.libraries)
 
     if file.has_build_tools():
         click.echo(click.style('Top level (build_tools):', fg='cyan'))
-        check_for_updates(file.build_tools)
+        _check_for_updates(file.build_tools)
 
     for subdir in file.projects:
         click.echo(click.style(f'{subdir}:', fg='cyan'))
         subdir_file = VoyagerFile(f"{subdir}/voyager.json")
         subdir_file.parse()
 
-        check_for_updates(subdir_file.libraries)
+        _check_for_updates(subdir_file.libraries)
 
         if subdir_file.has_build_tools():
             click.echo(click.style(f'{subdir} (build_tools):', fg='cyan'))
-            check_for_updates(subdir_file.build_tools)
+            _check_for_updates(subdir_file.build_tools)
 
 
-def check_for_updates(libraries_or_build_tools):
+def _check_for_updates(libraries_or_build_tools):
     updates_proposed = False
     down = ArtifactDownloader(libraries_or_build_tools, False, False)
 
@@ -71,7 +71,7 @@ def check_for_updates(libraries_or_build_tools):
         updates_proposed = True
 
         # combine patch versions to only include highest
-        higher_versions = semver_reduce_patch(higher_versions)
+        higher_versions = _semver_reduce_patch(higher_versions)
 
         # Print results
         click.echo(f"  Update available for: ", nl=False)
@@ -79,7 +79,7 @@ def check_for_updates(libraries_or_build_tools):
         click.echo(f" - {lib['version']} @ {version_to_download_str}")
 
         for higher_version in higher_versions:
-            diff = semver_diff(version_to_download_str, higher_version)
+            diff = _semver_diff(version_to_download_str, higher_version)
 
             if diff == "major":
                 click.echo(click.style(f'    Major: {higher_version}', fg='bright_green'), nl=False)
@@ -90,20 +90,20 @@ def check_for_updates(libraries_or_build_tools):
             else:
                 click.echo(click.style(f'    ?????: {higher_version}', fg='bright_red'), nl=False)
 
-            proposed_version_str = get_recommended_version_str(higher_version)
+            proposed_version_str = _get_recommended_version_str(higher_version)
             click.echo(f" - set voyager.json to {proposed_version_str}")
 
     if not updates_proposed:
         click.echo("  No updates")
 
 
-def get_recommended_version_str(version: str) -> str:
+def _get_recommended_version_str(version: str) -> str:
     """Construct a recommended version string (major.minor) for the voyager.json"""
     ver = semver.semver(version, False)
     return f"\"version\": \"{ver.major}.{ver.minor}\""
 
 
-def semver_reduce_patch(versions: List[str]) -> List[str]:
+def _semver_reduce_patch(versions: List[str]) -> List[str]:
     """
     Reduce the patch versions in a list to only the highest
     :param versions: A list of strings with versions ['17.0.0', '18.0.0', '18.0.1']
@@ -127,7 +127,7 @@ def semver_reduce_patch(versions: List[str]) -> List[str]:
     return results
 
 
-def semver_diff(a: str, b: str) -> str:
+def _semver_diff(a: str, b: str) -> str:
     """Compare 2 semver strings and return the difference in a string"""
     if a == b:
         return "same"
