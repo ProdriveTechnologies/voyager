@@ -74,8 +74,7 @@ def _check_for_updates(libraries_or_build_tools):
         higher_versions = _semver_reduce_patch(higher_versions)
 
         # Print results
-        click.echo(f"  Update available for: ", nl=False)
-        click.echo(click.style(f"{lib['library']}", fg='bright_blue'), nl=False)
+        click.echo(click.style(f"  {lib['library']}", fg='bright_blue'), nl=False)
         click.echo(f" - {lib['version']} @ {version_to_download_str}")
 
         for higher_version in higher_versions:
