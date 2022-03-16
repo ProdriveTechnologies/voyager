@@ -20,31 +20,56 @@ from typing import List
 
 
 def execute_package_update():
-    click.echo(click.style('Top level:', fg='cyan'))
     file = VoyagerFile("voyager.json")
     file.parse()
 
-    _check_for_updates(file.libraries)
+    update_list = []
+
+    update_list += _check_for_updates(file.libraries)
 
     if file.has_build_tools():
-        click.echo(click.style('Top level (build_tools):', fg='cyan'))
-        _check_for_updates(file.build_tools)
+        update_list += _check_for_updates(file.build_tools)
 
     for subdir in file.projects:
-        click.echo(click.style(f'{subdir}:', fg='cyan'))
         subdir_file = VoyagerFile(f"{subdir}/voyager.json")
         subdir_file.parse()
 
-        _check_for_updates(subdir_file.libraries)
+        update_list += _check_for_updates(subdir_file.libraries)
 
         if subdir_file.has_build_tools():
-            click.echo(click.style(f'{subdir} (build_tools):', fg='cyan'))
-            _check_for_updates(subdir_file.build_tools)
+            update_list += _check_for_updates(subdir_file.build_tools)
+
+    click.echo(click.style("Patch Update ", fg='bright_green'), nl=False)
+    click.echo(click.style("Backwards-compatible bug fixes.", fg='green'), nl=True)
+    for elem in update_list:
+        if elem['update-type'] == "patch":
+            click.echo(click.style(f" {elem['library']}".ljust(40), fg='cyan'), nl=False)
+            click.echo(f" {elem['version']} -> {elem['new-version']}".ljust(20), nl=False)
+            click.echo(f" {elem['proposed']}")
+
+    print("")
+    click.echo(click.style("Minor Update ", fg='bright_yellow'), nl=False)
+    click.echo(click.style("New backwards-compatible features.", fg='yellow'), nl=True)
+    for elem in update_list:
+        if elem['update-type'] == "minor":
+            click.echo(click.style(f" {elem['library']}".ljust(40), fg='cyan'), nl=False)
+            click.echo(f" {elem['version']} -> {elem['new-version']}".ljust(20), nl=False)
+            click.echo(f" {elem['proposed']}")
+
+    print("")
+    click.echo(click.style("Major Update ", fg='bright_red'), nl=False)
+    click.echo(click.style("Potentially breaking API changes, use caution.", fg='red'), nl=True)
+    for elem in update_list:
+        if elem['update-type'] == "major":
+            click.echo(click.style(f" {elem['library']}".ljust(40), fg='cyan'), nl=False)
+            click.echo(f" {elem['version']} -> {elem['new-version']}".ljust(20), nl=False)
+            click.echo(f" {elem['proposed']}")
 
 
 def _check_for_updates(libraries_or_build_tools):
-    updates_proposed = False
     down = ArtifactDownloader(libraries_or_build_tools, False, False)
+
+    update_list = []
 
     for lib in libraries_or_build_tools:
         # When not a valid semver continue with the next item
@@ -68,32 +93,23 @@ def _check_for_updates(libraries_or_build_tools):
         if len(higher_versions) == 0:
             continue
 
-        updates_proposed = True
-
         # combine patch versions to only include highest
         higher_versions = _semver_reduce_patch(higher_versions)
-
-        # Print results
-        click.echo(click.style(f"  {lib['library']}", fg='bright_blue'), nl=False)
-        click.echo(f" - {lib['version']} @ {version_to_download_str}")
 
         for higher_version in higher_versions:
             diff = _semver_diff(version_to_download_str, higher_version)
 
-            if diff == "major":
-                click.echo(click.style(f'    Major: {higher_version}', fg='bright_green'), nl=False)
-            elif diff == "minor":
-                click.echo(click.style(f'    Minor: {higher_version}', fg='bright_magenta'), nl=False)
-            elif diff == "patch":
-                click.echo(click.style(f'    Patch: {higher_version}', fg='bright_cyan'), nl=False)
-            else:
-                click.echo(click.style(f'    ?????: {higher_version}', fg='bright_red'), nl=False)
-
             proposed_version_str = _get_recommended_version_str(higher_version)
-            click.echo(f" - set voyager.json to {proposed_version_str}")
 
-    if not updates_proposed:
-        click.echo("  No updates")
+            update_list.append({
+                "library": lib['library'],
+                "version": version_to_download_str,
+                "update-type": diff,
+                "new-version": higher_version,
+                "proposed": proposed_version_str
+            })
+
+    return update_list
 
 
 def _get_recommended_version_str(version: str) -> str:
