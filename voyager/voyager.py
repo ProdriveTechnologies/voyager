@@ -40,7 +40,7 @@ import voyager.plugin_registry as plugin_registry
 import voyager.doc as doc_server
 import voyager.package_update as package_updater
 
-VERSION = "1.15.0"
+VERSION = "1.16.0-RC1"
 
 
 @click.group()
