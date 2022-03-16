@@ -143,7 +143,7 @@ def _semver_reduce_patch(versions: List[str]) -> List[str]:
 
 
 def _semver_diff(a: str, b: str) -> str:
-    """Compare 2 semver strings and return the difference in a string"""
+    """Compare 2 semver strings and return which part (major/minor/patch) is different in a string"""
     if a == b:
         return "same"
 
