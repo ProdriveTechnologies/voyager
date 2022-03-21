@@ -84,8 +84,9 @@ class ArtifactDownloader:
                 version_to_download = max_satisfying(versions, lib['version'], True)
                 if not version_to_download:
                     msg = f"ERROR: version {lib['version']} not found.\n Available: {versions}"
+                    exception_msg = f"{lib['repo']}/{lib['library']} @ {lib['version']} not found. Available: {versions}"
                     click.echo(click.style(msg, fg='red'))
-                    raise ValueError(msg)
+                    raise ValueError(exception_msg)
 
             # Handle version conflicts within project
             if not download_only and lib['library'] in self.build_info.package_names:
@@ -156,9 +157,10 @@ class ArtifactDownloader:
         """
         if pack.version != version_to_download:
             if not pack.force_version:
-                msg = f"ERROR: Version conflict within project for {lib['library']}: {pack.version} vs {version_to_download}"
+                msg = f"ERROR: Version conflict for {lib['library']}: {pack.version} vs {version_to_download}"
+                exception_msg = f"Version conflict for {lib['repo']}/{lib['library']}: {pack.version} vs {version_to_download}"
                 click.echo(click.style(msg, fg='red'))
-                raise ValueError(msg)
+                raise ValueError(exception_msg)
             else:
                 # Check if the forced version is greater
                 # when either uses a branch name as the version I consider it a free for all
@@ -168,8 +170,9 @@ class ArtifactDownloader:
                     sem_down = semver.semver(version_to_download, False)
                     if semver.lt(sem_pack, sem_down, False):  # sem_pack < sem_down
                         msg = f'ERROR: Cannot force {version_to_download} to lower version {pack.version} '
+                        exception_msg = f"Cannot force {lib['repo']}/{lib['library']} from {version_to_download} to lower version {pack.version}"
                         click.echo(click.style(msg, fg='red'))
-                        raise ValueError(msg)
+                        raise ValueError(exception_msg)
 
                 click.echo(click.style(f'WARN: Forcing version {version_to_download} to {pack.version} ', fg='yellow'), nl=False)
 
@@ -243,7 +246,7 @@ class ArtifactDownloader:
 
         if not found:
             click.echo(click.style(u'ERROR: package not found', fg='red'))
-            raise ValueError(f"Package {library} @ {version} not found")
+            raise ValueError(f"{repo}/{library} @ {version} not found")
 
         if output_dir:
             extract_dir = output_dir
@@ -265,11 +268,11 @@ class ArtifactDownloader:
 
         if not package_path.exists():
             click.echo(click.style(u'ERROR: local package not found', fg='red'))
-            raise ValueError(f"Local package not found")
+            raise ValueError(f"Local package {library} in {package_path} does not exist")
 
         if not package_path.is_dir():
             click.echo(click.style(u'ERROR: local package is not a directory', fg='red'))
-            raise ValueError(f"Local package not found")
+            raise ValueError(f"Local package {library} in {package_path} is not a directory")
 
         if output_dir:
             extract_dir = output_dir
