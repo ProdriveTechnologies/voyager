@@ -25,21 +25,24 @@ class VoyagerFile():
 
     def parse(self):
         with open(self.fileName) as json_file:
-            self.data = json.load(json_file)
+            try:
+                self.data = json.load(json_file)
+            except json.JSONDecodeError as e:
+                raise ValueError(F"Could not parse {self.fileName}: {e}")
 
-        self.version = self.data['version']
-        self.libraries = self.data['libraries']
-        self.type = self.data['type']
+        self.version = self.data.get('version', None)
+        self.libraries = self.data.get('libraries', None)
+        self.type = self.data.get('type', None)
         self.solution = True
         self.projects = []
         self.generators = self.data.get('generators', ['msbuild'])
         self.build_tools = self.data.get('build_tools', [])
 
         if self.version != 1:
-            raise ValueError('The version of the voyager JSON file must be 1')
+            raise ValueError(f'The version element in {self.fileName} is missing or not set to 1')
 
         if self.libraries == None:
-            raise ValueError('The libraries object is missing in the voyager JSON file')
+            raise ValueError(f'The libraries element is missing in {self.fileName}')
 
         if self.type == 'solution':
             self.solution = True
@@ -49,7 +52,7 @@ class VoyagerFile():
         elif self.type == 'overlay':
             self.solution = 'false'
         else:
-            raise ValueError('Incorrect value of the type field in voyager JSON file. Supported: solution, project, overlay')
+            raise ValueError(f'The type element in {self.fileName} is missing or not set to: solution, project, overlay')
 
     def print(self):
         print(self.data)
