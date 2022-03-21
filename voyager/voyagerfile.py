@@ -125,14 +125,11 @@ class VoyagerFile():
     def generate_empty_file():
         data = {}
         data['version'] = 1
-        data['libraries'] = [{
-            "repo": "",
-            "library": "",
-            "version": ""
-        }]
+        data['type'] = "TODO: solution or project"
+        data['libraries'] = []
 
         if not os.path.isfile('voyager.json'):
-            click.echo("Generating empty config file")
+            click.echo("Generating empty voyager.json")
             with open('voyager.json', 'w') as outfile:
                 json.dump(data, outfile, indent=2)
         else:
