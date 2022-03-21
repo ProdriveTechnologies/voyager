@@ -1,9 +1,19 @@
 # Release notes
 
-### [x.x.x]
+### [1.16.0]
 - `voyager login` now asks for the artifactory url and username
 - Remove artifactory_url default value from config templates
 - CMake and MSBuild generators now create a variable pointing to the `.voyager` directory.
+- Add MSVC.143 to config_template Windows
+- Implement plugin architecture
+- Add generator for C++ header file with a list of installed packages
+- Add missing docstrings so `voyager --help` is actually useful
+- Add logging with the Python standard logging framework
+- Add `voyager doc` command that hosts a local webserver linking to docs of packages
+- Add `voyager check-update` command to find out which packages in voyager.json can be updated
+- Add command line parameter to `voyager add` for force version
+- Add command line parameter to `voyager deploy` to only deploy runtime dependencies
+- Fix windows installer so updates can be installed without removing the old version first
 
 ### [1.15.0]
 - Add `voyager login` so no more copying of API key is needed
