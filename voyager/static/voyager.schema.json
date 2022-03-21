@@ -1,0 +1,107 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/ProdriveTechnologies/voyager/master/voyager/static/voyager.schema.json",
+  "title": "Voyager",
+  "description": "The voyager.json is the file that is placed in the solution and projects folder and lists all the dependencies.",
+  "type": "object",
+  "properties": {
+    "version": {
+      "description": "The file format version, currently always 1",
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1
+    },
+    "type": {
+      "description": "The type of the file: solution or project",
+      "enum": ["project", "solution", "overlay"]
+    },
+    "build_tools": {
+      "description": "List of packages to install that provide build tools",
+      "type": "array",
+      "items": {"$ref": "#/$defs/package_element"}
+    },
+    "libraries": {
+      "description": "List of packages to install that provide libraries, can be empty array [] for no packages",
+      "type": "array",
+      "items": {"$ref": "#/$defs/package_element"}
+    },
+    "projects": {
+      "description": "List of the subdirectories with voyager.json files where the type is project",
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "generators": {
+      "description": "At solution level: Which build systems to generate files for. Defaults to msbuild",
+      "type": "array",
+      "items": {"type": "string"}
+    }
+  },
+  "required": ["version", "type", "libraries"],
+  "if": {
+    "properties": {
+      "type": { "const": "solution"}
+    }
+  },
+  "then": {
+    "required": ["projects"]
+  },
+  
+  "$defs": {
+    "package_element": {
+      "type": "object",
+      "properties": {
+        "repo": {
+          "description": "The Artifactory repository in which the package is located",
+          "type": "string"
+        },
+        "library": {
+          "description": "The package to install",
+          "type": "string"
+        },
+        "version": {
+          "description": "Version to install, may contain wildcards like 3.*",
+          "type": "string"
+        },
+        "options": {
+          "description": "Package specific options",
+          "markdownDescription": "Package specific options. more about this in the [Package format](https://prodrivetechnologies.github.io/voyager/package-format/#options)",
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "dependency_type": {
+          "description": "Dependency type for the package compile or runtime",
+          "enum": ["compile", "runtime"]
+        },
+        "for_archs": {
+          "description": "Only install this package when installing for one of the architectures in this list",
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "output_dir": {
+          "description": "Override the default output directory for the package. Can be useful if the build system has to make assumptions on the path",
+          "type": "string"
+        },
+        "override_archs": {
+          "description": "Override the arch for a package, install the specified arch",
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "download_only": {
+          "description": "Only download this package, dont include the package and dont download dependencies",
+          "type": "boolean"
+        },
+        "force_version": {
+          "description": "Force this version when a dependency conflict occurs",
+          "markdownDescription": "Force this version when a dependency conflict occurs. See [Dependency Conflicts](http://siatd.prodrive.nl/voyager/advanced/dependency-conflicts/) for more information",
+          "type": "boolean"
+        },
+        "local_path": {
+          "description": "Use a local package instead of downloading from Artifactory. Can be a relative or absolute path",
+          "markdownDescription": "Use a local package instead of downloading from Artifactory. Can be a relative or absolute path. Better to use this via the [Overlay file](http://siatd.prodrive.nl/voyager/advanced/overlay-file/)",
+          "type": "string"
+        }
+      },
+      "required": ["repo", "library", "version"]
+    }
+  }
+}

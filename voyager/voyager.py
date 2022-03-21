@@ -256,7 +256,7 @@ def init():
 
 @cli.command()
 @click.option('--dir', 'deploy_dir', default=".voyager/.deploy", help='Folder to place the binaries in')
-@click.option('--only-runtime-deps', '-r', default=False, help='Install only runtime dependencies', is_flag=True)
+@click.option('--only-runtime-deps', '-r', default=False, help='Deploy only runtime dependencies', is_flag=True)
 def deploy(deploy_dir, only_runtime_deps):
     """Deploy all binary dependencies to a target folder.
 
