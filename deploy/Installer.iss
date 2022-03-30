@@ -1,5 +1,5 @@
 // ###########################
-#define Release "1.16.0-RC1"
+#define Release "1.16.0"
 // ###########################
 
 #define AppName "voyager"
