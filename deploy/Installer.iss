@@ -1,5 +1,5 @@
 // ###########################
-#define Release "1.16.0"
+#define Release "1.16.1"
 // ###########################
 
 #define AppName "voyager"
@@ -11,7 +11,7 @@ AppName=voyager
 AppId=voyager
 AppVersion={#Release}
 WizardStyle=modern
-DefaultDirName={localappdata}\ProdriveTechnologies\voyager\
+DefaultDirName={commonpf64}\Prodrive\voyager\
 DefaultGroupName={#Publisher}\voyager
 UninstallDisplayIcon={app}\voyager.exe
 UninstallDisplayName=voyager {#Release}
@@ -32,7 +32,7 @@ Source: "../dist/voyager/*"; DestDir: {app}; Flags: ignoreversion recursesubdirs
 [Code]
 const
 	ModPathName = 'modifypath';
-	ModPathType = 'user';
+	ModPathType = 'system';
 
 function ModPathDir(): TArrayOfString;
 begin
