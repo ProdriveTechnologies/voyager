@@ -32,7 +32,7 @@ def deploy_all_dependencies(deploy_dir, only_runtime_deps):
         pack = Package(dep['library'], dep['version'], dep['package_path'], dep.get('options', []), False, False)
 
         if only_runtime_deps:
-            if dep.get('dependency_type') != "runtime":
+            if dep.get('dependency_type') != "runtime" and dep.get('type') != "runtime":
                 continue
 
         for bin_path in pack.bin_paths:
