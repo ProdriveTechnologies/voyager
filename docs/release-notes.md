@@ -1,5 +1,8 @@
 # Release notes
 
+### [1.16.2]
+- Also deploy transitive runtime dependencies 
+
 ### [1.16.1]
 - Change default install folder on Windows to `C:\Program Files\Prodrive\voyager`
 - Add PATH variable now modifies the system PATH
