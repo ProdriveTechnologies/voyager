@@ -1,5 +1,8 @@
 # Release notes
 
+### [1.16.3]
+- Preserve symlinks during `voyager deploy`.
+
 ### [1.16.2]
 - Also deploy transitive runtime dependencies 
 
