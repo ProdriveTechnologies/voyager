@@ -40,7 +40,7 @@ def deploy_all_dependencies(deploy_dir, only_runtime_deps):
             # use copy_tree from distutils because shutil.copytree stops if directory already exists
             # and therefore can't work in this for loop construction
             try:
-                copied += copy_tree(bin_path, deploy_dir)
+                copied += copy_tree(bin_path, deploy_dir, preserve_symlinks=True)
             except distutils.errors.DistutilsFileError:  # Found a package that defines a bin dir that does not exist
                 pass
 
