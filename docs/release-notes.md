@@ -1,5 +1,8 @@
 # Release notes
 
+### [1.16.4]
+- Use a persistent HTTP connection to make `voyager install` faster.
+
 ### [1.16.3]
 - Preserve symlinks during `voyager deploy`.
 
