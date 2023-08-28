@@ -18,6 +18,7 @@ import os
 import click
 from pathlib import Path
 from artifactory import ArtifactoryPath
+import requests
 from semver import valid_range, max_satisfying
 import semver
 
@@ -33,6 +34,9 @@ class ArtifactDownloader:
         self.build_info = BuildInfo()
         self.build_tools = are_build_tools
         self.download_runtime_deps = download_runtime_deps
+
+        self.artifactory_session = requests.Session()
+        self.artifactory_session.headers['X-JFrog-Art-Api'] = self.config.api_key
 
     def clear_directory(self):
         try:
@@ -196,7 +200,7 @@ class ArtifactDownloader:
             archs = self._get_active_archs()
         versions = []
         
-        path = ArtifactoryPath(self.config.artifactory_url, apikey=self.config.api_key)
+        path = ArtifactoryPath(self.config.artifactory_url, session=self.artifactory_session)
 
         args = [
             "items.find",
@@ -237,7 +241,7 @@ class ArtifactDownloader:
         for arch in archs:
             package_dir = f"{repo}/{library}/{version}/{arch}"
             url = f"{self.config.artifactory_url}/{package_dir}/voyager_package.tgz"
-            path = ArtifactoryPath(url, apikey=self.config.api_key)
+            path = ArtifactoryPath(url, session=self.artifactory_session)
 
             if path.exists():
                 click.echo(click.style(f'{arch} @ {version} ', fg='bright_blue'), nl=False)
