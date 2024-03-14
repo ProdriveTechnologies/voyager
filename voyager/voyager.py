@@ -40,7 +40,7 @@ import voyager.plugin_registry as plugin_registry
 import voyager.doc as doc_server
 import voyager.package_update as package_updater
 
-VERSION = "1.16.4"
+VERSION = "1.16.5"
 
 
 @click.group()
@@ -186,7 +186,7 @@ def install(host, host_file, with_runtime_deps):
         down = ArtifactDownloader(subdir_file.libraries, False, with_runtime_deps)
         build_info_subdir = down.download(build_info_combined)
 
-        if file.has_build_tools():
+        if subdir_file.has_build_tools():
             click.echo(click.style(f'{subdir} (build_tools):', fg='cyan'))
             down = ArtifactDownloader(subdir_file.build_tools, True, with_runtime_deps)
             build_info_tools = down.download(build_info_combined)
