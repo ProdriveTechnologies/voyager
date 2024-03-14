@@ -1,5 +1,8 @@
 # Release notes
 
+### [1.16.5]
+- Fix a bug where build tools in a subproject were never retrieved.
+
 ### [1.16.4]
 - Use a persistent HTTP connection to make `voyager install` faster.
 
