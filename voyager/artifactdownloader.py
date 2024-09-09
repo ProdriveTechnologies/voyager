@@ -210,9 +210,11 @@ class ArtifactDownloader:
                     {"path": {"$match": f"{library}/*"}},
                 ]
             },
+            ".transitive()"
         ]
 
         artifacts_list = path.aql(*args)
+        artifacts_list = [entry for entry in artifacts_list if not entry['repo'].endswith('-cache')]
 
         for l in artifacts_list:
             p = l['path'].split('/')

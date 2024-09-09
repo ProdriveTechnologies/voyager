@@ -1,5 +1,8 @@
 # Release notes
 
+### [1.x.x]
+- Add transitive tag to enable search within a remote repository.
+
 ### [1.16.5]
 - Fix a bug where build tools in a subproject were never retrieved.
 
