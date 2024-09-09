@@ -209,7 +209,8 @@ class ArtifactDownloader:
                     {"repo": {"$eq": repo}},
                     {"path": {"$match": f"{library}/*"}},
                 ]
-            },".transitive()"
+            },
+            ".transitive()"
         ]
 
         artifacts_list = path.aql(*args)
