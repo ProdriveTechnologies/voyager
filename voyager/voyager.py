@@ -98,14 +98,22 @@ def search(query):
         json.dump(found_items_numbered, outfile, indent=2)
 
 @cli.command()
-@click.argument('library_string')
+@click.argument('library_string', required=False)
 @click.option('--force-version', '-f', default=False, help='Add force version attribute', is_flag=True)
 @click.option('--directory', '-C', default=None, help='Path to the voyager.json file')
-def add(library_string, force_version, directory):
+@click.option('--select-result', '-s', default=None, help='Select a search result from the most recent \'search\'.')
+def add(library_string, force_version, directory, select_result):
     """Add a library to the working directory voyager.json and save it.
 
     The library_string must use the following format: example-generic-local/Utils/Exceptions/1.2.0
     """
+    
+    if library_string is None and select_result is None:
+        raise ValueError(f"Add query: user specified neither 'LIBRARY_STRING' nor '--select_result'. One must be specified.")
+    
+    if library_string is not None and select_result is not None:
+        raise ValueError(f"Add query: user specified a 'LIBRARY_STRING' and '--select_result'. Only one may be specified.")
+
     file_path = "voyager.json"
 
     if directory is not None:
@@ -116,8 +124,14 @@ def add(library_string, force_version, directory):
 
     file = VoyagerFile(file_path)
     file.parse()
-
-    file.add_library(library_string, force_version, directory)
+    
+    if select_result is not None:
+        f = open('.voyager\\search_results.json', 'r')
+        search_results = json.load(f)
+        found_library = search_results[select_result]
+        file.add_library(found_library, force_version, directory)
+    else:
+        file.add_library(library_string, force_version, directory)
 
 def generate_project(generators: list, subdir: str, build_info: BuildInfo):
     """Generate dependency files for each project"""
