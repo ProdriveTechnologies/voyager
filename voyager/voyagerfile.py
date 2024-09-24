@@ -84,7 +84,7 @@ class VoyagerFile():
                     library.update(over)
                     break
 
-    def add_library(self, library_string: str, force_version: bool):
+    def add_library(self, library_string: str, force_version: bool, directory: str):
         """
         Add a library to the voyager.json and save the file.
         The library_string must use the following format: example-generic-local/Utils/Exceptions/1.2.0
@@ -118,7 +118,12 @@ class VoyagerFile():
         else:
             print(f"  Version: {version}")
 
-        with open('voyager.json', 'w') as outfile:
+        file_path = "voyager.json"
+
+        if directory is not None:
+            file_path = directory + "\\" + file_path
+
+        with open(file_path, 'w') as outfile:
             json.dump(self.data, outfile, indent=2)
 
     @staticmethod

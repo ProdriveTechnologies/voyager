@@ -90,15 +90,24 @@ def search(query):
 @cli.command()
 @click.argument('library_string')
 @click.option('--force-version', '-f', default=False, help='Add force version attribute', is_flag=True)
-def add(library_string, force_version):
+@click.option('--directory', '-C', default=None, help='Path to the voyager.json file')
+def add(library_string, force_version, directory):
     """Add a library to the working directory voyager.json and save it.
 
     The library_string must use the following format: example-generic-local/Utils/Exceptions/1.2.0
     """
-    file = VoyagerFile("voyager.json")
+    file_path = "voyager.json"
+
+    if directory is not None:
+        file_path = directory + "\\" + file_path
+        print("directory: " + directory)
+
+    print("file path: " + file_path)
+
+    file = VoyagerFile(file_path)
     file.parse()
 
-    file.add_library(library_string, force_version)
+    file.add_library(library_string, force_version, directory)
 
 def generate_project(generators: list, subdir: str, build_info: BuildInfo):
     """Generate dependency files for each project"""
