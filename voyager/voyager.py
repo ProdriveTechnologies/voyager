@@ -19,6 +19,7 @@ import logging
 
 # pip imports
 import click
+import json
 import semver
 
 # local imports
@@ -78,6 +79,9 @@ def search(query):
     else:
         raise ValueError(f"Search query: {query} is not supported")
 
+    count = 0
+    found_items_numbered = {}
+
     for key, values in found.items():
         valid_semvers = []
         for version in values:
@@ -85,7 +89,13 @@ def search(query):
                 valid_semvers.append(version)
 
         latest_version = semver.max_satisfying(valid_semvers, "*", False)
-        print(f"{key}/{latest_version} {values}")
+        print(f"{count:>3} ) {key}/{latest_version} {values}")
+
+        found_items_numbered[count] = f"{key}/{latest_version}"
+        count+=1
+
+    with open('.voyager\\search_results.json', 'w') as outfile:
+        json.dump(found_items_numbered, outfile, indent=2)
 
 @cli.command()
 @click.argument('library_string')
