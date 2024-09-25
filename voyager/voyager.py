@@ -118,9 +118,6 @@ def add(library_string, force_version, directory, select_result):
 
     if directory is not None:
         file_path = directory + "\\" + file_path
-        print("directory: " + directory)
-
-    print("file path: " + file_path)
 
     file = VoyagerFile(file_path)
     file.parse()
