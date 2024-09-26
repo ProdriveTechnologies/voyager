@@ -99,7 +99,6 @@ def search(query):
     dot_voyager_dir = solution_dot_voyager_path()
     if dot_voyager_dir is not None:
         with open(dot_voyager_dir / Path(SEARCH_RESULTS_FILE_NAME), 'w') as outfile:
-            print(dot_voyager_dir / Path(SEARCH_RESULTS_FILE_NAME))
             json.dump(found_items_numbered, outfile, indent=2)
 
 @cli.command()

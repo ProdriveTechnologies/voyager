@@ -27,7 +27,10 @@ def resource_path(relative_path):
     return os.path.join(base_path, relative_path)
 
 def solution_dot_voyager_path() -> Optional[str]:
-    """ Get absolute path to the .voyager folder located in the solution directory """
+    """ Get absolute path to the .voyager folder located in the solution directory 
+    
+    Will only search in the current directory or one directory up
+    """
     search_dir_name = ".voyager"
     current_dir = os.getcwd()
 
