@@ -14,6 +14,7 @@
 
 import sys
 import os
+from typing import Optional
 
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
@@ -24,3 +25,18 @@ def resource_path(relative_path):
         base_path = os.path.abspath("./voyager")
 
     return os.path.join(base_path, relative_path)
+
+def solution_dot_voyager_path() -> Optional[str]:
+    """ Get absolute path to the .voyager folder located in the solution directory """
+    search_dir_name = ".voyager"
+    current_dir = os.getcwd()
+
+    # Check if directory exists in current location
+    if os.path.isdir(os.path.join(current_dir, search_dir_name)):
+        return os.path.join(current_dir, search_dir_name)
+    # If not, check one directory up
+    elif os.path.isdir(os.path.join(os.path.dirname(current_dir), search_dir_name)):
+        return os.path.join(os.path.dirname(current_dir), search_dir_name)
+    else:
+        return None
+

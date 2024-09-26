@@ -34,6 +34,7 @@ from .artifactdownloader import ArtifactDownloader
 from .lockfile import LockFileWriter, LockFileReader
 from .voyagerpackagefile import VoyagerPackageFile
 from .cmakepackagefile import CMakePackageFile
+from .utilities import solution_dot_voyager_path
 import voyager.artifactorysearch as artifactorysearch
 import voyager.deployfromlockfile as deployfromlockfile
 import voyager.artifactorylogin as artifactorylogin
@@ -42,6 +43,7 @@ import voyager.doc as doc_server
 import voyager.package_update as package_updater
 
 VERSION = "1.16.5"
+SEARCH_RESULTS_FILE_NAME = "search_results.json"
 
 
 @click.group()
@@ -94,8 +96,11 @@ def search(query):
         found_items_numbered[count] = f"{key}/{latest_version}"
         count+=1
 
-    with open('.voyager\\search_results.json', 'w') as outfile:
-        json.dump(found_items_numbered, outfile, indent=2)
+    dot_voyager_dir = solution_dot_voyager_path()
+    if dot_voyager_dir is not None:
+        with open(dot_voyager_dir / Path(SEARCH_RESULTS_FILE_NAME), 'w') as outfile:
+            print(dot_voyager_dir / Path(SEARCH_RESULTS_FILE_NAME))
+            json.dump(found_items_numbered, outfile, indent=2)
 
 @cli.command()
 @click.argument('library_string', required=False)
@@ -109,26 +114,34 @@ def add(library_string, force_version, directory, select_result):
     """
     
     if library_string is None and select_result is None:
-        raise ValueError(f"Add query: user specified neither 'LIBRARY_STRING' nor '--select_result'. One must be specified.")
+        raise ValueError("Add query: user specified neither 'LIBRARY_STRING' nor '--select_result'. One must be specified.")
     
     if library_string is not None and select_result is not None:
-        raise ValueError(f"Add query: user specified a 'LIBRARY_STRING' and '--select_result'. Only one may be specified.")
+        raise ValueError("Add query: user specified a 'LIBRARY_STRING' and '--select_result'. Only one may be specified.")
 
     file_path = "voyager.json"
 
     if directory is not None:
-        file_path = directory + "\\" + file_path
+        file_path = directory / file_path
 
     file = VoyagerFile(file_path)
     file.parse()
     
-    if select_result is not None:
-        f = open('.voyager\\search_results.json', 'r')
-        search_results = json.load(f)
-        found_library = search_results[select_result]
-        file.add_library(found_library, force_version, directory)
-    else:
+    if select_result is None:
         file.add_library(library_string, force_version, directory)
+    else:
+        dot_voyager_dir = solution_dot_voyager_path()
+        if dot_voyager_dir is None:
+            raise ValueError("Could not find the .voyager folder.")
+
+        search_results_full_path = Path(dot_voyager_dir) / SEARCH_RESULTS_FILE_NAME
+        if not search_results_full_path.exists():
+            raise ValueError(f"Could not find the {SEARCH_RESULTS_FILE_NAME} file.")
+
+        with open(search_results_full_path, 'r') as infile:
+            search_results = json.load(infile)
+            found_library = search_results[select_result]
+            file.add_library(found_library, force_version, directory)
 
 def generate_project(generators: list, subdir: str, build_info: BuildInfo):
     """Generate dependency files for each project"""

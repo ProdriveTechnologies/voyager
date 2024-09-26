@@ -16,6 +16,8 @@ import json
 import os
 import click
 from sys import exit  # For generated executables
+from typing import Optional
+from pathlib import Path
 import semver
 
 
@@ -84,7 +86,7 @@ class VoyagerFile():
                     library.update(over)
                     break
 
-    def add_library(self, library_string: str, force_version: bool, directory: str):
+    def add_library(self, library_string: str, force_version: bool, directory: Optional[str]):
         """
         Add a library to the voyager.json and save the file.
         The library_string must use the following format: example-generic-local/Utils/Exceptions/1.2.0
@@ -118,10 +120,10 @@ class VoyagerFile():
         else:
             print(f"  Version: {version}")
 
-        file_path = "voyager.json"
+        file_path = Path("voyager.json")
 
         if directory is not None:
-            file_path = directory + "\\" + file_path
+            file_path = directory / file_path
 
         with open(file_path, 'w') as outfile:
             json.dump(self.data, outfile, indent=2)
