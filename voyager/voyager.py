@@ -43,7 +43,7 @@ import voyager.doc as doc_server
 import voyager.package_update as package_updater
 
 VERSION = "1.16.5"
-SEARCH_RESULTS_FILE_NAME = "search_results.json"
+SEARCH_RESULTS_FILE_NAME = Path("search_results.json")
 
 
 @click.group()
@@ -98,7 +98,7 @@ def search(query):
 
     dot_voyager_dir = solution_dot_voyager_path()
     if dot_voyager_dir is not None:
-        with open(dot_voyager_dir / Path(SEARCH_RESULTS_FILE_NAME), 'w') as outfile:
+        with open(dot_voyager_dir / SEARCH_RESULTS_FILE_NAME, 'w') as outfile:
             json.dump(found_items_numbered, outfile, indent=2)
 
 @cli.command()
@@ -133,7 +133,7 @@ def add(library_string, force_version, directory, select_result):
         if dot_voyager_dir is None:
             raise ValueError("Could not find the .voyager folder.")
 
-        search_results_full_path = Path(dot_voyager_dir) / SEARCH_RESULTS_FILE_NAME
+        search_results_full_path = dot_voyager_dir / SEARCH_RESULTS_FILE_NAME
         if not search_results_full_path.exists():
             raise ValueError(f"Could not find the {SEARCH_RESULTS_FILE_NAME} file.")
 

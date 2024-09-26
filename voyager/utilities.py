@@ -14,6 +14,7 @@
 
 import sys
 import os
+from pathlib import Path
 from typing import Optional
 
 def resource_path(relative_path):
@@ -32,14 +33,12 @@ def solution_dot_voyager_path() -> Optional[str]:
     Will only search in the current directory or one directory up
     """
     search_dir_name = ".voyager"
-    current_dir = os.getcwd()
+    current_dir = Path.cwd()
 
-    # Check if directory exists in current location
-    if os.path.isdir(os.path.join(current_dir, search_dir_name)):
-        return os.path.join(current_dir, search_dir_name)
-    # If not, check one directory up
-    elif os.path.isdir(os.path.join(os.path.dirname(current_dir), search_dir_name)):
-        return os.path.join(os.path.dirname(current_dir), search_dir_name)
+    if Path(current_dir / search_dir_name).is_dir():
+        return current_dir / search_dir_name
+    elif Path(current_dir.parents[0] / search_dir_name).is_dir():
+        return current_dir.parents[0] / search_dir_name
     else:
         return None
 
