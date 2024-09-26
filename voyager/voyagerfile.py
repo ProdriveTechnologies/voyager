@@ -86,7 +86,7 @@ class VoyagerFile():
                     library.update(over)
                     break
 
-    def add_library(self, library_string: str, force_version: bool, directory: Optional[str]):
+    def add_library(self, library_string: str, force_version: bool, directory: Optional[Path]):
         """
         Add a library to the voyager.json and save the file.
         The library_string must use the following format: example-generic-local/Utils/Exceptions/1.2.0

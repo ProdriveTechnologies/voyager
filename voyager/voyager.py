@@ -104,7 +104,7 @@ def search(query):
 @cli.command()
 @click.argument('library_string', required=False)
 @click.option('--force-version', '-f', default=False, help='Add force version attribute', is_flag=True)
-@click.option('--directory', '-C', default=None, help='Path to the voyager.json file')
+@click.option('--directory', '-C', default=None, help='Path to subproject')
 @click.option('--select-result', '-s', default=None, help='Select a search result from the most recent \'search\'.')
 def add(library_string, force_version, directory, select_result):
     """Add a library to the working directory voyager.json and save it.
@@ -118,7 +118,7 @@ def add(library_string, force_version, directory, select_result):
     if library_string is not None and select_result is not None:
         raise ValueError("Add query: user specified a 'LIBRARY_STRING' and '--select_result'. Only one may be specified.")
 
-    file_path = "voyager.json"
+    file_path = Path("voyager.json")
 
     if directory is not None:
         file_path = directory / file_path
