@@ -35,9 +35,9 @@ def solution_dot_voyager_path() -> Optional[str]:
     search_dir_name = ".voyager"
     current_dir = Path.cwd()
 
-    if Path(current_dir / search_dir_name).is_dir():
+    if (current_dir / search_dir_name).is_dir():
         return current_dir / search_dir_name
-    elif Path(current_dir.parents[0] / search_dir_name).is_dir():
+    elif (current_dir.parents[0] / search_dir_name).is_dir():
         return current_dir.parents[0] / search_dir_name
     else:
         return None

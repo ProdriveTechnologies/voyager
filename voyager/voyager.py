@@ -139,8 +139,8 @@ def add(library_string, force_version, directory, select_result):
 
         with open(search_results_full_path, 'r') as infile:
             search_results = json.load(infile)
-            found_library = search_results[select_result]
-            file.add_library(found_library, force_version, directory)
+        found_library = search_results[select_result]
+        file.add_library(found_library, force_version, directory)
 
 def generate_project(generators: list, subdir: str, build_info: BuildInfo):
     """Generate dependency files for each project"""
