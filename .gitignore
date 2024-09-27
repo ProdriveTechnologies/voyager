@@ -134,3 +134,6 @@ voyager.includes
 tests/**/voyager.h
 setup/voyagerSetup.exe
 .idea/
+
+# Uv
+uv.lock
