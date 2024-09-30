@@ -19,6 +19,7 @@ import logging
 
 # pip imports
 import click
+import json
 import semver
 
 # local imports
@@ -33,6 +34,7 @@ from .artifactdownloader import ArtifactDownloader
 from .lockfile import LockFileWriter, LockFileReader
 from .voyagerpackagefile import VoyagerPackageFile
 from .cmakepackagefile import CMakePackageFile
+from .utilities import solution_dot_voyager_path
 import voyager.artifactorysearch as artifactorysearch
 import voyager.deployfromlockfile as deployfromlockfile
 import voyager.artifactorylogin as artifactorylogin
@@ -41,6 +43,7 @@ import voyager.doc as doc_server
 import voyager.package_update as package_updater
 
 VERSION = "1.16.5"
+SEARCH_RESULTS_FILE_NAME = Path("search_results.json")
 
 
 @click.group()
@@ -78,6 +81,9 @@ def search(query):
     else:
         raise ValueError(f"Search query: {query} is not supported")
 
+    count = 0
+    found_items_numbered = {}
+
     for key, values in found.items():
         valid_semvers = []
         for version in values:
@@ -85,20 +91,56 @@ def search(query):
                 valid_semvers.append(version)
 
         latest_version = semver.max_satisfying(valid_semvers, "*", False)
-        print(f"{key}/{latest_version} {values}")
+        print(f"{count:>3} ) {key}/{latest_version} {values}")
+
+        found_items_numbered[count] = f"{key}/{latest_version}"
+        count+=1
+
+    dot_voyager_dir = solution_dot_voyager_path()
+    if dot_voyager_dir is not None:
+        with open(dot_voyager_dir / SEARCH_RESULTS_FILE_NAME, 'w') as outfile:
+            json.dump(found_items_numbered, outfile, indent=2)
 
 @cli.command()
-@click.argument('library_string')
+@click.argument('library_string', required=False)
 @click.option('--force-version', '-f', default=False, help='Add force version attribute', is_flag=True)
-def add(library_string, force_version):
+@click.option('--directory', '-C', default=None, help='Path to subproject')
+@click.option('--select-result', '-s', default=None, help='Select a search result from the most recent \'search\'.')
+def add(library_string, force_version, directory, select_result):
     """Add a library to the working directory voyager.json and save it.
 
     The library_string must use the following format: example-generic-local/Utils/Exceptions/1.2.0
     """
-    file = VoyagerFile("voyager.json")
-    file.parse()
+    
+    if library_string is None and select_result is None:
+        raise ValueError("Add query: user specified neither 'LIBRARY_STRING' nor '--select_result'. One must be specified.")
+    
+    if library_string is not None and select_result is not None:
+        raise ValueError("Add query: user specified a 'LIBRARY_STRING' and '--select_result'. Only one may be specified.")
 
-    file.add_library(library_string, force_version)
+    file_path = Path("voyager.json")
+
+    if directory is not None:
+        file_path = directory / file_path
+
+    file = VoyagerFile(file_path)
+    file.parse()
+    
+    if select_result is None:
+        file.add_library(library_string, force_version, directory)
+    else:
+        dot_voyager_dir = solution_dot_voyager_path()
+        if dot_voyager_dir is None:
+            raise ValueError("Could not find the .voyager folder.")
+
+        search_results_full_path = dot_voyager_dir / SEARCH_RESULTS_FILE_NAME
+        if not search_results_full_path.exists():
+            raise ValueError(f"Could not find the {SEARCH_RESULTS_FILE_NAME} file.")
+
+        with open(search_results_full_path, 'r') as infile:
+            search_results = json.load(infile)
+        found_library = search_results[select_result]
+        file.add_library(found_library, force_version, directory)
 
 def generate_project(generators: list, subdir: str, build_info: BuildInfo):
     """Generate dependency files for each project"""
