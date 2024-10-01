@@ -1,0 +1,16 @@
+[project]
+name = "voyager"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = "==3.11.*"
+dependencies = [
+    "click==8.1.7",
+    "dohq-artifactory==0.10.1",
+    "jsonschema==4.23.0",
+    "node-semver==0.7.0",
+    "voyager-plugin-list",
+]
+
+[tool.uv.sources]
+voyager-plugin-list = { path = "plugins/voyager_listplugins" }
