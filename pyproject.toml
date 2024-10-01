@@ -12,5 +12,12 @@ dependencies = [
     "voyager-plugin-list",
 ]
 
+[project.scripts]
+voyager = "voyager:voyager.main"
+
 [tool.uv.sources]
 voyager-plugin-list = { path = "plugins/voyager_listplugins" }
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

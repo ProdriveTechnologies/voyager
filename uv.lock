@@ -254,8 +254,8 @@ wheels = [
 
 [[package]]
 name = "voyager"
-version = "0.1.0"
-source = { virtual = "." }
+version = "1.17.0"
+source = { editable = "." }
 dependencies = [
     { name = "click" },
     { name = "dohq-artifactory" },
