@@ -15,6 +15,11 @@ dependencies = [
 [project.scripts]
 voyager = "voyager:voyager.main"
 
+[tool.uv]
+dev-dependencies = [
+    "pyinstaller>=6.10.0",
+]
+
 [tool.uv.sources]
 voyager-plugin-list = { path = "plugins/voyager_listplugins" }
 
