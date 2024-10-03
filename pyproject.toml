@@ -3,7 +3,7 @@ name = "voyager"
 version = "1.17.0"
 description = "Package manager for C/C++ software"
 readme = "Readme.md"
-requires-python = "==3.11.*"
+requires-python = "==3.10.*"
 dependencies = [
     "click==8.1.7",
     "dohq-artifactory==0.10.1",
