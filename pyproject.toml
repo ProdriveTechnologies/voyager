@@ -1,9 +1,9 @@
 [project]
 name = "voyager"
-version = "0.1.0"
-description = "Add your description here"
-readme = "README.md"
-requires-python = "==3.11.*"
+version = "1.17.0"
+description = "Package manager for C/C++ software"
+readme = "Readme.md"
+requires-python = "==3.10.*"
 dependencies = [
     "click==8.1.7",
     "dohq-artifactory==0.10.1",
@@ -12,5 +12,17 @@ dependencies = [
     "voyager-plugin-list",
 ]
 
+[project.scripts]
+voyager = "voyager:voyager.main"
+
+[tool.uv]
+dev-dependencies = [
+    "pyinstaller>=6.10.0",
+]
+
 [tool.uv.sources]
 voyager-plugin-list = { path = "plugins/voyager_listplugins" }
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

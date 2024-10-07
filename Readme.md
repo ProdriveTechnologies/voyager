@@ -17,16 +17,20 @@ After that run `voyager install` to install the dependencies of the project that
 For more information about the usage of voyager, take a look at the documentation site.
 
 ## Developing
-Voyager is written in Python, 3.7 is the recommended version. To develop on the project create a virtual environment and run the python file.
+Voyager is written in Python, 3.11 is the recommended version. To develop on the project create a virtual environment and run the python file.
 ```bash
-python -m venv env
-# On macOS and Linux:
-source env/bin/activate
-# On Windows:
-.\env\Scripts\activate
+ uv venv --python 3.11
+ uv run voyager
+```
 
-pip install -r requirements.txt
-python cli.py
+To build the python package run:
+```bash
+ uv build --wheel
+```
+
+To build the application run:
+```bash
+ uv run pyinstaller deploy/voyager.spec
 ```
 
 ## Contributing
