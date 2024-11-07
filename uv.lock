@@ -1,6 +1,12 @@
 version = 1
 requires-python = "==3.10.*"
 
+[manifest]
+members = [
+    "voyager",
+    "voyager-plugin-list",
+]
+
 [[package]]
 name = "altgraph"
 version = "0.17.4"
@@ -330,6 +336,7 @@ dependencies = [
     { name = "dohq-artifactory" },
     { name = "jsonschema" },
     { name = "node-semver" },
+    { name = "voyager-plugin-list" },
 ]
 
 [package.dev-dependencies]
@@ -343,7 +350,13 @@ requires-dist = [
     { name = "dohq-artifactory", specifier = "==0.10.1" },
     { name = "jsonschema", specifier = "==4.23.0" },
     { name = "node-semver", specifier = "==0.7.0" },
+    { name = "voyager-plugin-list", editable = "plugins/voyager_listplugins" },
 ]
 
 [package.metadata.requires-dev]
 dev = [{ name = "pyinstaller", specifier = ">=6.10.0" }]
+
+[[package]]
+name = "voyager-plugin-list"
+version = "1.0.0"
+source = { editable = "plugins/voyager_listplugins" }

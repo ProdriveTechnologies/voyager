@@ -9,14 +9,14 @@ dependencies = [
     "dohq-artifactory==0.10.1",
     "jsonschema==4.23.0",
     "node-semver==0.7.0",
-#    "voyager-plugin-list"
+    "voyager-plugin-list"
 ]
 
-#[tool.uv.sources]
-#voyager-plugin-list = { workspace = true }
+[tool.uv.sources]
+voyager-plugin-list = { workspace = true }
 
-#[tool.uv.workspace]
-#members = ["plugins/voyager_listplugins"]
+[tool.uv.workspace]
+members = ["plugins/voyager_listplugins"]
 
 [project.scripts]
 voyager = "voyager:voyager.main"
