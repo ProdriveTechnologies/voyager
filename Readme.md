@@ -23,9 +23,10 @@ Voyager is written in Python, 3.10 is the recommended version. To develop on the
  uv run voyager
 ```
 
-To build the python package run:
+To build the python packages run:
 ```bash
  uv build --wheel
+ uv build --wheel .\plugins\voyager_listplugins\
 ```
 
 To build the application run:
