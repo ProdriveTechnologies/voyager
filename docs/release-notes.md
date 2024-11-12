@@ -1,7 +1,9 @@
 # Release notes
 
-### [1.x.x]
+### [1.17.0]
 - Add transitive tag to enable search within a remote repository.
+- Add -C / --directory and -s / --select-result flags to `voyager add`.
+- Publish a python wheel of voyager
 
 ### [1.16.5]
 - Fix a bug where build tools in a subproject were never retrieved.
