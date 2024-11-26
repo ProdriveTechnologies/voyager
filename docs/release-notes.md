@@ -1,5 +1,8 @@
 # Release notes
 
+### [1.17.1]
+- Fix version number in installer
+
 ### [1.17.0]
 - Add transitive tag to enable search within a remote repository.
 - Add -C / --directory and -s / --select-result flags to `voyager add`.
