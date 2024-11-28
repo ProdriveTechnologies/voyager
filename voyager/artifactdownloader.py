@@ -293,8 +293,12 @@ class ArtifactDownloader:
             package_dir = f"{repo}/{library}/{version}/{retrieved_arch}"
             url = f"{self.config.artifactory_url}/{package_dir}/voyager_package.tgz"
             path = ArtifactoryPath(url, session=self.artifactory_session)
-            if not path.open():
-                raise ValueError(f"Failed to cache at : {repo}/{library}/{version}/{retrieved_arch}.")
+
+            if not path.exists():
+                click.echo(click.style(f'Artifact not found in cache, fetching: {repo}/{library}/{version}/{retrieved_arch}', fg='yellow'))
+                # path.open() only caches the item if its not present in the remote repo.
+                if not path.open():
+                     ValueError(f"Failed to cache at : {repo}/{library}/{version}/{retrieved_arch}.")
 
     def _find_local_package(self, library, local_path, output_dir):
         package_path = Path(local_path)
