@@ -285,8 +285,7 @@ class ArtifactDownloader:
             ".transitive()"
         ]
         artifacts_list = path.aql(*args)
-        artifact = [entry for entry in artifacts_list if not entry['repo'].endswith('-cache')] 
-   
+        artifact = [entry for entry in artifacts_list if not entry['repo'].endswith('-cache')]
         if artifact:
             retrieved_arch = artifact[0]['path'].split('/')[-1]
             package_dir = f"{repo}/{library}/{version}/{retrieved_arch}"
