@@ -285,10 +285,10 @@ class ArtifactDownloader:
             ".transitive()"
         ]
         artifacts_list = path.aql(*args)
-        artifacts_list = [entry for entry in artifacts_list if not entry['repo'].endswith('-cache')]
-
-        for i in artifacts_list:
-            retrieved_arch = i['path'].split('/')[-1]
+        artifact = [entry for entry in artifacts_list if not entry['repo'].endswith('-cache')] 
+   
+        if artifact:
+            retrieved_arch = artifact[0]['path'].split('/')[-1]
             package_dir = f"{repo}/{library}/{version}/{retrieved_arch}"
             url = f"{self.config.artifactory_url}/{package_dir}/voyager_package.tgz"
             path = ArtifactoryPath(url, session=self.artifactory_session)
