@@ -240,6 +240,9 @@ class ArtifactDownloader:
         found = False
         path = None
         package_dir = ""
+
+        self._cache_remote_package(repo, library, version)
+
         for arch in archs:
             package_dir = f"{repo}/{library}/{version}/{arch}"
             url = f"{self.config.artifactory_url}/{package_dir}/voyager_package.tgz"
@@ -268,6 +271,30 @@ class ArtifactDownloader:
             tar.extractall(extract_dir)
 
         return extract_dir
+
+    def _cache_remote_package(self, repo, library, version):
+        path = ArtifactoryPath(self.config.artifactory_url, session=self.artifactory_session)
+
+        args = [
+            "items.find",
+            {
+                "$and": [
+                    {"repo": {"$eq": repo}},
+                    {"path": {"$match": f"{library}/{version}/*"}},
+                ]
+            },
+            ".transitive()"
+        ]
+        artifacts_list = path.aql(*args)
+        artifacts_list = [entry for entry in artifacts_list if not entry['repo'].endswith('-cache')]
+
+        for i in artifacts_list:
+            retrieved_arch = i['path'].split('/')[-1]
+            package_dir = f"{repo}/{library}/{version}/{retrieved_arch}"
+            url = f"{self.config.artifactory_url}/{package_dir}/voyager_package.tgz"
+            path = ArtifactoryPath(url, session=self.artifactory_session)
+            if not path.open():
+                raise ValueError(f"Failed to cache at : {repo}/{library}/{version}/{retrieved_arch}.")
 
     def _find_local_package(self, library, local_path, output_dir):
         package_path = Path(local_path)
@@ -307,7 +334,10 @@ class ArtifactDownloader:
             archs = self.config.build_platform
         else:
             archs = self.config.host_platform
-        archs.append("Header")
-        archs.append("Source")
+        
+        if "Header" not in archs:
+            archs.append("Header")
+        if "Source" not in archs:
+            archs.append("Source")
 
         return archs
