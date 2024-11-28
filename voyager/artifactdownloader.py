@@ -241,9 +241,8 @@ class ArtifactDownloader:
         path = None
         package_dir = ""
 
-        self._cache_remote_package(repo, library, version)
-
         for arch in archs:
+            self._cache_remote_package(repo, library, version, arch)
             package_dir = f"{repo}/{library}/{version}/{arch}"
             url = f"{self.config.artifactory_url}/{package_dir}/voyager_package.tgz"
             path = ArtifactoryPath(url, session=self.artifactory_session)
@@ -272,7 +271,7 @@ class ArtifactDownloader:
 
         return extract_dir
 
-    def _cache_remote_package(self, repo, library, version):
+    def _cache_remote_package(self, repo, library, version, arch):
         path = ArtifactoryPath(self.config.artifactory_url, session=self.artifactory_session)
 
         args = [
@@ -280,7 +279,7 @@ class ArtifactDownloader:
             {
                 "$and": [
                     {"repo": {"$eq": repo}},
-                    {"path": {"$match": f"{library}/{version}/*"}},
+                    {"path": {"$match": f"{library}/{version}/{arch}"}},
                 ]
             },
             ".transitive()"
