@@ -240,9 +240,27 @@ class ArtifactDownloader:
         found = False
         path = None
         package_dir = ""
+        available_arch=[]
 
+        path = ArtifactoryPath(self.config.artifactory_url, session=self.artifactory_session)
+
+        args = [
+            "items.find",
+            {
+                "$and": [
+                    {"repo": {"$eq": repo}},
+                    {"path": {"$match": f"{library}/{version}/*"}},
+                ]
+            },
+            ".transitive()"
+        ]
+        artifacts_list = path.aql(*args)
+        artifacts_list = [entry for entry in artifacts_list if not entry['repo'].endswith('-cache')]
+
+        for i in artifacts_list:
+            available_arch.append(i['path'].split('/')[-1])
+            
         for arch in archs:
-            self._cache_remote_package(repo, library, version, arch)
             package_dir = f"{repo}/{library}/{version}/{arch}"
             url = f"{self.config.artifactory_url}/{package_dir}/voyager_package.tgz"
             path = ArtifactoryPath(url, session=self.artifactory_session)
@@ -251,6 +269,13 @@ class ArtifactDownloader:
                 click.echo(click.style(f'{arch} @ {version} ', fg='bright_blue'), nl=False)
                 found = True
                 break
+            else:
+                if arch in available_arch:
+                    click.echo(click.style(f'Artifact not found in cache, fetching: {repo}/{library}/{version}/{arch}', fg='yellow'))
+                    if not path.open():
+                         ValueError(f"Failed to cache at : {repo}/{library}/{version}/{arch}.")
+                    found = True
+                    break
 
         if not found:
             click.echo(click.style(u'ERROR: package not found', fg='red'))
@@ -270,33 +295,6 @@ class ArtifactDownloader:
             tar.extractall(extract_dir)
 
         return extract_dir
-
-    def _cache_remote_package(self, repo, library, version, arch):
-        path = ArtifactoryPath(self.config.artifactory_url, session=self.artifactory_session)
-
-        args = [
-            "items.find",
-            {
-                "$and": [
-                    {"repo": {"$eq": repo}},
-                    {"path": {"$match": f"{library}/{version}/{arch}"}},
-                ]
-            },
-            ".transitive()"
-        ]
-        artifacts_list = path.aql(*args)
-        artifact = [entry for entry in artifacts_list if not entry['repo'].endswith('-cache')]
-        if artifact:
-            retrieved_arch = artifact[0]['path'].split('/')[-1]
-            package_dir = f"{repo}/{library}/{version}/{retrieved_arch}"
-            url = f"{self.config.artifactory_url}/{package_dir}/voyager_package.tgz"
-            path = ArtifactoryPath(url, session=self.artifactory_session)
-
-            if not path.exists():
-                click.echo(click.style(f'Artifact not found in cache, fetching: {repo}/{library}/{version}/{retrieved_arch}', fg='yellow'))
-                # path.open() only caches the item if its not present in the remote repo.
-                if not path.open():
-                     ValueError(f"Failed to cache at : {repo}/{library}/{version}/{retrieved_arch}.")
 
     def _find_local_package(self, library, local_path, output_dir):
         package_path = Path(local_path)
