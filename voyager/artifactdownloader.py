@@ -270,7 +270,7 @@ class ArtifactDownloader:
                 else:
                     click.echo(click.style(f'Artifact not found in cache, fetching: {repo}/{library}/{version}/{arch}', fg='yellow'))
                     if not path.open():
-                            ValueError(f"Failed to cache at : {repo}/{library}/{version}/{arch}.")
+                        ValueError(f"Failed to cache at : {repo}/{library}/{version}/{arch}.")
                 found = True
                 break
 
