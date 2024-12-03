@@ -240,7 +240,7 @@ class ArtifactDownloader:
         found = False
         path = None
         package_dir = ""
-        available_arch=[]
+        available_arch = []
 
         path = ArtifactoryPath(self.config.artifactory_url, session=self.artifactory_session)
 
@@ -259,23 +259,20 @@ class ArtifactDownloader:
 
         for i in artifacts_list:
             available_arch.append(i['path'].split('/')[-1])
-            
+        
         for arch in archs:
-            package_dir = f"{repo}/{library}/{version}/{arch}"
-            url = f"{self.config.artifactory_url}/{package_dir}/voyager_package.tgz"
-            path = ArtifactoryPath(url, session=self.artifactory_session)
-
-            if path.exists():
-                click.echo(click.style(f'{arch} @ {version} ', fg='bright_blue'), nl=False)
-                found = True
-                break
-            else:
-                if arch in available_arch:
+            if arch in available_arch:
+                package_dir = f"{repo}/{library}/{version}/{arch}"
+                url = f"{self.config.artifactory_url}/{package_dir}/voyager_package.tgz"
+                path = ArtifactoryPath(url, session=self.artifactory_session)
+                if path.exists():
+                    click.echo(click.style(f'{arch} @ {version} ', fg='bright_blue'), nl=False)
+                else:
                     click.echo(click.style(f'Artifact not found in cache, fetching: {repo}/{library}/{version}/{arch}', fg='yellow'))
                     if not path.open():
-                         ValueError(f"Failed to cache at : {repo}/{library}/{version}/{arch}.")
-                    found = True
-                    break
+                            ValueError(f"Failed to cache at : {repo}/{library}/{version}/{arch}.")
+                found = True
+                break
 
         if not found:
             click.echo(click.style(u'ERROR: package not found', fg='red'))
