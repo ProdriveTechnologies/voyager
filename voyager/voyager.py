@@ -42,7 +42,7 @@ import voyager.plugin_registry as plugin_registry
 import voyager.doc as doc_server
 import voyager.package_update as package_updater
 
-VERSION = "1.17.1"
+VERSION = "1.17.2"
 SEARCH_RESULTS_FILE_NAME = Path("search_results.json")
 
 @click.group()

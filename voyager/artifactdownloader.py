@@ -240,13 +240,37 @@ class ArtifactDownloader:
         found = False
         path = None
         package_dir = ""
-        for arch in archs:
-            package_dir = f"{repo}/{library}/{version}/{arch}"
-            url = f"{self.config.artifactory_url}/{package_dir}/voyager_package.tgz"
-            path = ArtifactoryPath(url, session=self.artifactory_session)
+        available_arch = []
 
-            if path.exists():
-                click.echo(click.style(f'{arch} @ {version} ', fg='bright_blue'), nl=False)
+        path = ArtifactoryPath(self.config.artifactory_url, session=self.artifactory_session)
+
+        args = [
+            "items.find",
+            {
+                "$and": [
+                    {"repo": {"$eq": repo}},
+                    {"path": {"$match": f"{library}/{version}/*"}},
+                ]
+            },
+            ".transitive()"
+        ]
+        artifacts_list = path.aql(*args)
+        artifacts_list = [entry for entry in artifacts_list if not entry['repo'].endswith('-cache')]
+
+        for i in artifacts_list:
+            available_arch.append(i['path'].split('/')[-1])
+        
+        for arch in archs:
+            if arch in available_arch:
+                package_dir = f"{repo}/{library}/{version}/{arch}"
+                url = f"{self.config.artifactory_url}/{package_dir}/voyager_package.tgz"
+                path = ArtifactoryPath(url, session=self.artifactory_session)
+                if path.exists():
+                    click.echo(click.style(f'{arch} @ {version} ', fg='bright_blue'), nl=False)
+                else:
+                    click.echo(click.style(f'Artifact not found in cache, fetching: {repo}/{library}/{version}/{arch}', fg='yellow'))
+                    if not path.open():
+                        ValueError(f"Failed to cache at : {repo}/{library}/{version}/{arch}.")
                 found = True
                 break
 
@@ -307,7 +331,10 @@ class ArtifactDownloader:
             archs = self.config.build_platform
         else:
             archs = self.config.host_platform
-        archs.append("Header")
-        archs.append("Source")
+        
+        if "Header" not in archs:
+            archs.append("Header")
+        if "Source" not in archs:
+            archs.append("Source")
 
         return archs
