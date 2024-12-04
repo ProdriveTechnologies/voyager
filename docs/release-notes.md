@@ -1,5 +1,8 @@
 # Release notes
 
+### [1.17.2]
+- Fix the caching issue for remote repositories
+
 ### [1.17.1]
 - Fix version number in installer
 
