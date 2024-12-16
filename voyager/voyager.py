@@ -30,7 +30,7 @@ from .generators.headercheck import HeaderCheckGenerator
 from .generators.packagelist import PackageListGenerator
 from .buildinfo import BuildInfo
 from .configfile import ConfigFile
-from .artifactdownloader import ArtifactDownloader
+from .artifactdownloader import ArtifactDownloader, DownloadCachePaths
 from .lockfile import LockFileWriter, LockFileReader
 from .voyagerpackagefile import VoyagerPackageFile
 from .cmakepackagefile import CMakePackageFile
@@ -42,7 +42,7 @@ import voyager.plugin_registry as plugin_registry
 import voyager.doc as doc_server
 import voyager.package_update as package_updater
 
-VERSION = "1.17.2"
+VERSION = "1.17.3"
 SEARCH_RESULTS_FILE_NAME = Path("search_results.json")
 
 @click.group()
@@ -322,6 +322,16 @@ def doc():
 def check_update():
     """Check for available updates in the listed packages"""
     package_updater.execute_package_update()
+
+@cli.group()
+def cache():
+    """Commands for managing cache."""
+    pass
+
+@cache.command()
+def clear():
+    """Clears the cache."""
+    DownloadCachePaths.clear_download_cache()
 
 def main():
     print(f"Voyager version {VERSION}")

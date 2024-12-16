@@ -1,6 +1,6 @@
 [project]
 name = "voyager"
-version = "1.17.2"
+version = "1.17.3"
 description = "Package manager for C/C++ software"
 readme = "Readme.md"
 requires-python = "==3.10.*"
@@ -9,6 +9,7 @@ dependencies = [
     "dohq-artifactory==0.10.1",
     "jsonschema==4.23.0",
     "node-semver==0.7.0",
+    "platformdirs>=4.3.6",
     "voyager-plugin-list",
 ]
 
@@ -27,5 +28,5 @@ dev-dependencies = [
 ]
 
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling==1.26.3"]
 build-backend = "hatchling.build"
