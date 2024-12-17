@@ -20,11 +20,31 @@ from pathlib import Path
 from artifactory import ArtifactoryPath
 import requests
 from semver import valid_range, max_satisfying
+from platformdirs import user_cache_dir
 import semver
 
 from .buildinfo import Package, BuildInfo
 from .configfile import ConfigFile
 from .lockfile import LockFileWriter
+from .utilities import md5hash
+
+class DownloadCachePaths:
+    @staticmethod
+    def _get_base_path() -> Path:
+        return Path(user_cache_dir("voyager", "ProdriveTechnologies"))
+
+    @staticmethod
+    def get_cache_path_for_package(package_dir) -> str:
+        return DownloadCachePaths._get_base_path() / package_dir / "voyager_package.tgz"
+
+    @staticmethod
+    def get_md5_path_for_package(package_dir) -> str:
+        return DownloadCachePaths._get_base_path() / package_dir / "voyager_package.tgz.md5"
+
+    @staticmethod
+    def clear_download_cache():
+        if os.path.exists(DownloadCachePaths._get_base_path()):
+            shutil.rmtree(DownloadCachePaths._get_base_path())
 
 class ArtifactDownloader:
     _download_dir = '.voyager'
@@ -40,13 +60,14 @@ class ArtifactDownloader:
 
     def clear_directory(self):
         try:
-            shutil.rmtree(self._download_dir)
+            if os.path.exists(self._download_dir):
+                shutil.rmtree(self._download_dir)
         except OSError as e:
             print(f'Error: {self._download_dir} : {e.strerror}')
 
     def make_directory(self):
         p = Path(self._download_dir)
-        p.mkdir()
+        p.mkdir(exist_ok=True)
 
     def download(self, build_info_combined):
         self._download(self.libraries, 0, build_info_combined, False)
@@ -287,9 +308,26 @@ class ArtifactDownloader:
             message = path.properties['deprecated']
             click.echo(click.style(f'DEPRECATED: {message} ', fg='yellow'), nl=False)
 
-        with path.open() as fd:
-            tar = tarfile.open(fileobj=fd)
-            tar.extractall(extract_dir)
+        localpath = DownloadCachePaths.get_cache_path_for_package(package_dir)
+        localmd5hash = None
+        localpathmd5 = DownloadCachePaths.get_md5_path_for_package(package_dir)
+        if localpathmd5.exists():
+            with open(localpathmd5, 'r') as file:
+                localmd5hash = file.read().rstrip()
+        else:
+            if localpath.exists():
+                localmd5hash = md5hash(localpath)
+                with open(localpathmd5, 'w') as file:
+                    file.write(localmd5hash)
+        if (not localpath.exists()) or (path.stat().md5 != localmd5hash):
+            localpath.parent.mkdir(exist_ok=True, parents=True)
+            with path.open() as fd, open(localpath, "wb") as out:
+                out.write(fd.read())
+        else:
+            click.echo(click.style(u'cached ', fg='green'), nl=False)
+
+        tar = tarfile.open(localpath)
+        tar.extractall(extract_dir)
 
         return extract_dir
 

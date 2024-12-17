@@ -14,6 +14,7 @@
 
 import sys
 import os
+import hashlib
 from pathlib import Path
 from typing import Optional
 
@@ -26,6 +27,16 @@ def resource_path(relative_path):
         base_path = os.path.abspath("./voyager")
 
     return os.path.join(base_path, relative_path)
+
+def md5hash(filename):
+    h = hashlib.md5()
+    with open(filename,'rb') as f: 
+        while True:
+            data = f.read(8192)
+            if not data:
+                break
+            h.update(data)
+    return h.hexdigest()
 
 def solution_dot_voyager_path() -> Optional[str]:
     """ Get absolute path to the .voyager folder located in the solution directory 

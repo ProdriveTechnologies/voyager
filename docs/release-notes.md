@@ -1,5 +1,8 @@
 # Release notes
 
+### [1.17.3]
+- Add download caching. Cache can be cleared using `voyager cache clear`
+
 ### [1.17.2]
 - Fix the caching issue for remote repositories
 
