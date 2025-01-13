@@ -13,55 +13,58 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python 3.7
-      uses: actions/setup-python@v2
+    - uses: actions/checkout@v4
+    - name: Install uv
+      uses: astral-sh/setup-uv@v5
       with:
-        python-version: 3.7
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        python -m pip install pyinstaller
-        python -m pip install -r requirements.txt
+        version: "0.5.16"
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v5
+      with:
+        python-version-file: "pyproject.toml"
+    - name: Sync
+      run: uv sync
     - name: Build with PyInstaller
-      run: |
-        pyinstaller deploy/voyager.spec
+      run: uv run pyinstaller deploy/voyager.spec
     - name: Building installer
       run: |
         "%programfiles(x86)%\Inno Setup 6\iscc.exe" "deploy/Installer.iss"
       shell: cmd
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: Voyager-Installer-Windows
         path: deploy/setup/voyagerSetup.exe
 
   build-Linux:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python 3.7
-        uses: actions/setup-python@v2
+      - uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
         with:
-          python-version: 3.7
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install pyinstaller
-          python -m pip install -r requirements.txt
+          version: "0.5.16"
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: "pyproject.toml"
+      - name: Sync
+        run: uv sync
+      - name: Wheel
+        run: uv build --wheel
       - name: Build with PyInstaller
         run: |
-          pyinstaller deploy/voyager_onefile.spec
-      - uses: actions/upload-artifact@v2
+          uv run pyinstaller deploy/voyager_onefile.spec
+      - uses: actions/upload-artifact@v4
         with:
-          name: Voyager-Executable-Ubuntu-20.04
+          name: Voyager-Ubuntu
           path: dist/
 
   release:
     needs: [build-Windows, build-Linux]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v4
       - name: Display structure of downloaded files
         run: ls -R
       - name: Release
@@ -69,7 +72,8 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            Voyager-Executable-Ubuntu-20.04/voyager
+            Voyager-Ubuntu/voyager
+            Voyager-Ubuntu/*.whl
             Voyager-Installer-Windows/voyagerSetup.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

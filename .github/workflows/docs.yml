@@ -7,12 +7,10 @@ on:
 jobs:
   build:
     name: Deploy docs
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout master
-        uses: actions/checkout@v1
-      - name: Rename requirements
-        run: mv requirements.txt ignore.txt
+        uses: actions/checkout@v4
       - name: Deploy docs
         uses: mhausenblas/mkdocs-deploy-gh-pages@master
         env:
