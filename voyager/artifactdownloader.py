@@ -107,11 +107,7 @@ class ArtifactDownloader:
             if self.check_if_valid_semver(lib['version']) and not local_path:
                 versions = self.find_versions_for_package(lib['repo'], lib['library'], override_archs)
                 version_to_download = max_satisfying(versions, lib['version'], True)
-                if not version_to_download:
-                    msg = f"ERROR: version {lib['version']} not found.\n Available: {versions}"
-                    exception_msg = f"{lib['repo']}/{lib['library']} @ {lib['version']} not found. Available: {versions}"
-                    click.echo(click.style(msg, fg='red'))
-                    raise ValueError(exception_msg)
+                
 
             # Handle version conflicts within project
             if not download_only and lib['library'] in self.build_info.package_names:
@@ -132,6 +128,11 @@ class ArtifactDownloader:
                 click.echo(click.style(f"SKIP: package downloaded for other project", fg='green'))
                 self.build_info.add_package(pack)
             else:
+                if not version_to_download:
+                    msg = f"ERROR: version {lib['version']} not found.\n Available: {versions}"
+                    exception_msg = f"{lib['repo']}/{lib['library']} @ {lib['version']} not found. Available: {versions}"
+                    click.echo(click.style(msg, fg='red'))
+                    raise ValueError(exception_msg)
 
                 if local_path:
                     extract_dir = self._find_local_package(lib['library'], local_path, lib.get('output_dir', None))
