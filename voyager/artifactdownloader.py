@@ -107,7 +107,6 @@ class ArtifactDownloader:
             if self.check_if_valid_semver(lib['version']) and not local_path:
                 versions = self.find_versions_for_package(lib['repo'], lib['library'], override_archs)
                 version_to_download = max_satisfying(versions, lib['version'], True)
-                
 
             # Handle version conflicts within project
             if not download_only and lib['library'] in self.build_info.package_names:
