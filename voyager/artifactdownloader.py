@@ -104,9 +104,8 @@ class ArtifactDownloader:
             # The version can either be semver or something like feature/xyz when referencing an Rxx version
             # When version is semver, parse and check which versions comply
             # otherwise use the feature/xyz name to download
-            versions = []
+            versions = self.find_versions_for_package(lib['repo'], lib['library'], override_archs)
             if self.check_if_valid_semver(lib['version']) and not local_path:
-                versions = self.find_versions_for_package(lib['repo'], lib['library'], override_archs)
                 version_to_download = max_satisfying(versions, lib['version'], True)
 
             # Handle version conflicts within project
