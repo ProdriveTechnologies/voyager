@@ -1,5 +1,8 @@
 # Release notes
 
+### [1.17.4]
+- Fix order of checking if a package version exists and forcing package versions
+
 ### [1.17.3]
 - Add download caching. Cache can be cleared using `voyager cache clear`
 

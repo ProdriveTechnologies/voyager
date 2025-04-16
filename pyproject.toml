@@ -1,6 +1,6 @@
 [project]
 name = "voyager"
-version = "1.17.3"
+version = "1.17.4"
 description = "Package manager for C/C++ software"
 readme = "Readme.md"
 requires-python = "==3.10.*"
