@@ -38,7 +38,7 @@ def md5hash(filename):
             h.update(data)
     return h.hexdigest()
 
-def solution_dot_voyager_path() -> Optional[str]:
+def solution_dot_voyager_path() -> Optional[Path]:
     """ Get absolute path to the .voyager folder located in the solution directory 
     
     Will only search in the current directory or one directory up

@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from abc import ABC, abstractmethod, abstractproperty
-from typing import List
+from typing import Any, Callable, List
 
 import click
 import semver
@@ -31,7 +31,7 @@ class Plugin:
     # Version identifier of the plugin, set this in the plugin
     PLUGIN_VERSION = "Undefined version"
 
-    def __init__(self, interface):
+    def __init__(self, interface) -> None:
         self.interface: Interface = interface
 
     def on_install_start(self):
@@ -57,7 +57,7 @@ class Interface(ABC):
         pass
 
     @abstractmethod
-    def add_command(self, name=None, cls=None, **attrs) -> click.Command:
+    def add_command(self, name=None, cls=None, **attrs) -> Callable[[Callable[..., Any]], click.Command]:
         """
         Add a command to voyager.
 

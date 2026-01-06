@@ -182,7 +182,7 @@ class Package:
 class BuildInfo:
     """Represents the build info. Contains multiple Packages"""
     def __init__(self, *args, **kwargs):
-        self._packages = OrderedDict()
+        self._packages = OrderedDict[str, Package]()
         self.include_dirs = []
         self.lib_dirs = []
         self.bin_dirs = []
