@@ -23,6 +23,11 @@ Voyager is written in Python, 3.10 is the recommended version. To develop on the
  uv run voyager
 ```
 
+Mypy is used as the type checker:
+```bash
+ uv run mypy --package voyager
+```
+
 To build the python packages run:
 ```bash
  uv build --wheel

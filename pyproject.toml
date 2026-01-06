@@ -24,6 +24,7 @@ voyager = "voyager:voyager.main"
 
 [tool.uv]
 dev-dependencies = [
+    "mypy>=1.19.1",
     "pyinstaller>=6.10.0",
 ]
 
