@@ -14,8 +14,6 @@
 
 from voyager.generators.generator import Generator
 
-from voyager.buildinfo import Package
-
 class PackageListGenerator(Generator):
     FILE_TEMPLATE = """#pragma once
 
@@ -31,10 +29,9 @@ const std::map<std::string, std::string> ArtifactVersions =
 }} // namespace Voyager
 """
 
-    def _format_package_list(self):
+    def _format_package_list(self) -> str:
         lines = list()
         for (name, package) in self.build_info.packages:
-            package : Package = package
             lines.append(f'{{ "{name}", "{package.version}" }},')
         return self.FILE_TEMPLATE.format("\n  ".join(lines))
 

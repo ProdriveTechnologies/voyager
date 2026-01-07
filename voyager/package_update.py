@@ -124,7 +124,7 @@ def _semver_reduce_patch(versions: List[str]) -> List[str]:
     :param versions: A list of strings with versions ['17.0.0', '18.0.0', '18.0.1']
     :returns: A list of strings with versions: ['17.0.0', '18.0.1']
     """
-    reduce_dict = {}
+    reduce_dict: dict[str, int] = {}
     for version_str in versions:
         version = semver.semver(version_str, False)
         major_minor_str = F"{version.major}.{version.minor}"

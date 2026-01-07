@@ -16,7 +16,7 @@ import importlib
 import pkgutil
 from abc import ABC, abstractmethod, abstractproperty
 from pathlib import Path
-from typing import List, Type
+from typing import Any, Callable, List, Type
 
 import click
 import semver
@@ -37,14 +37,14 @@ class Registry(metaclass=SingletonType):
     """
 
     class RegistryInterface(Interface):
-        def __init__(self, registry):
+        def __init__(self, registry) -> None:
             self.registry: Registry = registry
 
         @property
         def plugins(self) -> List[Plugin]:
             return list(self.registry.plugins)
 
-        def add_command(self, name=None, cls=None, **attrs) -> click.Command:
+        def add_command(self, name=None, cls=None, **attrs) -> Callable[[Callable[..., Any]], click.Command]:
             return voyager.voyager.cli.command(name, cls, **attrs)
 
         def find_versions_for_package(self, repo, library, override_archs) -> List[semver.SemVer]:
@@ -58,7 +58,7 @@ class Registry(metaclass=SingletonType):
         def get_artifactory_url(self) -> str:
             return ConfigFile().artifactory_url
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.plugins: List[Plugin] = []
         self._interface = Registry.RegistryInterface(self)

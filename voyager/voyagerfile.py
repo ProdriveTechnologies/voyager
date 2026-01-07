@@ -16,7 +16,7 @@ import json
 import os
 import click
 from sys import exit  # For generated executables
-from typing import Optional
+from typing import Optional, Any
 from pathlib import Path
 import semver
 
@@ -101,7 +101,7 @@ class VoyagerFile():
             vers = semver.parse(version, True)
             version = f"{vers.major}.{vers.minor}"
 
-        elem = {
+        elem: dict[str, Any] = {
             "repo": repo,
             "library": package,
             "version": version

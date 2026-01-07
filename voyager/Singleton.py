@@ -12,8 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from typing import Any
+
 class SingletonType(type):
-    _instances = {}
+    _instances: dict[type, Any] = {}
     def __call__(cls, *args, **kwargs):
         if cls not in cls._instances:
             cls._instances[cls] = super(SingletonType,
