@@ -35,5 +35,20 @@ class TestIntegration(unittest.TestCase):
         assert 'Downloading test/SourcePackage @ 1 ...' in result.output
         assert os.path.isfile('.voyager/voyager.lock')
 
+    def test_required_ci_variables(self):
+        """
+        If the bamboo_voyager_CI env var is set, all related env vars are required.
+        """
+
+        os.environ['bamboo_voyager_CI'] = "1"
+        os.environ['bamboo_voyager_CI_ARCH'] = "Header"
+        runner = CliRunner()
+        result = runner.invoke(voyager.cli, ['search', 'some package'])
+        del os.environ['bamboo_voyager_CI']
+        assert result.exception.args == (
+            "Missing required environment variable(s): ['bamboo_voyager_CI_API_KEY', 'bamboo_voyager_CI_URL']",
+        )
+
+
 if __name__ == '__main__':
     unittest.main()
