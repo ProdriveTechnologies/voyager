@@ -41,7 +41,11 @@ class ConfigFile(metaclass=SingletonType):
         self._artifactory_url = ""
         self._default_arch = []
         self._current_arch = []
-        self._use_environ = os.environ.get('bamboo_voyager_CI')
+
+    @property
+    def _use_environ(self):
+        # Setting this in __init__ breaks unit tests because ConfigFile is a singleton.
+        return os.environ.get('bamboo_voyager_CI')
 
     def exists(self) -> bool:
         if self._use_environ:
@@ -51,10 +55,16 @@ class ConfigFile(metaclass=SingletonType):
 
     def parse(self) -> bool:
         if self._use_environ:
-                self._api_key = os.environ.get('bamboo_voyager_CI_API_KEY').replace("\"", "")
-                self._artifactory_url = os.environ.get('bamboo_voyager_CI_URL').replace("\"", "")
-                archs = os.environ.get('bamboo_voyager_CI_ARCH').replace("\"", "")
-                self._default_arch = archs.split(";")
+                api_key, url, archs = require_env_vars(
+                    [
+                        "bamboo_voyager_CI_API_KEY",
+                        "bamboo_voyager_CI_URL",
+                        "bamboo_voyager_CI_ARCH",
+                    ]
+                )
+                self._api_key = api_key.replace("\"", "")
+                self._artifactory_url = url.replace("\"", "")
+                self._default_arch = archs.replace("\"", "").split(";")
                 self._host_platform = self._default_arch
         else:
             with open(self._config_file) as json_file:
@@ -130,3 +140,19 @@ class ConfigFile(metaclass=SingletonType):
         with open(file_path) as json_file:
             data = json.load(json_file)
             self._host_platform = data['host']
+
+
+def require_env_vars(keys: list[str]) -> list[str]:
+    values = []
+    missing = []
+    for key in keys:
+        value = os.environ.get(key)
+        if value is None:
+            missing.append(key)
+        else:
+            values.append(value)
+
+    if missing:
+        raise KeyError(f"Missing required environment variable(s): {missing}")
+
+    return values
