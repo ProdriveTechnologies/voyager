@@ -144,8 +144,6 @@ def _semver_reduce_patch(versions: List[str]) -> List[str]:
 
 def _semver_diff(a: str, b: str) -> str:
     """Compare 2 semver strings and return which part (major/minor/patch) is different in a string"""
-    if a == b:
-        return "same"
 
     v1 = semver.parse(a, False)
     v2 = semver.parse(b, False)
@@ -159,4 +157,13 @@ def _semver_diff(a: str, b: str) -> str:
     if v1.patch != v2.patch:
         return "patch"
 
+    if v1.prerelease != v2.prerelease:
+        return "prerelease"
 
+    if v1.build != v2.build:
+        return "build"
+
+    if v1.micro_versions != v2.micro_versions:
+        return "micro_versions"
+    
+    return "same"

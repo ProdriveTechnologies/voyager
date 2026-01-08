@@ -12,8 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import abc
+
 from voyager.buildinfo import BuildInfo
 
-class Generator(object):
+class Generator(abc.ABC):
     def __init__(self, build_info:BuildInfo):
         self.build_info = build_info
+
+    @property
+    @abc.abstractmethod
+    def content(self) -> str:
+        """Get the output of the generator."""
