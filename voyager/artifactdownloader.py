@@ -22,6 +22,7 @@ import requests
 from semver import valid_range, max_satisfying
 from platformdirs import user_cache_dir
 import semver
+import fnmatch
 
 from .buildinfo import Package, BuildInfo
 from .configfile import ConfigFile
@@ -97,7 +98,8 @@ class ArtifactDownloader:
 
             active_archs = self._get_active_archs()
             if for_archs:
-                if not any(a in active_archs for a in for_archs):
+                matches = any( any(fnmatch.fnmatch(active, pattern) for pattern in for_archs) for active in active_archs )
+                if not matches:
                     click.echo(click.style(u'SKIP: arch not active', fg='yellow'))
                     continue
 
