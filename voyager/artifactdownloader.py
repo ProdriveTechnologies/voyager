@@ -98,7 +98,13 @@ class ArtifactDownloader:
 
             active_archs = self._get_active_archs()
             if for_archs:
-                matches = any( any(fnmatch.fnmatch(active, pattern) for pattern in for_archs) for active in active_archs )
+                matches = False
+
+                for pattern in for_archs:
+                    if fnmatch.filter(active_archs, pattern):
+                        matches = True
+                        break
+
                 if not matches:
                     click.echo(click.style(u'SKIP: arch not active', fg='yellow'))
                     continue
