@@ -2,6 +2,7 @@
 
 ### [x.x.x]
 - Improve the error message when some CI environment variables are missing.
+- Add support for wildcards with for_archs.
 
 ### [1.17.4]
 - Fix order of checking if a package version exists and forcing package versions
