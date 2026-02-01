@@ -38,10 +38,19 @@ def execute_package_update():
 
         if subdir_file.has_build_tools():
             update_list += _check_for_updates(subdir_file.build_tools)
+    
+    unique_update_list = []
+    seen = set()
+
+    for item in update_list:
+        key = tuple(sorted(item.items()))
+        if key not in seen:
+            seen.add(key)
+            unique_update_list.append(item)
 
     click.echo(click.style("Patch Update ", fg='bright_green'), nl=False)
     click.echo(click.style("Backwards-compatible bug fixes.", fg='green'), nl=True)
-    for elem in update_list:
+    for elem in unique_update_list:
         if elem['update-type'] == "patch":
             click.echo(click.style(f" {elem['library']}".ljust(40), fg='cyan'), nl=False)
             click.echo(f" {elem['version']} -> {elem['new-version']}".ljust(20), nl=False)
@@ -50,7 +59,7 @@ def execute_package_update():
     print("")
     click.echo(click.style("Minor Update ", fg='bright_yellow'), nl=False)
     click.echo(click.style("New backwards-compatible features.", fg='yellow'), nl=True)
-    for elem in update_list:
+    for elem in unique_update_list:
         if elem['update-type'] == "minor":
             click.echo(click.style(f" {elem['library']}".ljust(40), fg='cyan'), nl=False)
             click.echo(f" {elem['version']} -> {elem['new-version']}".ljust(20), nl=False)
@@ -59,7 +68,7 @@ def execute_package_update():
     print("")
     click.echo(click.style("Major Update ", fg='bright_red'), nl=False)
     click.echo(click.style("Potentially breaking API changes, use caution.", fg='red'), nl=True)
-    for elem in update_list:
+    for elem in unique_update_list:
         if elem['update-type'] == "major":
             click.echo(click.style(f" {elem['library']}".ljust(40), fg='cyan'), nl=False)
             click.echo(f" {elem['version']} -> {elem['new-version']}".ljust(20), nl=False)

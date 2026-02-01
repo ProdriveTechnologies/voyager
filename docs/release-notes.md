@@ -1,8 +1,9 @@
 # Release notes
 
-### [x.x.x]
+### [1.17.5]
 - Improve the error message when some CI environment variables are missing.
 - Add support for wildcards with for_archs.
+- Remove duplcate entries when calling check-update.
 
 ### [1.17.4]
 - Fix order of checking if a package version exists and forcing package versions
