@@ -22,6 +22,27 @@ from jsonschema import validate
 from .Singleton import SingletonType
 from .utilities import resource_path
 
+WINDOWS_CONFIG = {
+    "api_key": "",
+    "artifactory_url": "",
+    "default_arch": [
+        "MSVC.143.DBG.32",
+        "MSVC.142.DBG.32",
+        "MSVC.141.DBG.32",
+        "MSVC.140.DBG.32",
+        "go.windows.amd64",
+        "windows"
+    ]
+}
+
+LINUX_CONFIG = {
+    "api_key": "",
+    "artifactory_url": "",
+    "default_arch": [
+        "x86_64-linux-gnu-gcc-6",
+        "go.linux.amd64"
+    ]
+}
 
 class ConfigFile(metaclass=SingletonType):
     schema = {
@@ -80,10 +101,11 @@ class ConfigFile(metaclass=SingletonType):
     def create_default(self):
         os.makedirs(self._config_dir, exist_ok=True)
         if platform.system() == 'Linux':
-            location = resource_path('static/config_template_linux.json')
+            with open(self._config_file, "w") as file:
+                json.dump(LINUX_CONFIG, file, indent=2)
         else:
-            location = resource_path('static/config_template_windows.json')
-        shutil.copy(location, self._config_file)
+            with open(self._config_file, "w") as file:
+                json.dump(WINDOWS_CONFIG, file, indent=2)
 
     def update(self):
         json_data = {
