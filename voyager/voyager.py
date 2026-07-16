@@ -60,7 +60,7 @@ def cli():
         click.echo(click.style(f'It appears that there is no config file in {conf.file_path}', fg='yellow'))
         click.echo("Generating a default one")
         conf.create_default()
-        click.echo(click.style(u'Default one generated, please fill in your Artifactory API key or use \'voyager login\'', fg='black', bg='yellow'))
+        click.echo(click.style(u'Default one generated, please fill in your Artifactory credentials (token preferred) or use \'voyager login\'', fg='black', bg='yellow'))
         exit(1)
 
     if not conf.parse():
@@ -71,7 +71,7 @@ def cli():
 @click.argument('query')
 def search(query):
     """Search for a specific package. For example: voyager search Udsm* or voyager search Utils/* """
-    ConfigFile.check_for_valid_api_key()
+    ConfigFile.check_for_valid_credentials()
     split = query.split('/')
     if len(split) == 1:
         found = artifactorysearch.gavc(artifact_id=query)
@@ -177,7 +177,7 @@ def install(host, host_file, with_runtime_deps):
     configuration file. If 'type' is 'solution', the folders listed in
     'projects' are also processed.
     """
-    ConfigFile.check_for_valid_api_key()
+    ConfigFile.check_for_valid_credentials()
     plugin_registry.Registry().on_install_start()
     conf = ConfigFile()
     if host:
@@ -286,6 +286,7 @@ def config():
     """Generate a default voyager configuration file in your home dir."""
     conf = ConfigFile()
     print("Location: ", conf.file_path)
+    print("Token: ", conf.token)
     print("Key: ", conf.api_key)
     print("URL: ", conf.artifactory_url)
     print("ARCH:", conf.build_platform)

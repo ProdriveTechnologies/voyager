@@ -23,6 +23,7 @@ from .Singleton import SingletonType
 from .utilities import resource_path
 
 WINDOWS_CONFIG = {
+    "token": "",
     "api_key": "",
     "artifactory_url": "",
     "default_arch": [
@@ -36,6 +37,7 @@ WINDOWS_CONFIG = {
 }
 
 LINUX_CONFIG = {
+    "token": "",
     "api_key": "",
     "artifactory_url": "",
     "default_arch": [
@@ -48,6 +50,7 @@ class ConfigFile(metaclass=SingletonType):
     schema = {
         "type": "object",
         "properties": {
+            "token": {"type" : "string"},
             "api_key": {"type" : "string"},
             "artifactory_url": {"type" : "string"},
             "default_arch": {"type" : "array", "items": {"type": "string"}}
@@ -58,6 +61,7 @@ class ConfigFile(metaclass=SingletonType):
         super().__init__(*args, **kwargs)
         self._config_dir = os.path.expanduser("~") + '/.voyager/'
         self._config_file = self._config_dir + 'config.json'
+        self._token = ""
         self._api_key = ""
         self._artifactory_url = ""
         self._default_arch = []
@@ -76,14 +80,20 @@ class ConfigFile(metaclass=SingletonType):
 
     def parse(self) -> bool:
         if self._use_environ:
-                api_key, url, archs = require_env_vars(
+                url, archs = require_env_vars(
                     [
-                        "bamboo_voyager_CI_API_KEY",
                         "bamboo_voyager_CI_URL",
                         "bamboo_voyager_CI_ARCH",
                     ]
                 )
-                self._api_key = api_key.replace("\"", "")
+
+                token = os.environ.get("bamboo_voyager_CI_TOKEN")
+                api_key = os.environ.get("bamboo_voyager_CI_API_KEY")
+                if token is None and api_key is None:
+                    raise KeyError("Missing required environment variable(s): ['bamboo_voyager_CI_TOKEN', 'bamboo_voyager_CI_API_KEY']")
+
+                self._token = token.replace("\"", "") if token else ""
+                self._api_key = api_key.replace("\"", "") if api_key else ""
                 self._artifactory_url = url.replace("\"", "")
                 self._default_arch = archs.replace("\"", "").split(";")
                 self._host_platform = self._default_arch
@@ -91,7 +101,8 @@ class ConfigFile(metaclass=SingletonType):
             with open(self._config_file) as json_file:
                 data = json.load(json_file)
                 validate(data, self.schema)
-                self._api_key = data['api_key']
+                self._token = data.get('token', "")
+                self._api_key = data.get('api_key', "")
                 self._artifactory_url = data['artifactory_url']
                 self._default_arch = data['default_arch']
                 self._host_platform = data['default_arch']
@@ -109,12 +120,21 @@ class ConfigFile(metaclass=SingletonType):
 
     def update(self):
         json_data = {
+            'token': self._token,
             'api_key': self._api_key,
             'artifactory_url': self._artifactory_url,
             'default_arch': self._default_arch
         }
         with open(self._config_file, 'w') as json_file:
             json.dump(json_data, json_file, indent=2)
+
+    @property
+    def token(self):
+        return self._token
+
+    @token.setter
+    def token(self, token):
+        self._token = token
 
     @property
     def api_key(self):
@@ -124,13 +144,41 @@ class ConfigFile(metaclass=SingletonType):
     def api_key(self, api_key):
         self._api_key = api_key
 
+    def has_credentials(self):
+        return bool(self._token or self._api_key)
+
+    def get_primary_credential(self):
+        if self._token:
+            return ('token', self._token)
+        if self._api_key:
+            return ('api_key', self._api_key)
+        return (None, None)
+
+    def apply_auth_to_session(self, session):
+        # Ensure a deterministic precedence: token first, then legacy API key.
+        session.headers.pop('Authorization', None)
+        session.headers.pop('X-JFrog-Art-Api', None)
+
+        credential_type, credential_value = self.get_primary_credential()
+        if credential_type == 'token':
+            session.headers['Authorization'] = f'Bearer {credential_value}'
+        elif credential_type == 'api_key':
+            session.headers['X-JFrog-Art-Api'] = credential_value
+
+        return session
+
     @staticmethod
-    def check_for_valid_api_key():
+    def check_for_valid_credentials():
         conf = ConfigFile()
         conf.parse()
 
-        if not conf.api_key:
-            raise ValueError("No API key found in ConfigFile. Please run 'voyager login' first")
+        if not conf.has_credentials():
+            raise ValueError("No Artifactory credentials found in ConfigFile. Please run 'voyager login' first")
+
+    @staticmethod
+    def check_for_valid_api_key():
+        # Backward-compatible alias for older code paths.
+        ConfigFile.check_for_valid_credentials()
 
     @property
     def artifactory_url(self):

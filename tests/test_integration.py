@@ -3,6 +3,7 @@ import warnings
 import os
 
 import voyager.voyager as voyager
+from voyager.configfile import ConfigFile
 from click.testing import CliRunner
 
 class TestIntegration(unittest.TestCase):
@@ -37,17 +38,83 @@ class TestIntegration(unittest.TestCase):
 
     def test_required_ci_variables(self):
         """
-        If the bamboo_voyager_CI env var is set, all related env vars are required.
+        If bamboo_voyager_CI is set, URL and arch are required and at least one credential is required.
         """
 
         os.environ['bamboo_voyager_CI'] = "1"
         os.environ['bamboo_voyager_CI_ARCH'] = "Header"
+        os.environ['bamboo_voyager_CI_URL'] = "https://example.jfrog.io/artifactory"
         runner = CliRunner()
         result = runner.invoke(voyager.cli, ['search', 'some package'])
         del os.environ['bamboo_voyager_CI']
+        del os.environ['bamboo_voyager_CI_ARCH']
+        del os.environ['bamboo_voyager_CI_URL']
         assert result.exception.args == (
-            "Missing required environment variable(s): ['bamboo_voyager_CI_API_KEY', 'bamboo_voyager_CI_URL']",
+            "Missing required environment variable(s): ['bamboo_voyager_CI_TOKEN', 'bamboo_voyager_CI_API_KEY']",
         )
+
+    def test_ci_env_parses_with_token_only(self):
+        os.environ['bamboo_voyager_CI'] = "1"
+        os.environ['bamboo_voyager_CI_URL'] = "\"https://example.jfrog.io/artifactory\""
+        os.environ['bamboo_voyager_CI_ARCH'] = "\"Header;Source\""
+        os.environ['bamboo_voyager_CI_TOKEN'] = "\"token-value\""
+
+        conf = ConfigFile()
+        conf.parse()
+        self.assertEqual(conf.token, "token-value")
+        self.assertEqual(conf.api_key, "")
+        self.assertEqual(conf.get_primary_credential()[0], "token")
+
+        del os.environ['bamboo_voyager_CI']
+        del os.environ['bamboo_voyager_CI_URL']
+        del os.environ['bamboo_voyager_CI_ARCH']
+        del os.environ['bamboo_voyager_CI_TOKEN']
+
+    def test_ci_env_parses_with_api_key_only(self):
+        os.environ['bamboo_voyager_CI'] = "1"
+        os.environ['bamboo_voyager_CI_URL'] = "\"https://example.jfrog.io/artifactory\""
+        os.environ['bamboo_voyager_CI_ARCH'] = "\"Header;Source\""
+        os.environ['bamboo_voyager_CI_API_KEY'] = "\"api-key-value\""
+
+        conf = ConfigFile()
+        conf.parse()
+        self.assertEqual(conf.token, "")
+        self.assertEqual(conf.api_key, "api-key-value")
+        self.assertEqual(conf.get_primary_credential()[0], "api_key")
+
+        del os.environ['bamboo_voyager_CI']
+        del os.environ['bamboo_voyager_CI_URL']
+        del os.environ['bamboo_voyager_CI_ARCH']
+        del os.environ['bamboo_voyager_CI_API_KEY']
+
+    def test_credential_precedence_token_over_api_key(self):
+        conf = ConfigFile()
+        conf.token = "token-value"
+        conf.api_key = "api-key-value"
+
+        credential_type, credential_value = conf.get_primary_credential()
+        self.assertEqual(credential_type, "token")
+        self.assertEqual(credential_value, "token-value")
+
+    def test_ci_env_precedence_token_over_api_key(self):
+        os.environ['bamboo_voyager_CI'] = "1"
+        os.environ['bamboo_voyager_CI_URL'] = "\"https://example.jfrog.io/artifactory\""
+        os.environ['bamboo_voyager_CI_ARCH'] = "\"Header;Source\""
+        os.environ['bamboo_voyager_CI_TOKEN'] = "\"token-value\""
+        os.environ['bamboo_voyager_CI_API_KEY'] = "\"api-key-value\""
+
+        conf = ConfigFile()
+        conf.parse()
+
+        credential_type, credential_value = conf.get_primary_credential()
+        self.assertEqual(credential_type, "token")
+        self.assertEqual(credential_value, "token-value")
+
+        del os.environ['bamboo_voyager_CI']
+        del os.environ['bamboo_voyager_CI_URL']
+        del os.environ['bamboo_voyager_CI_ARCH']
+        del os.environ['bamboo_voyager_CI_TOKEN']
+        del os.environ['bamboo_voyager_CI_API_KEY']
 
 
 if __name__ == '__main__':
