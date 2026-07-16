@@ -144,9 +144,6 @@ class ConfigFile(metaclass=SingletonType):
     def api_key(self, api_key):
         self._api_key = api_key
 
-    def has_credentials(self):
-        return bool(self._token or self._api_key)
-
     def get_primary_credential(self):
         if self._token:
             return ('token', self._token)
@@ -172,13 +169,8 @@ class ConfigFile(metaclass=SingletonType):
         conf = ConfigFile()
         conf.parse()
 
-        if not conf.has_credentials():
+        if not conf.token and not conf.api_key:
             raise ValueError("No Artifactory credentials found in ConfigFile. Please run 'voyager login' first")
-
-    @staticmethod
-    def check_for_valid_api_key():
-        # Backward-compatible alias for older code paths.
-        ConfigFile.check_for_valid_credentials()
 
     @property
     def artifactory_url(self):
