@@ -61,7 +61,9 @@ def _request_token(path, art_url: str, user: str) -> str:
         response = path.session.post(token_url, data=payload)
         response.raise_for_status()
         content = response.json()
-    except Exception:
+    except Exception as e:
+        error_message = "Wrong login credentials" if "Bad credentials" in response.text else str(e)
+        print(f"Token request failed: {error_message}")
         return ""
 
     return content.get("access_token", "")
@@ -76,7 +78,8 @@ def _validate_token(token: str, art_url: str) -> bool:
         response = session.get(validation_url)
         response.raise_for_status()
         return True
-    except Exception:
+    except Exception as e:
+        print(f"Token validation failed: {e}")
         return False
 
 
