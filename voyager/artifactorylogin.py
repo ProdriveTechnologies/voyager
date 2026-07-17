@@ -35,7 +35,8 @@ def login():
 
     path = ArtifactoryPath(art_url, auth=(user, pw))
     token = _request_token(path, art_url, user)
-    if token and _validate_token(token, art_url):
+    if token:
+        _validate_token(token, art_url)
         print("Saving token to config file")
         conf.token = token
         conf.api_key = ""
@@ -63,13 +64,12 @@ def _request_token(path, art_url: str, user: str) -> str:
         content = response.json()
     except Exception as e:
         error_message = "Wrong login credentials" if "Bad credentials" in response.text else str(e)
-        print(f"Token request failed: {error_message}")
-        return ""
+        raise ValueError(f"Token request failed: {error_message}")
 
     return content.get("access_token", "")
 
 
-def _validate_token(token: str, art_url: str) -> bool:
+def _validate_token(token: str, art_url: str):
     validation_url = f"{art_url}/api/system/ping"
     session = requests.Session()
     session.headers["Authorization"] = f"Bearer {token}"
@@ -77,10 +77,8 @@ def _validate_token(token: str, art_url: str) -> bool:
     try:
         response = session.get(validation_url)
         response.raise_for_status()
-        return True
     except Exception as e:
-        print(f"Token validation failed: {e}")
-        return False
+        raise ValueError(f"Token validation failed: {e}")
 
 
 def build_artifactory_url_from_user_input(art_url_user):
