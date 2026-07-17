@@ -46,8 +46,8 @@ def login():
 
     click.confirm(f"Connecting as {user} to {art_url}. Continue?", abort=True)
 
-    art_path = ArtifactoryPath(art_url, auth=(user, pw))
-    api_key = _request_api_key(art_path, art_url)
+    path = ArtifactoryPath(art_url, auth=(user, pw))
+    api_key = _request_api_key(path, art_url)
     if api_key:
         print(f"Saving API key: {api_key} to config file")
         conf.token = ""
@@ -143,7 +143,6 @@ def build_artifactory_url_from_user_input(art_url_user):
     # But artifactory.example.com will yield
     # ParseResult(scheme='', netloc='', path='artifactory.example.com', params='', query='', fragment='')
     art_url_parse = urlparse(art_url_user)
-
     if not art_url_parse.netloc:  # netloc is empty
         return f"https://{art_url_parse.path}/artifactory"
 
