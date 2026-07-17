@@ -43,16 +43,6 @@ def login():
         conf.update()
         return
 
-    print("Could not request token. Falling back to API key flow")
-    api_key = _request_api_key(path, art_url)
-    if api_key:
-        print(f"Saving API key: {api_key} to config file")
-        conf.token = ""
-        conf.api_key = api_key
-        conf.artifactory_url = art_url
-        conf.update()
-        return
-
     raise ValueError("Could not get API Key from Artifactory, please generate it manually")
 
 
@@ -88,31 +78,6 @@ def _validate_token(token: str, art_url: str) -> bool:
         return True
     except Exception:
         return False
-
-
-def _request_api_key(path, art_url):
-    print("Requesting API Key")
-    api_key_url = f"{art_url}/api/security/apiKey"
-
-    try:
-        response = path.session.get(api_key_url)
-        response.raise_for_status()
-        content = response.json()
-    except Exception:
-        content = {}
-
-    api_key = content.get('apiKey', None)
-    if not api_key:
-        print("No API Key found in Artifactory, Generating one")
-        try:
-            response = path.session.post(api_key_url)
-            response.raise_for_status()
-            content = response.json()
-            api_key = content.get('apiKey', None)
-        except Exception:
-            return ""
-
-    return api_key or ""
 
 
 def build_artifactory_url_from_user_input(art_url_user):
