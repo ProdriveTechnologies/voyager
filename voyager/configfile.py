@@ -24,7 +24,6 @@ from .utilities import resource_path
 
 WINDOWS_CONFIG = {
     "token": "",
-    "api_key": "",
     "artifactory_url": "",
     "default_arch": [
         "MSVC.143.DBG.32",
@@ -38,7 +37,6 @@ WINDOWS_CONFIG = {
 
 LINUX_CONFIG = {
     "token": "",
-    "api_key": "",
     "artifactory_url": "",
     "default_arch": [
         "x86_64-linux-gnu-gcc-6",
@@ -121,7 +119,6 @@ class ConfigFile(metaclass=SingletonType):
     def update(self):
         json_data = {
             'token': self._token,
-            'api_key': self._api_key,
             'artifactory_url': self._artifactory_url,
             'default_arch': self._default_arch
         }
@@ -161,6 +158,8 @@ class ConfigFile(metaclass=SingletonType):
             session.headers['Authorization'] = f'Bearer {credential_value}'
         elif credential_type == 'api_key':
             session.headers['X-JFrog-Art-Api'] = credential_value
+        else:
+            raise ValueError("No Artifactory credentials found in ConfigFile. Please run 'voyager login' first")
 
         return session
 

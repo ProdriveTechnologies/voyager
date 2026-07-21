@@ -60,7 +60,7 @@ def cli():
         click.echo(click.style(f'It appears that there is no config file in {conf.file_path}', fg='yellow'))
         click.echo("Generating a default one")
         conf.create_default()
-        click.echo(click.style(u'Default one generated, please fill in your Artifactory credentials (token preferred) or use \'voyager login\'', fg='black', bg='yellow'))
+        click.echo(click.style(u'Default one generated, please fill in your Artifactory credentials or use \'voyager login\'', fg='black', bg='yellow'))
         exit(1)
 
     if not conf.parse():
