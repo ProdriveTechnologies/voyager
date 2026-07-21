@@ -91,8 +91,6 @@ class ConfigFile(metaclass=SingletonType):
                 self._token = token.replace("\"", "") if token else ""
                 if not self._token:
                     self._api_key = api_key.replace("\"", "") if api_key else ""
-                    if not self._api_key:
-                        raise ValueError("Missing required environment variable(s): ['bamboo_voyager_CI_TOKEN', 'bamboo_voyager_CI_API_KEY']")
 
                 self._artifactory_url = url.replace("\"", "")
                 self._default_arch = archs.replace("\"", "").split(";")
@@ -105,8 +103,6 @@ class ConfigFile(metaclass=SingletonType):
 
                 if not self._token:
                     self._api_key = data.get('api_key', "")
-                    if not self._api_key:
-                        raise ValueError("Config file is missing credentials. Please run 'voyager login' to generate a new config file.")
 
                 self._artifactory_url = data['artifactory_url']
                 self._default_arch = data['default_arch']
