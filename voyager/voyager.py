@@ -311,7 +311,7 @@ def deploy(deploy_dir, only_runtime_deps):
 @cli.command()
 def login():
     """Configure access to Artifactory."""
-    print("Login and get Artifactory API key for config file")
+    print("Login and get Artifactory token for config file")
     artifactorylogin.login()
 
 @cli.command()

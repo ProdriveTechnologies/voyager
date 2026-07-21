@@ -13,9 +13,9 @@
 # limitations under the License.
 
 from artifactory import ArtifactoryPath
-from collections import defaultdict
 import getpass
 import click
+import requests
 from urllib.parse import urlparse
 
 from .configfile import ConfigFile
@@ -26,37 +26,59 @@ def login():
 
     art_url_user = click.prompt("Please enter the Artifactory url", type=str)
     art_url = build_artifactory_url_from_user_input(art_url_user)
-    
+
     user = getpass.getuser()
-    user = click.prompt(f"User", default=user)
+    user = click.prompt("User", default=user)
     pw = getpass.getpass(prompt=f"Password for {user}: ")
 
     click.confirm(f"Connecting as {user} to {art_url}. Continue?", abort=True)
 
     path = ArtifactoryPath(art_url, auth=(user, pw))
-    print("Requesting API Key")
-    api_key_url = f"{art_url}/api/security/apiKey"
-    r = path.session.get(api_key_url)
-    r.raise_for_status()
-    content = r.json()
+    token = _request_token(path, art_url, user)
+    if token:
+        _validate_token(token, art_url)
+        print("Saving token to config file")
+        conf.token = token
+        conf.api_key = ""
+        conf.artifactory_url = art_url
+        conf.update()
+        return
 
-    api_key = content.get('apiKey', None)
-    if not api_key:
-        print("No API Key found in Artifactory, Generating one")
-        r = path.session.post(api_key_url)
-        r.raise_for_status()
-        content = r.json()
-        api_key = content.get('apiKey', None)
+    raise ValueError("Could not get API Key from Artifactory, please generate it manually")
 
-    if not api_key:
-        raise ValueError("Could not get API Key from Artifactory, please generate it manually")
 
-    print(f"Saving API key: {api_key} to config file")
+def _request_token(path, art_url: str, user: str) -> str:
+    print("Requesting access token")
+    token_url = f"{art_url}/api/security/token"
+    payload = {
+        "grant_type": "client_credentials",
+        "username": user,
+        "scope": "member-of-groups:*",
+        "refreshable": True,
+        "description": "voyager-generated"
+    }
 
-    conf.api_key = api_key
-    conf.artifactory_url = art_url
+    try:
+        response = path.session.post(token_url, data=payload)
+        response.raise_for_status()
+        content = response.json()
+    except Exception as e:
+        error_message = "Wrong login credentials" if "Bad credentials" in response.text else str(e)
+        raise ValueError(f"Token request failed: {error_message}")
 
-    conf.update()
+    return content.get("access_token", "")
+
+
+def _validate_token(token: str, art_url: str):
+    validation_url = f"{art_url}/api/system/ping"
+    session = requests.Session()
+    session.headers["Authorization"] = f"Bearer {token}"
+
+    try:
+        response = session.get(validation_url)
+        response.raise_for_status()
+    except Exception as e:
+        raise ValueError(f"Token validation failed: {e}")
 
 
 def build_artifactory_url_from_user_input(art_url_user):
