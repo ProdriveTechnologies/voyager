@@ -87,11 +87,13 @@ class ConfigFile(metaclass=SingletonType):
 
                 token = os.environ.get("bamboo_voyager_CI_TOKEN")
                 api_key = os.environ.get("bamboo_voyager_CI_API_KEY")
-                if token is None and api_key is None:
-                    raise KeyError("Missing required environment variable(s): ['bamboo_voyager_CI_TOKEN', 'bamboo_voyager_CI_API_KEY']")
 
                 self._token = token.replace("\"", "") if token else ""
-                self._api_key = api_key.replace("\"", "") if api_key else ""
+                if not self._token:
+                    self._api_key = api_key.replace("\"", "") if api_key else ""
+                    if not self._api_key:
+                        raise ValueError("Missing required environment variable(s): ['bamboo_voyager_CI_TOKEN', 'bamboo_voyager_CI_API_KEY']")
+
                 self._artifactory_url = url.replace("\"", "")
                 self._default_arch = archs.replace("\"", "").split(";")
                 self._host_platform = self._default_arch
@@ -100,7 +102,12 @@ class ConfigFile(metaclass=SingletonType):
                 data = json.load(json_file)
                 validate(data, self.schema)
                 self._token = data.get('token', "")
-                self._api_key = data.get('api_key', "")
+
+                if not self._token:
+                    self._api_key = data.get('api_key', "")
+                    if not self._api_key:
+                        raise ValueError("Config file is missing credentials. Please run 'voyager login' to generate a new config file.")
+
                 self._artifactory_url = data['artifactory_url']
                 self._default_arch = data['default_arch']
                 self._host_platform = data['default_arch']
