@@ -14,6 +14,7 @@
 
 from artifactory import ArtifactoryPath
 from collections import defaultdict
+import requests
 
 from .configfile import ConfigFile
 
@@ -34,7 +35,9 @@ def gavc(group_id=None, artifact_id=None, version=None, classifier=None, repos=N
     if repos:
         payload['repos'] = ','.join(repos)
 
-    path = ArtifactoryPath(art_url, apikey=conf.api_key)
+    session = requests.Session()
+    conf.apply_auth_to_session(session)
+    path = ArtifactoryPath(art_url, session=session)
     r = path.session.get(gavc_url, params=payload)
     r.raise_for_status()
     content = r.json()

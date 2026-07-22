@@ -57,7 +57,7 @@ class ArtifactDownloader:
         self.download_runtime_deps = download_runtime_deps
 
         self.artifactory_session = requests.Session()
-        self.artifactory_session.headers['X-JFrog-Art-Api'] = self.config.api_key
+        self.config.apply_auth_to_session(self.artifactory_session)
 
     def clear_directory(self):
         try:
