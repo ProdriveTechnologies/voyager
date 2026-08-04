@@ -23,7 +23,7 @@ from jsonschema import validate
 from .Singleton import SingletonType
 from .utilities import resource_path
 
-TOKEN_REFRESH_PERIOD = timedelta(weeks=48)  # Refresh token every 50 weeks to avoid expiration at 52 weeks
+TOKEN_REFRESH_PERIOD = timedelta(weeks=48)
 
 WINDOWS_CONFIG = {
     "access_token": "",
