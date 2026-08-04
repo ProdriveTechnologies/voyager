@@ -61,7 +61,7 @@ class TestIntegration(unittest.TestCase):
 
         conf = ConfigFile()
         conf.parse()
-        self.assertEqual(conf.token, "token-value")
+        self.assertEqual(conf.access_token, "token-value")
         self.assertEqual(conf.api_key, "")
         self.assertEqual(conf.get_primary_credential()[0], "token")
 
@@ -78,7 +78,7 @@ class TestIntegration(unittest.TestCase):
 
         conf = ConfigFile()
         conf.parse()
-        self.assertEqual(conf.token, "")
+        self.assertEqual(conf.access_token, "")
         self.assertEqual(conf.api_key, "api-key-value")
         self.assertEqual(conf.get_primary_credential()[0], "api_key")
 
@@ -89,7 +89,7 @@ class TestIntegration(unittest.TestCase):
 
     def test_credential_precedence_token_over_api_key(self):
         conf = ConfigFile()
-        conf.token = "token-value"
+        conf.access_token = "token-value"
         conf.api_key = "api-key-value"
 
         credential_type, credential_value = conf.get_primary_credential()

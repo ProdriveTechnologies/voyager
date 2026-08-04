@@ -67,6 +67,9 @@ def cli():
         click.echo(click.style(f'Problem with parsing the config file {conf.file_path}', fg='red'))
         exit(1)
 
+    if conf.should_refresh_token():
+        artifactorylogin.refresh_token()
+
 @cli.command()
 @click.argument('query')
 def search(query):
@@ -286,7 +289,7 @@ def config():
     """Generate a default voyager configuration file in your home dir."""
     conf = ConfigFile()
     print("Location: ", conf.file_path)
-    print("Token: ", conf.token)
+    print("Access token: ", conf.access_token)
     print("Key: ", conf.api_key)
     print("URL: ", conf.artifactory_url)
     print("ARCH:", conf.build_platform)
