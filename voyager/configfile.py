@@ -23,9 +23,7 @@ from jsonschema import validate
 from .Singleton import SingletonType
 from .utilities import resource_path
 
-# Duration-based refresh period so it can easily be changed for testing
-# (e.g. timedelta(minutes=5)) or policy updates.
-TOKEN_REFRESH_PERIOD = timedelta(minutes=2)
+TOKEN_REFRESH_PERIOD = timedelta(weeks=48)  # Refresh token every 50 weeks to avoid expiration at 52 weeks
 
 WINDOWS_CONFIG = {
     "access_token": "",
@@ -33,7 +31,6 @@ WINDOWS_CONFIG = {
     "token_created_timestamp": "",
     "artifactory_url": "",
     "default_arch": [
-        "MSVC.145.DBG.32",
         "MSVC.143.DBG.32",
         "MSVC.142.DBG.32",
         "MSVC.141.DBG.32",

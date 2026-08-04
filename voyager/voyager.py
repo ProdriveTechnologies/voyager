@@ -290,6 +290,7 @@ def config():
     conf = ConfigFile()
     print("Location: ", conf.file_path)
     print("Access token: ", conf.access_token)
+    print("Refresh token: ", conf.refresh_token)
     print("Key: ", conf.api_key)
     print("URL: ", conf.artifactory_url)
     print("ARCH:", conf.build_platform)
