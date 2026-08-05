@@ -180,11 +180,11 @@ def install(host, host_file, with_runtime_deps):
     """
     ConfigFile.check_for_valid_credentials()
 
-    if ConfigFile.should_refresh_token():
+    conf = ConfigFile()
+    if conf.should_refresh_token():
         artifactorylogin.perform_token_refresh()
 
     plugin_registry.Registry().on_install_start()
-    conf = ConfigFile()
     if host:
         conf.set_host_platform(host)
     if host_file:
