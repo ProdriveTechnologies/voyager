@@ -99,12 +99,14 @@ class ConfigFile(metaclass=SingletonType):
                 access_token = os.environ.get("bamboo_voyager_CI_TOKEN")
                 api_key = os.environ.get("bamboo_voyager_CI_API_KEY")
 
+                if not access_token and not api_key:
+                    raise KeyError("Missing required environment variable 'bamboo_voyager_CI_TOKEN'. Alternatively set 'bamboo_voyager_CI_API_KEY', which is deprecated.")
+
                 self._access_token = access_token.replace("\"", "") if access_token else ""
                 self._refresh_token = ""
                 self._token_created_timestamp = ""
 
-                if not self._access_token:
-                    self._api_key = api_key.replace("\"", "") if api_key else ""
+                self._api_key = api_key.replace("\"", "") if api_key else ""
 
                 self._artifactory_url = url.replace("\"", "")
                 self._default_arch = archs.replace("\"", "").split(";")

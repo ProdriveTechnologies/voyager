@@ -33,6 +33,9 @@ class TestIntegration(unittest.TestCase):
         runner = CliRunner()
         result = runner.invoke(voyager.cli, ['install'])
         print(result.output)
+        if result.output == "":
+            print("No output from voyager install command")
+        print("after output")
         assert 'Downloading test/SourcePackage @ 1 ...' in result.output
         assert os.path.isfile('.voyager/voyager.lock')
 
@@ -50,7 +53,7 @@ class TestIntegration(unittest.TestCase):
         del os.environ['bamboo_voyager_CI_ARCH']
         del os.environ['bamboo_voyager_CI_URL']
         assert result.exception.args == (
-            "Missing required environment variable(s): ['bamboo_voyager_CI_TOKEN', 'bamboo_voyager_CI_API_KEY']",
+            "Missing required environment variable 'bamboo_voyager_CI_TOKEN'. Alternatively set 'bamboo_voyager_CI_API_KEY', which is deprecated.",
         )
 
     def test_ci_env_parses_with_token_only(self):
