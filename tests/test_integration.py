@@ -33,9 +33,6 @@ class TestIntegration(unittest.TestCase):
         runner = CliRunner()
         result = runner.invoke(voyager.cli, ['install'])
         print(result.output)
-        if result.output == "":
-            print("No output from voyager install command")
-        print("after output")
         assert 'Downloading test/SourcePackage @ 1 ...' in result.output
         assert os.path.isfile('.voyager/voyager.lock')
 
