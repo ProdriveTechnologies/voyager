@@ -67,7 +67,10 @@ def cli():
         click.echo(click.style(f'Problem with parsing the config file {conf.file_path}', fg='red'))
         exit(1)
 
-    if conf.should_refresh_token():
+    ctx = click.get_current_context(silent=True)
+    is_login_command = ctx is not None and ctx.invoked_subcommand == 'login'
+
+    if conf.should_refresh_token() and not is_login_command:
         artifactorylogin.perform_token_refresh()
 
 @cli.command()
