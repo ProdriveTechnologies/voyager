@@ -50,10 +50,9 @@ def login():
     raise ValueError("Could not get API Key from Artifactory, please generate it manually")
 
 
-def refresh_token():
+def perform_token_refresh():
     conf = ConfigFile()
 
-    print("Refreshing access token")
     session = requests.Session()
     session.headers["Authorization"] = f"Bearer {conf.access_token}"
 
@@ -69,7 +68,6 @@ def refresh_token():
         response = session.post(token_url, data=payload)
         response.raise_for_status()
         content = response.json()
-        print("Token refreshed successfully")
     except Exception as e:
         error_message = "Wrong login credentials" if "Bad credentials" in response.text else str(e)
         raise ValueError(f"Token request failed: {error_message}")

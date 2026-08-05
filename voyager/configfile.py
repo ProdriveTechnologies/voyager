@@ -23,7 +23,7 @@ from jsonschema import validate
 from .Singleton import SingletonType
 from .utilities import resource_path
 
-TOKEN_REFRESH_PERIOD = timedelta(weeks=48)
+TOKEN_REFRESH_PERIOD = timedelta(days=1)
 
 WINDOWS_CONFIG = {
     "access_token": "",

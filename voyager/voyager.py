@@ -68,7 +68,7 @@ def cli():
         exit(1)
 
     if conf.should_refresh_token():
-        artifactorylogin.refresh_token()
+        artifactorylogin.perform_token_refresh()
 
 @cli.command()
 @click.argument('query')
