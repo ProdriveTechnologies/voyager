@@ -184,6 +184,10 @@ def install(host, host_file, with_runtime_deps):
     if conf.should_refresh_token():
         artifactorylogin.perform_token_refresh()
 
+    (primary_credential, _) = conf.get_primary_credential()
+    if primary_credential == "api_key":
+        click.echo(click.style('Using deprecated API Key for Artifactory access. Please switch to using a token by running \'voyager login\'.', fg='yellow'))
+
     plugin_registry.Registry().on_install_start()
     if host:
         conf.set_host_platform(host)

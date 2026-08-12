@@ -31,6 +31,7 @@ WINDOWS_CONFIG = {
     "token_created_timestamp": "",
     "artifactory_url": "",
     "default_arch": [
+        "MSVC.145.DBG.32",
         "MSVC.143.DBG.32",
         "MSVC.142.DBG.32",
         "MSVC.141.DBG.32",
