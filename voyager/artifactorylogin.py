@@ -13,6 +13,7 @@
 # limitations under the License.
 
 from artifactory import ArtifactoryPath
+from datetime import datetime, timezone
 import getpass
 import click
 import requests
@@ -34,11 +35,13 @@ def login():
     click.confirm(f"Connecting as {user} to {art_url}. Continue?", abort=True)
 
     path = ArtifactoryPath(art_url, auth=(user, pw))
-    token = _request_token(path, art_url, user)
-    if token:
-        _validate_token(token, art_url)
+    access_token, refresh_token = _request_token(path, art_url, user)
+    if access_token:
+        _validate_token(access_token, art_url)
         print("Saving token to config file")
-        conf.token = token
+        conf.access_token = access_token
+        conf.refresh_token = refresh_token
+        conf.token_created_timestamp = _current_timestamp_utc_iso8601()
         conf.api_key = ""
         conf.artifactory_url = art_url
         conf.update()
@@ -47,13 +50,49 @@ def login():
     raise ValueError("Could not get API Key from Artifactory, please generate it manually")
 
 
-def _request_token(path, art_url: str, user: str) -> str:
+def perform_token_refresh():
+    conf = ConfigFile()
+
+    session = requests.Session()
+    session.headers["Authorization"] = f"Bearer {conf.access_token}"
+
+    art_url = conf.artifactory_url
+    jfrog_url = art_url.removesuffix("/artifactory")
+    token_url = f"{jfrog_url}/access/api/v1/tokens"
+    payload = {
+        "grant_type": "refresh_token",
+        "refresh_token": conf.refresh_token
+    }
+
+    try:
+        response = session.post(token_url, data=payload)
+        response.raise_for_status()
+        content = response.json()
+    except Exception as e:
+        error_message = "Wrong login credentials" if "Bad credentials" in response.text else str(e)
+        raise ValueError(f"Token request failed: {error_message}")
+
+    access_token = content.get("access_token", "")
+    if access_token:
+        _validate_token(access_token, art_url)
+        conf = ConfigFile()
+        conf.access_token = access_token
+        conf.refresh_token = content.get("refresh_token", "")
+        conf.token_created_timestamp = _current_timestamp_utc_iso8601()
+        conf.api_key = ""
+        conf.artifactory_url = art_url
+        conf.update()
+
+def _request_token(path, art_url: str, user: str) -> tuple[str, str]:
+    # jfrog_url is art_url but with the /artifactory path removed, because the token endpoint is not under /artifactory
+    jfrog_url = art_url.removesuffix("/artifactory")
+
     print("Requesting access token")
-    token_url = f"{art_url}/api/security/token"
+    token_url = f"{jfrog_url}/access/api/v1/tokens"
     payload = {
         "grant_type": "client_credentials",
         "username": user,
-        "scope": "member-of-groups:*",
+        "scope": "applied-permissions/user",
         "refreshable": True,
         "description": "voyager-generated"
     }
@@ -66,7 +105,11 @@ def _request_token(path, art_url: str, user: str) -> str:
         error_message = "Wrong login credentials" if "Bad credentials" in response.text else str(e)
         raise ValueError(f"Token request failed: {error_message}")
 
-    return content.get("access_token", "")
+    access_token = content.get("access_token", "")
+    refresh_token = content.get("refresh_token", "")
+
+    return (access_token, refresh_token)
+
 
 
 def _validate_token(token: str, art_url: str):
@@ -79,6 +122,11 @@ def _validate_token(token: str, art_url: str):
         response.raise_for_status()
     except Exception as e:
         raise ValueError(f"Token validation failed: {e}")
+
+
+def _current_timestamp_utc_iso8601() -> str:
+    # Keep explicit UTC offset for reliable parsing across platforms.
+    return datetime.now(timezone.utc).isoformat(timespec="seconds")
 
 
 def build_artifactory_url_from_user_input(art_url_user):

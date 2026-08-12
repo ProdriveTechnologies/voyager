@@ -16,14 +16,19 @@ import json
 import os
 import shutil
 import platform
+from datetime import datetime, timedelta
 
 from jsonschema import validate
 
 from .Singleton import SingletonType
 from .utilities import resource_path
 
+TOKEN_REFRESH_PERIOD = timedelta(days=1)
+
 WINDOWS_CONFIG = {
-    "token": "",
+    "access_token": "",
+    "refresh_token": "",
+    "token_created_timestamp": "",
     "artifactory_url": "",
     "default_arch": [
         "MSVC.143.DBG.32",
@@ -36,7 +41,9 @@ WINDOWS_CONFIG = {
 }
 
 LINUX_CONFIG = {
-    "token": "",
+    "access_token": "",
+    "refresh_token": "",
+    "token_created_timestamp": "",
     "artifactory_url": "",
     "default_arch": [
         "x86_64-linux-gnu-gcc-6",
@@ -48,7 +55,9 @@ class ConfigFile(metaclass=SingletonType):
     schema = {
         "type": "object",
         "properties": {
-            "token": {"type" : "string"},
+            "access_token": {"type" : "string"},
+            "refresh_token": {"type" : "string"},
+            "token_created_timestamp": {"type" : "string"},
             "api_key": {"type" : "string"},
             "artifactory_url": {"type" : "string"},
             "default_arch": {"type" : "array", "items": {"type": "string"}}
@@ -59,7 +68,9 @@ class ConfigFile(metaclass=SingletonType):
         super().__init__(*args, **kwargs)
         self._config_dir = os.path.expanduser("~") + '/.voyager/'
         self._config_file = self._config_dir + 'config.json'
-        self._token = ""
+        self._access_token = ""
+        self._refresh_token = ""
+        self._token_created_timestamp = ""
         self._api_key = ""
         self._artifactory_url = ""
         self._default_arch = []
@@ -85,12 +96,17 @@ class ConfigFile(metaclass=SingletonType):
                     ]
                 )
 
-                token = os.environ.get("bamboo_voyager_CI_TOKEN")
+                access_token = os.environ.get("bamboo_voyager_CI_TOKEN")
                 api_key = os.environ.get("bamboo_voyager_CI_API_KEY")
 
-                self._token = token.replace("\"", "") if token else ""
-                if not self._token:
-                    self._api_key = api_key.replace("\"", "") if api_key else ""
+                if not access_token and not api_key:
+                    raise KeyError("Missing required environment variable 'bamboo_voyager_CI_TOKEN'. Alternatively set 'bamboo_voyager_CI_API_KEY', which is deprecated.")
+
+                self._access_token = access_token.replace("\"", "") if access_token else ""
+                self._refresh_token = ""
+                self._token_created_timestamp = ""
+
+                self._api_key = api_key.replace("\"", "") if api_key else ""
 
                 self._artifactory_url = url.replace("\"", "")
                 self._default_arch = archs.replace("\"", "").split(";")
@@ -99,9 +115,11 @@ class ConfigFile(metaclass=SingletonType):
             with open(self._config_file) as json_file:
                 data = json.load(json_file)
                 validate(data, self.schema)
-                self._token = data.get('token', "")
+                self._access_token = data.get('access_token', data.get('token', ""))
+                self._refresh_token = data.get('refresh_token', "")
+                self._token_created_timestamp = data.get('token_created_timestamp', "")
 
-                if not self._token:
+                if not self._access_token:
                     self._api_key = data.get('api_key', "")
 
                 self._artifactory_url = data['artifactory_url']
@@ -121,7 +139,9 @@ class ConfigFile(metaclass=SingletonType):
 
     def update(self):
         json_data = {
-            'token': self._token,
+            'access_token': self._access_token,
+            'refresh_token': self._refresh_token,
+            'token_created_timestamp': self._token_created_timestamp,
             'artifactory_url': self._artifactory_url,
             'default_arch': self._default_arch
         }
@@ -129,12 +149,20 @@ class ConfigFile(metaclass=SingletonType):
             json.dump(json_data, json_file, indent=2)
 
     @property
-    def token(self):
-        return self._token
+    def access_token(self):
+        return self._access_token
 
-    @token.setter
-    def token(self, token):
-        self._token = token
+    @access_token.setter
+    def access_token(self, access_token):
+        self._access_token = access_token
+
+    @property
+    def refresh_token(self):
+        return self._refresh_token
+
+    @refresh_token.setter
+    def refresh_token(self, refresh_token):
+        self._refresh_token = refresh_token
 
     @property
     def api_key(self):
@@ -144,9 +172,17 @@ class ConfigFile(metaclass=SingletonType):
     def api_key(self, api_key):
         self._api_key = api_key
 
+    @property
+    def token_created_timestamp(self):
+        return self._token_created_timestamp
+
+    @token_created_timestamp.setter
+    def token_created_timestamp(self, token_created_timestamp):
+        self._token_created_timestamp = token_created_timestamp
+
     def get_primary_credential(self):
-        if self._token:
-            return ('token', self._token)
+        if self._access_token:
+            return ('token', self._access_token)
         if self._api_key:
             return ('api_key', self._api_key)
         return (None, None)
@@ -171,7 +207,7 @@ class ConfigFile(metaclass=SingletonType):
         conf = ConfigFile()
         conf.parse()
 
-        if not conf.token and not conf.api_key:
+        if not conf.access_token and not conf.api_key:
             raise ValueError("No Artifactory credentials found in ConfigFile. Please run 'voyager login' first")
 
     @property
@@ -204,6 +240,27 @@ class ConfigFile(metaclass=SingletonType):
         with open(file_path) as json_file:
             data = json.load(json_file)
             self._host_platform = data['host']
+
+    def should_refresh_token(self) -> bool:
+        # Return False when the environment variable is used or no token is present
+        if self._use_environ or not self._access_token:
+            return False
+
+        # Return True when the timestamp is missing or invalid
+        if not self._token_created_timestamp:
+            return True
+
+        try:
+            created = datetime.fromisoformat(self._token_created_timestamp)
+        except ValueError:
+            return True
+
+        if created.tzinfo is None:
+            return True
+
+        # Otherwise, check if the token is due for refresh based on the refresh period
+        refresh_deadline = created + TOKEN_REFRESH_PERIOD
+        return datetime.now(created.tzinfo) > refresh_deadline
 
 
 def require_env_vars(keys: list[str]) -> list[str]:
