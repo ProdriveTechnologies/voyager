@@ -1,5 +1,8 @@
 # Release notes
 
+### [1.18.0]
+- `voyager login` now uses `access_token` for logging into Artifactory, and the `api_key` is now deprecated. 
+
 ### [1.17.5]
 - Fix issue where generating config.json does not work in python package.
 - Improve the error message when some CI environment variables are missing.
