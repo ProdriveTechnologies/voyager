@@ -10,6 +10,7 @@ dependencies = [
     "jsonschema==4.23.0",
     "node-semver==0.7.0",
     "platformdirs>=4.3.6",
+    "truststore>=0.10.4",
     "voyager-plugin-list",
 ]
 
