@@ -1,5 +1,5 @@
 // ###########################
-#define Release "1.17.5"
+#define Release "1.18.0"
 // ###########################
 
 #define AppName "voyager"
